@@ -3,11 +3,11 @@ Le projet s'appelle A.
 
 # Description du projet
 
-Le projet A est un projet de développement Java **multi-applications** qui repose entièrement sur un **framework minimaliste** (le framework a). Son objectif est de permettre le développement d'applications d'une manière évolutive et flexible, en organisant le code source en composants réutilisables.
+Le projet A est un projet de dÃ©veloppement Java **multi-applications** qui repose entiÃ¨rement sur un **framework minimaliste** (le framework a). Son objectif est de permettre le dÃ©veloppement d'applications d'une maniÃ¨re Ã©volutive et flexible, en organisant le code source en composants rÃ©utilisables.
 
 # Organisation des packages
 
-Le code source du projet A s'organise en 4 packages racine dont nous allons détailler le rôle juste après :
+Le code source du projet A s'organise en 4 packages racine dont nous allons dÃ©tailler le rÃ´le juste aprÃ¨s :
 - a.framework
 - a.core
 - a.entity
@@ -18,98 +18,98 @@ Le code source du projet A s'organise en 4 packages racine dont nous allons déta
 Ce package contient les 16 classes Java qui composent le framework a.
 
 Il regroupe 14 interfaces :
-- les 11 interfaces fonctionnelles B, E, F, G, H, I, P, R, S (appelées caractéristiques).
-- l'interface Entity, qui définit le composant entité
-- l'interface Service, qui hérite des 11 caractéristiques
+- les 11 interfaces fonctionnelles B, E, F, G, H, I, P, R, S (appelÃ©es caractÃ©ristiques).
+- l'interface Entity, qui dÃ©finit le composant entitÃ©
+- l'interface Service, qui hÃ©rite des 11 caractÃ©ristiques
 - l'interface Manager qui permet d'interfacer les composants
 
-Ainsi que 2 implémentations :
-- S1 : l'implémentation par défaut de S
-- Outside : Classe statique qui fournit aux entités une implémentation de l'interface Manager
+Ainsi que 2 implÃ©mentations :
+- S1 : l'implÃ©mentation par dÃ©faut de S
+- Outside : Classe statique qui fournit aux entitÃ©s une implÃ©mentation de l'interface Manager
 
-Le code source du framework est définitivement figé, ce qui garantit une compatibilité structuelle pour tous les code sources qui en découlent (contenus dans les packages *a.core*, *a.entity* et *a.config*).
+Le code source du framework est dÃ©finitivement figÃ©, ce qui garantit une compatibilitÃ© structuelle pour tous les code sources qui en dÃ©coulent (contenus dans les packages *a.core*, *a.entity* et *a.config*).
 
 ### a.core
 
-Ce package regroupe les différents noyaux applicatifs (core) se basant sur le framework a.
-On notera que chaque core dispose de sa propre classe Main exécutable et peut a priori être utilisé pour batir une multitude d'applications différentes. Le code source de ce package doit se conformer à différentes règles de codage qui seront exposées par la suite.
+Ce package regroupe les diffÃ©rents noyaux applicatifs (core) se basant sur le framework a.
+On notera que chaque core dispose de sa propre classe Main exÃ©cutable et peut a priori Ãªtre utilisÃ© pour batir une multitude d'applications diffÃ©rentes. Le code source de ce package doit se conformer Ã  diffÃ©rentes rÃ¨gles de codage qui seront exposÃ©es par la suite.
 
 ### a.entity
 
-Ce package regroupe les nombreuses entités (entity), sortes de briques fonctionnelles basées sur le framework a.
-Son code source doit se conformer à différentes règles de codage qui seront exposées par la suite.
+Ce package regroupe les nombreuses entitÃ©s (entity), sortes de briques fonctionnelles basÃ©es sur le framework a.
+Son code source doit se conformer Ã  diffÃ©rentes rÃ¨gles de codage qui seront exposÃ©es par la suite.
 
 ### a.config
 
-Ce package regroupe les différentes configurations des applications se basant sur le framework a. Chaque configuration contient des fichiers de paramétrage et éventuellement des resources internes (images, icons, librairies tierce...) utilisées par l'application.
-Là encore, ces fichiers sont organisés selon différentes règles exposées par la suite.
+Ce package regroupe les diffÃ©rentes configurations des applications se basant sur le framework a. Chaque configuration contient des fichiers de paramÃ©trage et Ã©ventuellement des resources internes (images, icons, librairies tierce...) utilisÃ©es par l'application.
+LÃ  encore, ces fichiers sont organisÃ©s selon diffÃ©rentes rÃ¨gles exposÃ©es par la suite.
 
-#Règles de nommage
+#RÃ¨gles de nommage
 
-### Un projet multi développeurs
+### Un projet multi dÃ©veloppeurs
 
-Chaque développeur (ou instance de développement) souhaitant contribuer au projet A en y ajoutant son propre code source devra se conformer à certaines règles de nommage garantissant notamment une séparation nette des différentes contributions. Un identifiant unique <dev-id> sera attribué à chacun permettant d'obtenir des sous-répertoires racines distincts à l'intérieur des 3 packages : *a.core*, *a.entity*, *a.config*
+Chaque dÃ©veloppeur (ou instance de dÃ©veloppement) souhaitant contribuer au projet A en y ajoutant son propre code source devra se conformer Ã  certaines rÃ¨gles de nommage garantissant notamment une sÃ©paration nette des diffÃ©rentes contributions. Un identifiant unique \<dev-id\> sera attribuÃ© Ã  chacun permettant d'obtenir des sous-rÃ©pertoires racines distincts Ã  l'intÃ©rieur des 3 packages : *a.core*, *a.entity*, *a.config*
 
-Les deux premiers identifiants attribués sont gus (mon identifiant) et tav (identifiant de test). Nous avons ainsi les packages suivants :
+Les deux premiers identifiants attribuÃ©s sont gus (mon identifiant) et tav (identifiant de test). Nous avons ainsi les packages suivants :
 
-Pour le développeur gus :
+Pour le dÃ©veloppeur gus :
 - a.core.gus
 - a.entity.gus
 - a.config.gus
 
-Pour le développeur tav :
+Pour le dÃ©veloppeur tav :
 - a.core.tav
 - a.entity.tav
 - a.config.tav
 
-En supposant que vous décidiez de rejoindre l'aventure avec l'identifiant marcus, vous auriez alors à disposition :
+En supposant que vous dÃ©cidiez de rejoindre l'aventure avec l'identifiant marcus, vous auriez alors Ã  disposition :
 - a.core.marcus
 - a.entity.marcus
 - a.config.marcus
 
 ### Organisation pour les noyaux (core)
 
-Les noyaux doivent suivre la convention de nommage suivante : *<dev-id>.<...>*
-En tant que développeur marcus, tous vos noyaux doivent donc être nommés comme ceci : *marcus.<...>*
+Les noyaux doivent suivre la convention de nommage suivante : *\<dev-id\>.<...>*
+En tant que dÃ©veloppeur marcus, tous vos noyaux doivent donc Ãªtre nommÃ©s comme ceci : *marcus.<...>*
 
-Si votre premier noyau s'appelle *marcus.kernel1*, alors son code source sera regroupé dans le package racine *a.core.marcus.kernel1*.
-Il pourra contenir plusieurs classes réparties dans plusieurs packages (contrairement aux entités), mais devra contenir une unique classe Main (avec la méthode public static void main)
+Si votre premier noyau s'appelle *marcus.kernel1*, alors son code source sera regroupÃ© dans le package racine *a.core.marcus.kernel1*.
+Il pourra contenir plusieurs classes rÃ©parties dans plusieurs packages (contrairement aux entitÃ©s), mais devra contenir une unique classe Main (avec la mÃ©thode public static void main)
 
-A titre d'exemple, j'ai développé un noyau nommé **gus.gyem** dont la classe Main est *a.core.gus.gyem.GyemMain*.
+A titre d'exemple, j'ai dÃ©veloppÃ© un noyau nommÃ© **gus.gyem** dont la classe Main est *a.core.gus.gyem.GyemMain*.
 Si vous le souhaitez, vous pourrez utiliser ce noyau pour construire vos propres applications.
 Dans cette optique, nous aborderons son fonctionnement par la suite.
 
-### Organisation pour les entités (entity)
+### Organisation pour les entitÃ©s (entity)
 
-Mais bien plus qu'un noyau (vous pourrez toujours débuter en utilisant gus.gyem), je vous encourage à créer vos propres entités pour développer de nouvelles fonctionnalités. Les entités sont en effet de petits composants pouvant être combinés les uns aux autres pour obtenir des systèmes fonctionnels de complexité variable.
+Mais bien plus qu'un noyau (vous pourrez toujours dÃ©buter en utilisant gus.gyem), je vous encourage Ã  crÃ©er vos propres entitÃ©s pour dÃ©velopper de nouvelles fonctionnalitÃ©s. Les entitÃ©s sont en effet de petits composants pouvant Ãªtre combinÃ©s les uns aux autres pour obtenir des systÃ¨mes fonctionnels de complexitÃ© variable.
 
-Les entités doivent suivre la convention de nommage suivante : *<dev-id>.<...>.<...>.<...>*
-En tant que développeur marcus, toutes vos entités doivent être nommées comme ceci : *marcus.<...>.<...>.<...>* 
-ou la partie <...>.<...>.<...> (sous-package) vous permet de ranger toutes vos entités selon vos propres règles.
+Les entitÃ©s doivent suivre la convention de nommage suivante : *\<dev-id\>.<...>.<...>.<...>*
+En tant que dÃ©veloppeur marcus, toutes vos entitÃ©s doivent Ãªtre nommÃ©es comme ceci : *marcus.<...>.<...>.<...>* 
+ou la partie <...>.<...>.<...> (sous-package) vous permet de ranger toutes vos entitÃ©s selon vos propres rÃ¨gles.
 
-De manière similaire aux noyaux, le nom du composant détermine le package accueillant le code source.
-Une entité *marcus.conversion1* sera ainsi stockée dans le package *a.entity.marcus.conversion1*
+De maniÃ¨re similaire aux noyaux, le nom du composant dÃ©termine le package accueillant le code source.
+Une entitÃ© *marcus.conversion1* sera ainsi stockÃ©e dans le package *a.entity.marcus.conversion1*
 
-Par ailleurs, le code source d'une entité est toujours composée d'une unique classe Java nommée *EntityImpl*.
-Le code source de l'entité *marcus.conversion1* correspondra ainsi à la classe *a.entity.marcus.conversion1.EntityImpl*
+Par ailleurs, le code source d'une entitÃ© est toujours composÃ©e d'une unique classe Java nommÃ©e *EntityImpl*.
+Le code source de l'entitÃ© *marcus.conversion1* correspondra ainsi Ã  la classe *a.entity.marcus.conversion1.EntityImpl*
 
-Voici quelques exemples d'entités que j'ai déjà développé :
+Voici quelques exemples d'entitÃ©s que j'ai dÃ©jÃ  dÃ©veloppÃ© :
 - a.execute.exception
 - b.entitysrc1.generator1
 - b.menu1.init
 
 ### Organisation pour les configurations (config)
 
-Nous avons vu que les noms des composants core et entity débutent impérativement par l'identifiant du développeur qui en est l'auteur.
-Mais cette règle s'applique aussi pour les nommages d'applications, lesquels doivent suivre la convention : *<dev-id>.<...>*
+Nous avons vu que les noms des composants core et entity dÃ©butent impÃ©rativement par l'identifiant du dÃ©veloppeur qui en est l'auteur.
+Mais cette rÃ¨gle s'applique aussi pour les nommages d'applications, lesquels doivent suivre la convention : *\<dev-id\>.<...>*
 
-Une application est composée d'un unique noyau, d'une multitudes d'entités (a priori), et d'une unique configuration.
-Celle-ci est donc liée à la fois à l'application et au noyau. Son package racine sera donc le suivant :
+Une application est composÃ©e d'un unique noyau, d'une multitudes d'entitÃ©s (a priori), et d'une unique configuration.
+Celle-ci est donc liÃ©e Ã  la fois Ã  l'application et au noyau. Son package racine sera donc le suivant :
 *a.config.<core-name>.<appli-name>*
 
-Pour fixer les idées, imaginons le cas de deux développeurs john et smith qui ont chacun créer leurs propres noyaux, respectivement john.core1 et smith.core1, et souhaitent créer deux applications chacun en utilisant les 2 noyaux.
+Pour fixer les idÃ©es, imaginons le cas de deux dÃ©veloppeurs john et smith qui ont chacun crÃ©er leurs propres noyaux, respectivement john.core1 et smith.core1, et souhaitent crÃ©er deux applications chacun en utilisant les 2 noyaux.
 
-Alors john va devoir créer les deux packages suivants :
+Alors john va devoir crÃ©er les deux packages suivants :
 - a.config.john.core1.john.appli1
 - a.config.smith.core1.john.appli2
 
@@ -117,61 +117,61 @@ Et smith les deux packages suivants :
 - a.config.smith.core1.smith.appli1
 - a.config.john.core1.smith.appli2
 
-Nous verrons par la suite qu'un paramètre passé au démarrage du noyau (ou un éventuel fichier *param* situé à la racine *a.config.<core-name>*) permet d'orienter ce dernier vers l'une au l'autre des configurations disponibles.
+Nous verrons par la suite qu'un paramÃ¨tre passÃ© au dÃ©marrage du noyau (ou un Ã©ventuel fichier *param* situÃ© Ã  la racine *a.config.<core-name>*) permet d'orienter ce dernier vers l'une au l'autre des configurations disponibles.
 
-#Règles de codage
+# RÃ¨gles de codage
 
 ### Restrictions sur les imports
 
-Afin d'assurer une stricte séparation entre les différents composants core et entity, aucune classe d'un composant ne pourra être directement importée dans le code source d'un autre composant.
+Afin d'assurer une stricte sÃ©paration entre les diffÃ©rents composants core et entity, aucune classe d'un composant ne pourra Ãªtre directement importÃ©e dans le code source d'un autre composant.
 
-Dans le cas d'une entité notamment, le seul import débutant par a.<...> qui est autorisé dans EntityImpl est :
+Dans le cas d'une entitÃ© notamment, le seul import dÃ©butant par a.<...> qui est autorisÃ© dans EntityImpl est :
 *import a.framework.\*;*
 
-### Coder une classe d'entité
+### Coder une classe d'entitÃ©
 
-Une classe d'entité doit toujours respecter les règles suivantes :
-- Etre l'unique classe au sein du package de l'entité
-- Etre nommée *EntityImpl*
-- Implémenter l'interface *a.framework.Entity*
-- Avoir une méthode *creationDate()* qui renvoie en sortie la date de création de l'entité au format yyyyMMdd
+Une classe d'entitÃ© doit toujours respecter les rÃ¨gles suivantes :
+- Etre l'unique classe au sein du package de l'entitÃ©
+- Etre nommÃ©e *EntityImpl*
+- ImplÃ©menter l'interface *a.framework.Entity*
+- Avoir une mÃ©thode *creationDate()* qui renvoie en sortie la date de crÃ©ation de l'entitÃ© au format yyyyMMdd
 
-Pour être utilisée directement par le noyau ou indirectement par d'autres entités, elle devra par ailleurs implémenter une ou plusieurs des 11 interfaces de caractérisation definies par le framework : E, B, F, G, P, T, H, R, V, S, I, ou même étendre l'implémentation par défaut de S : S1.
+Pour Ãªtre utilisÃ©e directement par le noyau ou indirectement par d'autres entitÃ©s, elle devra par ailleurs implÃ©menter une ou plusieurs des 11 interfaces de caractÃ©risation definies par le framework : E, B, F, G, P, T, H, R, V, S, I, ou mÃªme Ã©tendre l'implÃ©mentation par dÃ©faut de S : S1.
 
-Nous aurons l'occasion de découvrir ce que ces règles donnent en pratique lorsque nous étudierons des exemples.
+Nous aurons l'occasion de dÃ©couvrir ce que ces rÃ¨gles donnent en pratique lorsque nous Ã©tudierons des exemples.
 
 ### Coder un noyau
 
-Il est extrêmement simple de créer des entités et de les utiliser pour construire une application en partant d'un noyau déjà existant. Coder un noyau, c'est un peu plus compliqué. Si cela vous tente néanmoins, je vous encourage à regarder le code source de gus.gyem. N'hésitez pas non plus à me contacter pour échanger à ce sujet.
+Il est extrÃªmement simple de crÃ©er des entitÃ©s et de les utiliser pour construire une application en partant d'un noyau dÃ©jÃ  existant. Coder un noyau, c'est un peu plus compliquÃ©. Si cela vous tente nÃ©anmoins, je vous encourage Ã  regarder le code source de gus.gyem. N'hÃ©sitez pas non plus Ã  me contacter pour Ã©changer Ã  ce sujet.
 
 ### Et la config ?
 
-Une config ne contient que du paramétrage et des resources internes. Cette partie n'est par conséquent pas concernée par les règles de codage. Elle se conforme néanmoins à un certain nombre de règles qui sont entièrement dictée par le noyau dont elle dépend.
+Une config ne contient que du paramÃ©trage et des resources internes. Cette partie n'est par consÃ©quent pas concernÃ©e par les rÃ¨gles de codage. Elle se conforme nÃ©anmoins Ã  un certain nombre de rÃ¨gles qui sont entiÃ¨rement dictÃ©e par le noyau dont elle dÃ©pend.
 
 # Utiliser le noyau gus.gyem
 
-### Lancer une application basée sur gus.gyem
+### Lancer une application basÃ©e sur gus.gyem
 
-Lorsqu'on lance la classe a.core.gus.gyem.GyemMain que se passe-t-il ? Vous pouvez essayer et vous verrez apparaître une fenêtre dont le titre est "Application" et dont le panneau central affichage le message suivant :
+Lorsqu'on lance la classe a.core.gus.gyem.GyemMain que se passe-t-il ? Vous pouvez essayer et vous verrez apparaÃ®tre une fenÃªtre dont le titre est "Application" et dont le panneau central affichage le message suivant :
 
 - app.maingui not found inside application properties
 - core name = gus.gyem
 - core build = 20210805
 
-Il s'agit là du comportement par défaut du noyau gus.gyem, et si on ne gardait dans le projet que son propre code ainsi que le framework, on aurait le même résultat.
+Il s'agit lÃ  du comportement par dÃ©faut du noyau gus.gyem, et si on ne gardait dans le projet que son propre code ainsi que le framework, on aurait le mÃªme rÃ©sultat.
 
 Lorsqu'il existe une ou plusieurs configurations applicatives dans le package a.config, comment peut on alors indiquer au noyau laquelle choisir ? Il existe deux moyens.
 
-En le précisant sous forme de paramètre externe :
+En le prÃ©cisant sous forme de paramÃ¨tre externe :
 - pour cela, il faut ajouter en argument, la ligne suivante : *config=<config-name>*
 
-En me précisant sous forme de paramètre interne :
+En me prÃ©cisant sous forme de paramÃ¨tre interne :
 - pour cela, il faut ajouter dans le projet le fichier properties suivant *a.config.gus.gyem.param* avec la ligne *config=<config-name>*
 
 Le fichier param ne fait pas officiellement parti du projet A, il s'agit juste d'un fichier qu'on ajoute au code source d'une application pour indiquer quelle est sa configuration.
 
-Vous pouvez ainsi tester les différentes configurations existantes en ajoutant la ligne *config=<config-name>*, soit dans le fichier param, soit en ligne argument passée au lancement.
+Vous pouvez ainsi tester les diffÃ©rentes configurations existantes en ajoutant la ligne *config=<config-name>*, soit dans le fichier param, soit en ligne argument passÃ©e au lancement.
 
-### Les propriétés de l'application
+### Les propriÃ©tÃ©s de l'application
 
 
