@@ -101,13 +101,13 @@ Voici quelques exemples d'entités que j'ai déjà développé :
 ### Organisation pour les configurations (config)
 
 Nous avons vu que les noms des composants core et entity débutent impérativement par l'identifiant du développeur qui en est l'auteur.
-Mais cette règle s'applique aussi pour les nommages d'applications, lesquels doivent suivre la convention : *\<dev-id\>.<...>*
+Mais cette règle s'applique aussi pour les nommages d'applications, lesquels doivent suivre la convention : *\<dev-id\>.<...>.<...>.<...>*
 
 Une application est composée d'un unique noyau, d'une multitudes d'entités (a priori), et d'une unique configuration.
 Celle-ci est donc liée à la fois à l'application et au noyau. Son package racine sera donc le suivant :
-*a.config.<core-name>.<appli-name>*
+*a.config.\<core-name\>.\<appli-name\>*
 
-Pour fixer les idées, imaginons le cas de deux développeurs john et smith qui ont chacun créer leurs propres noyaux, respectivement john.core1 et smith.core1, et souhaitent créer deux applications chacun en utilisant les 2 noyaux.
+Pour fixer les idées, imaginons le cas de deux développeurs john et smith qui ont chacun créé leurs propres noyaux, respectivement john.core1 et smith.core1, et souhaitent chacun créer deux applications en utilisant les 2 noyaux.
 
 Alors john va devoir créer les deux packages suivants :
 - a.config.john.core1.john.appli1
@@ -117,7 +117,7 @@ Et smith les deux packages suivants :
 - a.config.smith.core1.smith.appli1
 - a.config.john.core1.smith.appli2
 
-Nous verrons par la suite qu'un paramètre passé au démarrage du noyau (ou un éventuel fichier *param* situé à la racine *a.config.<core-name>*) permet d'orienter ce dernier vers l'une au l'autre des configurations disponibles.
+Nous verrons par la suite qu'un paramètre passé au démarrage du noyau (ou un éventuel fichier *param* situé à la racine *a.config.\<core-name\>*) permet d'orienter ce dernier vers l'une au l'autre des configurations disponibles.
 
 # Règles de codage
 
@@ -166,12 +166,21 @@ En le précisant sous forme de paramètre externe :
 - pour cela, il faut ajouter en argument, la ligne suivante : *config=<config-name>*
 
 En me précisant sous forme de paramètre interne :
-- pour cela, il faut ajouter dans le projet le fichier properties suivant *a.config.gus.gyem.param* avec la ligne *config=<config-name>*
+- pour cela, il faut créer le fichier properties suivant *a.config.gus.gyem.param* et y ajouter la ligne *config=\<config-name\>*
 
-Le fichier param ne fait pas officiellement parti du projet A, il s'agit juste d'un fichier qu'on ajoute au code source d'une application pour indiquer quelle est sa configuration.
+Ce fichier param ne fait pas officiellement parti du projet A, il s'agit juste d'un fichier qu'on ajoute au code source d'une application pour indiquer quelle est sa configuration.
 
 Vous pouvez ainsi tester les différentes configurations existantes en ajoutant la ligne *config=<config-name>*, soit dans le fichier param, soit en ligne argument passée au lancement.
 
+Au moment ou j'écris ces lignes, les configurations présentes dans le projet sont les suivantes :
+- gus.test1.cust
+- gus.test2.fatal
+- gus.test3.panelerror
+- gus.test4.orange
+- gus.test5.mapping
+- gus.appli1
+
+
 ### Les propriétés de l'application
 
-
+A la racine d'une configuration application, nous avons un fichier properties prop qui regroupe toutes les propriétés de l'application.
