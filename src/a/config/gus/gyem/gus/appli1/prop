@@ -1,0 +1,7 @@
+app.maingui=gus.c.appli1.maingui
+app.title=Appli 1
+app.icon=app
+app.size=600 600
+app.startdate=20210806
+
+before.0=e:gus.b.menu1.init

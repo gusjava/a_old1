@@ -1,0 +1,4 @@
+app.maingui=gus.a.swing.panel.bg.orange
+app.title=Ma petite appli orange
+app.icon=app
+app.size=600 400
