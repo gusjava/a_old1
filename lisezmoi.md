@@ -101,7 +101,7 @@ Voici quelques exemples d'entités que j'ai déjà développé :
 ### Organisation pour les configurations (config)
 
 Nous avons vu que les noms des composants core et entity débutent impérativement par l'identifiant du développeur qui en est l'auteur.
-Mais cette règle s'applique aussi pour les nommages d'applications, lesquels doivent suivre la convention : *\<dev-id\>.<...>.<...>.<...>*
+Mais cette règle s'applique aussi pour les nommages d'applications, lesquels doivent suivre la convention : *\<dev-id\>.<...>*
 
 Une application est composée d'un unique noyau, d'une multitudes d'entités (a priori), et d'une unique configuration.
 Celle-ci est donc liée à la fois à l'application et au noyau. Son package racine sera donc le suivant :
@@ -152,35 +152,36 @@ Une config ne contient que du paramétrage et des resources internes. Cette part
 
 ### Lancer une application basée sur gus.gyem
 
-Lorsqu'on lance la classe a.core.gus.gyem.GyemMain que se passe-t-il ? Vous pouvez essayer et vous verrez apparaître une fenêtre dont le titre est "Application" et dont le panneau central affichage le message suivant :
+Lorsqu'on lance la classe *a.core.gus.gyem.GyemMain* que se passe-t-il ? Vous pouvez essayer et vous verrez apparaître une fenêtre dont le titre est "Application" et dont le panneau central affichage le message suivant :
 
 - app.maingui not found inside application properties
 - core name = gus.gyem
 - core build = 20210805
 
-Il s'agit là du comportement par défaut du noyau gus.gyem, et si on ne gardait dans le projet que son propre code ainsi que le framework, on aurait le même résultat.
+Il s'agit là du comportement par défaut du noyau *gus.gyem* (nous y reviendrons), et si nous ne gardaions dans le projet que son propre code ainsi que celui du framework, nous aurions le même résultat.
 
-Lorsqu'il existe une ou plusieurs configurations applicatives dans le package a.config, comment peut on alors indiquer au noyau laquelle choisir ? Il existe deux moyens.
+Lorsqu'il existe une ou plusieurs configurations applicatives dans le package *a.config*, comment pouvons-nous alors indiquer au noyau laquelle choisir ? Il existe deux moyens.
 
 En le précisant sous forme de paramètre externe :
-- pour cela, il faut ajouter en argument, la ligne suivante : *config=<config-name>*
+- pour cela, il faut ajouter en argument, au lancement de l'application, la ligne suivante : *config=\<config-name\>*
+(s'il y a plusieurs arguments externes, ceux-ci seront séparés par des points-virgule)
 
 En me précisant sous forme de paramètre interne :
 - pour cela, il faut créer le fichier properties suivant *a.config.gus.gyem.param* et y ajouter la ligne *config=\<config-name\>*
 
 Ce fichier param ne fait pas officiellement parti du projet A, il s'agit juste d'un fichier qu'on ajoute au code source d'une application pour indiquer quelle est sa configuration.
 
-Vous pouvez ainsi tester les différentes configurations existantes en ajoutant la ligne *config=<config-name>*, soit dans le fichier param, soit en ligne argument passée au lancement.
+Vous pouvez ainsi tester les différentes configurations existantes en ajoutant la ligne *config=\<config-name\>*, soit dans le fichier param, soit en ligne argument passée au lancement.
 
 Au moment ou j'écris ces lignes, les configurations présentes dans le projet sont les suivantes :
-- gus.test1.cust
-- gus.test2.fatal
-- gus.test3.panelerror
-- gus.test4.orange
-- gus.test5.mapping
+- gus.test1cust
+- gus.test2fatal
+- gus.test3error
+- gus.test4orange
+- gus.test5mapping
 - gus.appli1
 
 
 ### Les propriétés de l'application
 
-A la racine d'une configuration application, nous avons un fichier properties prop qui regroupe toutes les propriétés de l'application.
+A la racine de chaque configuration applicative (comme par exemple *a.config.gus.test1cust*), nous avons un fichier properties *prop* qui regroupe toutes les propriétés de l'application.

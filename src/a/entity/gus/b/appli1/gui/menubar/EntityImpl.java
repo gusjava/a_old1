@@ -1,4 +1,4 @@
-package a.entity.gus.a.appli.gui.menubar;
+package a.entity.gus.b.appli1.gui.menubar;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;

@@ -5,3 +5,7 @@ app.size=600 600
 app.startdate=20210806
 
 before.0=e:gus.b.menu1.init
+
+cust.rb.prop=gus.b.cust1.rb.prop
+cust.rb.param=gus.b.cust1.rb.param
+cust.rb.g=gus.b.cust1.rb.g

@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 
 import a.framework.E;
 import a.framework.Entity;
@@ -20,40 +19,48 @@ public class EntityImpl implements Entity, E {
 	}
 	
 	private Service getMenuBar;
-	private Service entityGenerator;
+	private Service entityGeneratorAsk;
+	private Service rootDirOpen;
 	
 	public EntityImpl() throws Exception {
-		getMenuBar = Outside.service(this,"gus.a.appli.gui.menubar");
-		entityGenerator = Outside.service(this,"gus.b.entitysrc1.generator1");
+		getMenuBar = Outside.service(this,"gus.b.appli1.gui.menubar");
+		entityGeneratorAsk = Outside.service(this,"gus.b.entitysrc1.generator1.ask");
+		rootDirOpen = Outside.service(this,"gus.b.paths1.rootdir.open");
 	}
 
 	public void e() throws Exception {
 		
-		JMenuItem item1 = new JMenuItem("Generate entity");
-		item1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				generateEntity();
-			}
-		});
+		JMenuItem item1 = buildItem("Generate entity", entityGeneratorAsk);
+		JMenuItem item2 = buildItem("Open root dir", rootDirOpen);
+		
 		
 		JMenu menu1 = new JMenu("Menu1");
 		menu1.add(item1);
+		menu1.add(item2);
 		
 		JMenuBar bar = (JMenuBar) getMenuBar.g();
 		bar.add(menu1);
 	}
 	
 	
-	private void generateEntity() {
+	
+	
+	private JMenuItem buildItem(String text, E exe) {
+		JMenuItem item = new JMenuItem(text);
+		item.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				execute(exe);
+			}
+		});
+		return item;
+	}
+	
+	
+	private void execute(E exe) {
 		try {
-			System.out.println("generate entity");
-			
-			String rule = JOptionPane.showInputDialog("Generation rule");
-			if(rule==null || rule.equals("")) return;
-			
-			entityGenerator.p(rule);
+			exe.e();
 		} catch (Exception e) {
-			Outside.err(this,"generateEntity()", e);
+			Outside.err(this,"execute(E)", e);
 		}
 	}
 }

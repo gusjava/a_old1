@@ -8,7 +8,6 @@ import java.util.Date;
 import a.framework.Entity;
 import a.framework.Outside;
 import a.framework.P;
-import a.framework.Service;
 
 public class EntityImpl implements Entity, P {
 	
@@ -16,12 +15,14 @@ public class EntityImpl implements Entity, P {
 		return "20210806";
 	}
 	
-	private Service findRoot;
 	private File rootDir;
+	private String devId;
 	
 	public EntityImpl() throws Exception {
-		findRoot = Outside.service(this, "gus.b.entitysrc1.rootdir");
-		rootDir = (File) findRoot.g();
+		rootDir = (File) Outside.service(this, "gus.b.entitysrc1.rootdir").g();
+		devId = (String) Outside.resource(this, "param#dev");
+		
+		if(devId==null) throw new Exception("dev not found inside params");
 	}
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -33,7 +34,7 @@ public class EntityImpl implements Entity, P {
 		String[] nn = rule.split(" ",2);
 		
 		String entityName = nn[0];
-		if(!entityName.startsWith("gus.")) entityName = "gus."+entityName;
+		if(!entityName.startsWith(devId+".")) entityName = devId+"."+entityName;
 		
 		String features = nn.length>1 ? nn[1] : "";
 		features = features.toUpperCase();
