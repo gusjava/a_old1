@@ -11,15 +11,13 @@ public class EntityImpl implements Entity, G {
 		return "20210806";
 	}
 	
-	private Service mainFrameProvider;
+	private JFrame mainFrame;
 	private JMenuBar menuBar;
 	
 	public EntityImpl() throws Exception {
-		mainFrameProvider = Outside.service(this,"m024.g.mainframe.find");
+		mainFrame = (JFrame) Outside.resource(this,"mainframe");
 		
 		menuBar = new JMenuBar();
-		
-		JFrame mainFrame = (JFrame) mainFrameProvider.g();
 		mainFrame.setJMenuBar(menuBar);
 	}
 	

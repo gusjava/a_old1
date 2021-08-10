@@ -9,8 +9,14 @@ public class EntityImpl implements Entity, T {
 	
 	
 	public Object t(Object obj) throws Exception {
-		String path = (String) obj;
-		return new File(pathOS(path)).getAbsoluteFile();
+		if(obj instanceof String) {
+			return new File(pathOS((String) obj)).getAbsoluteFile();
+		}
+		if(obj instanceof Object[]) {
+			Object[] data = (Object[]) obj;
+			return new File((File) data[0], pathOS((String) data[1])).getAbsoluteFile();
+		}
+		throw new Exception("Invalid data type: "+obj.getClass().getName());
 	}
 	
 	

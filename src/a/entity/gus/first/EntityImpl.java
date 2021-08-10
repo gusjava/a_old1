@@ -10,6 +10,6 @@ public class EntityImpl implements Entity, E {
 	}
 
 	public void e() throws Exception {
-		System.out.println("Ma première entité est rigolote");
+		System.out.println("Ma premiÃ¨re entitÃ© est rigolote");
 	}
 }

@@ -19,13 +19,18 @@ public class EntityImpl implements Entity, G {
 	public EntityImpl() throws Exception {
 		pathToFile = Outside.service(this,"gus.a.file.build.path.os");
 		defaultRoot = Outside.service(this,"gus.b.paths1.rootdir.defaultroot");
-		params = (Map) Outside.resource(this,"g#m010.g.param");
+		params = (Map) Outside.resource(this,"params");
 	}
 	
 	
 	public Object g() throws Exception {
-		if(rootDir==null) rootDir = build();
+		if(rootDir==null) init();
 		return rootDir;
+	}
+	
+	private void init() throws Exception {
+		rootDir = build();
+		rootDir.mkdirs();
 	}
 	
 	private File build() throws Exception {

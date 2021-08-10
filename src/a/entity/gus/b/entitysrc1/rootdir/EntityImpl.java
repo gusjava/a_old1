@@ -4,8 +4,9 @@ import java.io.File;
 
 import a.framework.Entity;
 import a.framework.G;
+import a.framework.P;
 
-public class EntityImpl implements Entity, G {
+public class EntityImpl implements Entity, G, P {
 	
 	public String creationDate() {
 		return "20210806";
@@ -20,5 +21,9 @@ public class EntityImpl implements Entity, G {
 	
 	public Object g() throws Exception {
 		return rootDir;
+	}
+	
+	public void p(Object obj) throws Exception {
+		rootDir = (File) obj;
 	}
 }
