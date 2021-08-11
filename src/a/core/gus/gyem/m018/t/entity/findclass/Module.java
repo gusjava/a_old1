@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import a.core.gus.gyem.GyemSystem;
+import a.framework.G;
 import a.framework.T;
 
-public class Module extends GyemSystem implements T {
+public class Module extends GyemSystem implements T, G {
 	
 	private Map map = new HashMap();
 	
@@ -16,5 +17,9 @@ public class Module extends GyemSystem implements T {
 		if(!map.containsKey(entityName))
 			map.put(entityName, moduleT(M019_T_ENTITY_LOADCLASS).t(entityName));
 		return map.get(entityName);
+	}
+	
+	public Object g() throws Exception {
+		return map;
 	}
 }
