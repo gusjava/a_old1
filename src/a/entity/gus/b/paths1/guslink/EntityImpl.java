@@ -52,21 +52,16 @@ public class EntityImpl implements Entity, T {
 		return new File(link);
 	}
 	
-	
 	private File redirect(File f, File f1, File f2) throws Exception {
 		String p = f.getAbsolutePath();
 		String p1 = f1.getAbsolutePath();
 		String r = p.substring(p1.length());
-		
 		return new File(f2,r);
 	}
 	
-	
-	
 	private List buildParents(File f) {
 		List list = new ArrayList();
-		while(f.getParentFile()!=null)
-		{
+		while(f.getParentFile()!=null) {
 			f = f.getParentFile();
 			list.add(f);
 		}

@@ -113,10 +113,9 @@ public class GyemSystem extends GyemConst {
 		System.err.println(message);
 		ex.printStackTrace();
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		String abortTime = sdf.format(new Date());
-		String startTime = sdf.format((Date) get(MAIN_LAUNCH_DATE));
-		String argsLine = UtilArgs.toString((String[]) get(MAIN_LAUNCH_ARGS));
+		String abortTime = abortTime();
+		String startTime = startTime();
+		String argsLine = argsLine();
 		String coreName = GyemVersion.CORE_NAME;
 		String coreBuild = GyemVersion.CORE_BUILD;
 		
@@ -154,5 +153,24 @@ public class GyemSystem extends GyemConst {
 		}
 		
 		System.exit(code);
+	}
+	
+	
+	private static String abortTime() {
+		return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+	}
+	
+	private static String startTime() {
+		if(!has(MAIN_LAUNCH_DATE)) return "not found";
+		Object obj = get(MAIN_LAUNCH_DATE);
+		if(!(obj instanceof Date)) return "Invalid type: "+obj.getClass().getName();
+		return new SimpleDateFormat("yyyyMMdd_HHmmss").format((Date) obj);
+	}
+	
+	private static String argsLine() {
+		if(!has(MAIN_LAUNCH_ARGS)) return "not found";
+		Object obj = get(MAIN_LAUNCH_ARGS);
+		if(!(obj instanceof String[])) return "Invalid type: "+obj.getClass().getName();
+		return UtilArgs.toString((String[]) obj);
 	}
 }
