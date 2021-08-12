@@ -20,9 +20,9 @@ public class EntityImpl implements Entity, G, R {
 	private File rootDir;
 
 	public EntityImpl() throws Exception {
-		engine = Outside.service(this, "*b.paths1.provider.engine");
-		prop = (Map) Outside.resource(this,"prop");
-		rootDir = (File) Outside.resource(this,"g#gus.b.paths1.rootdir");
+		engine = Outside.service(this, "*gus.b.paths1.provider.engine");
+		prop = (Map) Outside.service(this,"m003.g.prop").g();
+		rootDir = (File) Outside.service(this,"gus.b.paths1.rootdir").g();
 		
 		Map paths = new HashMap();
 		paths.put(PATH_ROOTDIR, rootDir);

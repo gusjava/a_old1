@@ -14,7 +14,7 @@ public class EntityImpl implements Entity, G {
 
 	public EntityImpl() throws Exception {
 		getUserHome = Outside.service(this,"gus.a.file.get.os.userhome");
-		appName = (String) Outside.resource(this,"appname");
+		appName = (String) Outside.service(this,"m009.g.config.id").g();
 	}
 	
 	
