@@ -17,8 +17,16 @@ public class Module extends GyemSystem implements E {
 			String key = (String) it.next();
 			if(key.startsWith("cust.")) {
 				String name = key.substring(5);
-				Object module = moduleT(M013_T_MODULE_BUILD).t(prop.get(key));
-				cust.put(name, module);
+				String value = (String) prop.get(key);
+				
+				try {
+					Object module = moduleT(M013_T_MODULE_BUILD).t(value);
+					cust.put(name, module);
+				}
+				catch(Exception e) {
+					String message = "Failed to customize main with prop key="+key+" & value="+value;
+					throw new Exception(message, e);
+				}
 			}
 		}
 		main.putAll(cust);
