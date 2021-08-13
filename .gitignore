@@ -1,6 +1,6 @@
-/bin/
-/fatalerr/
-/build/
 /.settings/
+/bin/
+/build/
+/fatalerr/
 .project
 .classpath

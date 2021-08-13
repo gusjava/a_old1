@@ -15,14 +15,17 @@ public class EntityImpl implements Entity, I {
 
 	private Service tabHolder;
 	private Service mainViewer;
+	private Service appViewer;
 	
 	private JPanel panel;
 
 	public EntityImpl() throws Exception {
 		tabHolder = Outside.service(this,"*gus.b.swing1.tabbedpane.holder1");
 		mainViewer = Outside.service(this,"*gus.b.dataview1.map.main");
+		appViewer = Outside.service(this,"*gus.b.appview1.maingui.self");
 		
 		tabHolder.v("GUI_main#main", mainViewer);
+		tabHolder.v("GUI_app#app", appViewer);
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add((JComponent) tabHolder.i(), BorderLayout.CENTER);
