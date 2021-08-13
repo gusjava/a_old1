@@ -1,4 +1,4 @@
-package a.core.gus.gyem.m047.g.mapping;
+package a.core.gus.gyem.m048.g.mapping;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class Module extends GyemSystem implements G {
 	private void init() throws Exception {
 		mapping = new HashMap();
 		
-		Map inside = (Map) moduleG(M048_G_MAPPING_CONFIG).g();
+		Map inside = (Map) moduleG(M049_G_MAPPING_CONFIG).g();
 		if(inside!= null) mapping.putAll(inside);
 	}
 }

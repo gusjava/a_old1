@@ -8,6 +8,6 @@ public class Module extends GyemSystem implements T {
 	public Object t(Object obj) throws Exception {
 		Object[] call = (Object[]) obj;
 		Object result = moduleT(M036_T_MANAGER_RESOURCE).t(call);
-		return moduleT(M045_T_SERVICE_WRAP).t(new Object[] {call, result});
+		return moduleT(M046_T_SERVICE_WRAP).t(new Object[] {call, result});
 	}
 }

@@ -1,4 +1,4 @@
-package a.core.gus.gyem.m045.t.service.wrap;
+package a.core.gus.gyem.m046.t.service.wrap;
 
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -27,7 +27,7 @@ public class Module extends GyemSystem implements T {
 		
 		if(target==null) return moduleG(M014_G_SERVICE_BUILD_EMPTY).g();
 		
-		String callDesc = (String) moduleT(M046_T_SERVICE_CALL_DESCRIPTION).t(call);
+		String callDesc = (String) moduleT(M047_T_SERVICE_CALL_DESCRIPTION).t(call);
 		String targetName = target.getClass().getName();
 		
 		return new ServiceImpl(target, callDesc, targetName);

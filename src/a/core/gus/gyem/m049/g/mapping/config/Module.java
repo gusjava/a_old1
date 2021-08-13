@@ -1,4 +1,4 @@
-package a.core.gus.gyem.m048.g.mapping.config;
+package a.core.gus.gyem.m049.g.mapping.config;
 
 import a.core.gus.gyem.GyemSystem;
 import a.framework.G;

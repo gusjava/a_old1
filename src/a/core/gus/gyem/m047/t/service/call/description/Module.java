@@ -1,4 +1,4 @@
-package a.core.gus.gyem.m046.t.service.call.description;
+package a.core.gus.gyem.m047.t.service.call.description;
 
 import a.core.gus.gyem.GyemSystem;
 import a.framework.Entity;
@@ -12,7 +12,7 @@ public class Module extends GyemSystem implements T {
 		Entity entity = (Entity) call[0];
 		String id =  (String) call[1];
 		
-		String entityName = (String) moduleT(M044_T_ENTITY_FINDNAME).t(entity);
+		String entityName = (String) moduleT(M045_T_ENTITY_FINDNAME).t(entity);
 		return entityName+"@"+id;
 	}
 }

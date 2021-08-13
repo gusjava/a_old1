@@ -8,6 +8,7 @@ public class GyemConst {
 	
 	public static final String MAIN_LAUNCH_DATE = "launch.date";
 	public static final String MAIN_LAUNCH_ARGS = "launch.args";
+	public static final String MAIN_LAUNCH_CLASS = "launch.class";
 	public static final String MAIN_CORE_NAME = "core.name";
 	public static final String MAIN_CORE_BUILD = "core.build";
 	
@@ -114,10 +115,11 @@ public class GyemConst {
 	public static final Class M041_T_RESOURCE_BUILD = 			a.core.gus.gyem.m041.t.resource.build.Module.class;
 	public static final Class M042_T_RESOURCE_FIND_RB = 		a.core.gus.gyem.m042.t.resource.find.rb.Module.class;
 	public static final Class M043_T_RB_ENTITY = 				a.core.gus.gyem.m043.t.rb.entity.Module.class;
-	public static final Class M044_T_ENTITY_FINDNAME = 			a.core.gus.gyem.m044.t.entity.findname.Module.class;
-	public static final Class M045_T_SERVICE_WRAP = 			a.core.gus.gyem.m045.t.service.wrap.Module.class;
-	public static final Class M046_T_SERVICE_CALL_DESCRIPTION = a.core.gus.gyem.m046.t.service.call.description.Module.class;
-	public static final Class M047_G_MAPPING = 					a.core.gus.gyem.m047.g.mapping.Module.class;
-	public static final Class M048_G_MAPPING_CONFIG = 			a.core.gus.gyem.m048.g.mapping.config.Module.class;
-	public static final Class M049_G_ERR_LIST = 				a.core.gus.gyem.m049.g.err.list.Module.class;
+	public static final Class M044_T_RB_G = 					a.core.gus.gyem.m044.t.rb.g.Module.class;
+	public static final Class M045_T_ENTITY_FINDNAME = 			a.core.gus.gyem.m045.t.entity.findname.Module.class;
+	public static final Class M046_T_SERVICE_WRAP = 			a.core.gus.gyem.m046.t.service.wrap.Module.class;
+	public static final Class M047_T_SERVICE_CALL_DESCRIPTION = a.core.gus.gyem.m047.t.service.call.description.Module.class;
+	public static final Class M048_G_MAPPING = 					a.core.gus.gyem.m048.g.mapping.Module.class;
+	public static final Class M049_G_MAPPING_CONFIG = 			a.core.gus.gyem.m049.g.mapping.config.Module.class;
+	public static final Class M050_G_ERR_LIST = 				a.core.gus.gyem.m050.g.err.list.Module.class;
 }

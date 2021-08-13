@@ -18,7 +18,7 @@ public class Module extends GyemSystem implements P {
 		
 		Date date = new Date();
 		
-		List list = (List) moduleG(M049_G_ERR_LIST).g();
+		List list = (List) moduleG(M050_G_ERR_LIST).g();
 		list.add(new Object[] {entity, id, date, e});
 		
 		e.printStackTrace();

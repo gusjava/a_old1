@@ -28,6 +28,7 @@ public class GyemSystem extends GyemConst {
 
 		put(MAIN_LAUNCH_DATE, new Date());
 		put(MAIN_LAUNCH_ARGS, args);
+		put(MAIN_LAUNCH_CLASS, GyemMain.class);
 		put(MAIN_CORE_NAME, GyemVersion.CORE_NAME);
 		put(MAIN_CORE_BUILD, GyemVersion.CORE_BUILD);
 		
