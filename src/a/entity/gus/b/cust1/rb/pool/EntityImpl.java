@@ -12,7 +12,7 @@ public class EntityImpl implements Entity, T {
 	private File storeDir;
 
 	public EntityImpl() throws Exception {
-		findName = Outside.service(this,"m044.t.entity.findname");
+		findName = Outside.service(this,"entityname");
 		
 		storeDir = (File) Outside.service(this,"gus.b.paths1.dir.pooldir").g();
 		if(storeDir==null) throw new Exception("Pool dir could not be found");

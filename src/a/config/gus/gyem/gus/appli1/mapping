@@ -3,5 +3,5 @@ params=g#m010.g.param
 prop=g#m003.g.prop
 mainframe=g#m024.g.mainframe.find
 newentity=m017.t.entity.generate
-entityname=m044.t.entity.findname
+entityname=m045.t.entity.findname
 defaultdir=pool#

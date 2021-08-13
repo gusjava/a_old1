@@ -2,6 +2,7 @@ package a.entity.gus.b.dataview1.object.builder.name;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import a.framework.E;
@@ -22,6 +23,8 @@ public class EntityImpl implements Entity, T {
 	public static final String DATE = "gus.b.dataview1.date";
 
 	public static final String MAP = "gus.b.dataview1.map";
+	public static final String LIST = "gus.b.dataview1.list";
+	public static final String ARRAY = "gus.b.dataview1.array";
 	
 	public static final String ENTITY = "gus.b.dataview1.entity";
 	public static final String E = "gus.b.dataview1.feature.e";
@@ -41,6 +44,8 @@ public class EntityImpl implements Entity, T {
 		if(obj instanceof Date) names.put("Date",DATE);
 
 		if(obj instanceof Map) names.put("Map",MAP);
+		if(obj instanceof List) names.put("List",LIST);
+		if(obj instanceof Object[]) names.put("Array",ARRAY);
 
 		if(obj instanceof Entity) names.put("Entity",ENTITY);
 		if(obj instanceof E) names.put("E",E);
