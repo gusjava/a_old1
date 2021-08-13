@@ -1,2 +1,2 @@
 app.maingui.disabled=true
-before=e:gus.a.execute.exception
+before=e:gus.a.features.e.exception

@@ -1,4 +1,4 @@
-package a.entity.gus.a.gui.exception;
+package a.entity.gus.a.features.i.exception;
 
 import a.framework.Entity;
 import a.framework.I;

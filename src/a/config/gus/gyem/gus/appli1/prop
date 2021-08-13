@@ -10,6 +10,5 @@ cust.rb.param=gus.b.cust1.rb.param
 cust.rb.pool=gus.b.cust1.rb.pool
 cust.rb.factory=gus.b.cust1.rb.factory
 cust.beep=gus.a.awt.beep
-cust.app.location=gus.a.app.location
 path.pooldir=<path.rootdir>/pool
 path.icondir=<path.rootdir>/icons

@@ -1,3 +1,3 @@
-app.maingui=gus.a.gui.exception
+app.maingui=gus.a.features.i.exception
 app.title=Ma petite appli qui plante
 app.size=600 450
