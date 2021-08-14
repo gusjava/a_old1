@@ -7,8 +7,8 @@ The A project is a Java development **multi-applications** project which entirel
 
 # First step
 
-Compile de src folder and launch the core Main class : *a.core.gus.gyem.GyemMain*
-In order to start a specific application, you should add the following argument : *config=\<app-id\>*
+Compile de src folder and launch the core Main class : *a.core.gus.gyem.GyemMain*.
+In order to start a specific application, you should add the following argument : *config=\<app-id\>* 
 where *\<app-id\>* is the your target application's ID
 
 Up to now, available IDs are :
