@@ -6,6 +6,7 @@ app.category=2
 app.startdate=20210814
 app.langs=en;fr;jp
 before.0=gus.b.lookandfeel1.init
+before.1=e:gus.c.devtool1.init.menu
 cust.rb.prop=gus.b.cust1.rb.prop
 cust.rb.param=gus.b.cust1.rb.param
 cust.rb.path=gus.b.cust1.rb.path

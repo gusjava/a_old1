@@ -16,7 +16,7 @@ public class EntityImpl extends S1 implements Entity, G, P {
 	
 	public EntityImpl() throws Exception
 	{
-		langInit = Outside.service(this,"gus.ling.language.init");
+		langInit = Outside.service(this,"gus.b.ling1.language.init");
 		persister1 = Outside.service(this,"gus.b.persist1.main");
 		
 		lang = (String) persister1.r(persistKey);
