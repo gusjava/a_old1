@@ -1,11 +1,10 @@
-app.maingui=gus.c.appli1.maingui
-app.title=Appli 1
+app.maingui=gus.c.devtool1.maingui
+app.title=Gus Development Tool
 app.icon=app
-app.size=1000 800
-app.category=1
-app.startdate=20210806
+app.size=1000 700
+app.category=2
+app.startdate=20210814
 before.0=gus.b.lookandfeel1.init
-before.1=e:gus.b.menu1.init
 cust.rb.prop=gus.b.cust1.rb.prop
 cust.rb.param=gus.b.cust1.rb.param
 cust.rb.pool=gus.b.cust1.rb.pool

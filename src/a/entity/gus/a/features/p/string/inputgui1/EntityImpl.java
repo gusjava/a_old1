@@ -1,6 +1,7 @@
 package a.entity.gus.a.features.p.string.inputgui1;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +22,8 @@ public class EntityImpl implements Entity, P, I, ActionListener {
 	
 	private JPanel panel;
 	private JTextArea area;
-	private JButton button;
+	private JButton buttonPerform;
+	private JButton buttonClear;
 	
 	private P handler;
 	
@@ -30,20 +32,29 @@ public class EntityImpl implements Entity, P, I, ActionListener {
 		area = new JTextArea();
 		area.setMargin(new Insets(5, 5, 5, 5));
 		
-		button = new JButton("Perform");
-		button.addActionListener(this);
+		buttonPerform = new JButton("Perform");
+		buttonPerform.addActionListener(this);
+		
+		buttonClear = new JButton("Clear");
+		buttonClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {area.setText("");}
+		});
+		
+		JPanel panel1 = new JPanel(new GridLayout(1,2));
+		panel1.add(buttonClear);
+		panel1.add(buttonPerform);
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(new JScrollPane(area), BorderLayout.CENTER);
-		panel.add(button, BorderLayout.SOUTH);
+		panel.add(panel1, BorderLayout.SOUTH);
 		
-		button.setEnabled(false);
+		buttonPerform.setEnabled(false);
 	}
 	
 	
 	public void p(Object obj) throws Exception {
 		handler = (P) obj;
-		button.setEnabled(handler!=null);
+		buttonPerform.setEnabled(handler!=null);
 	}
 	
 	
@@ -61,7 +72,6 @@ public class EntityImpl implements Entity, P, I, ActionListener {
 			String text = area.getText();
 			if(handler!=null) {
 				handler.p(text);
-				area.setText("");
 			}
 		}
 		catch(Exception e) {
