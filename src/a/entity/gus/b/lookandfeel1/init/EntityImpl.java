@@ -2,7 +2,7 @@ package a.entity.gus.b.lookandfeel1.init;
 
 import a.framework.*;
 
-public class EntityImpl implements Entity {
+public class EntityImpl implements Entity, E {
 	public String creationDate() {return "20210812";}
 
 	private Service handle;
@@ -10,7 +10,10 @@ public class EntityImpl implements Entity {
 	public EntityImpl() throws Exception
 	{
 		handle = Outside.service(this,"gus.b.lookandfeel1.handle");
+	}
 	
+	public void e() throws Exception
+	{
 		handle.v("Button.font",		"font#SansSerif plain 12");
 		handle.v("CheckBox.font",	"font#SansSerif plain 14");
 		handle.v("Label.font",		"font#SansSerif plain 12");

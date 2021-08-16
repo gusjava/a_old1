@@ -3,7 +3,7 @@ package a.entity.gus.b.ling1.msg.find;
 import a.framework.*;
 import java.util.Map;
 
-public class EntityImpl implements Entity, R {
+public class EntityImpl implements Entity, R, F {
 	public String creationDate() {return "20210814";}
 	
 	public static final String DEFAULT = "default";
@@ -25,6 +25,24 @@ public class EntityImpl implements Entity, R {
 			String message = "Ling key localization failed: "+key;
 			throw new Exception(message,e);
 		}
+	}
+	
+	public boolean f(Object obj) throws Exception {
+		String key = (String) obj;
+		if(!key.startsWith("m_")) return false;
+		
+		String[] info = analyze(key);
+		String name = info[0];
+		String lingKey = info[1];
+		
+		Map map = (Map) findLib.r(name);
+		
+		if(map==null) return false;
+		if(!map.containsKey(lingKey)) return false;
+		String value = (String) map.get(lingKey);
+		if(value.equals("")) return false;
+		
+		return true;
 	}
 	
 	

@@ -27,8 +27,8 @@ public class EntityImpl implements Entity, I {
 
 	public EntityImpl() throws Exception
 	{
-		langList = Outside.service(this,"gus.b.ling1.language.list");
 		langManager = Outside.service(this,"gus.b.ling1.language.manager");
+		langList = Outside.service(this,"gus.b.ling1.language.list");
 		localize = Outside.service(this,"gus.b.ling1.localize.manager");
 		
 		List l = (List) langList.g();

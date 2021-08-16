@@ -18,6 +18,7 @@ public class EntityImpl implements Entity, I {
 	private Service appViewer;
 	private Service generatorGui;
 	private Service importGui;
+	private Service tabPersist;
 	
 	private JPanel panel;
 
@@ -27,11 +28,14 @@ public class EntityImpl implements Entity, I {
 		appViewer = Outside.service(this,"*gus.b.appview1.maingui.self");
 		generatorGui = Outside.service(this,"*gus.b.entitysrc1.generator1.multi.gui");
 		importGui = Outside.service(this,"*gus.b.entitysrc1.importer1.gus06.gui1");
+		tabPersist = Outside.service(this,"gus.b.persist1.swing.tabbedpane.tab");
 		
 		tabHolder.v("GUI_main#main", mainViewer);
 		tabHolder.v("GUI_app#app", appViewer);
 		tabHolder.v("GUI_generator#generator", generatorGui);
 		tabHolder.v("GUI_import#import", importGui);
+		
+		tabPersist.v(getClass().getName()+"_tab",tabHolder.i());
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add((JComponent) tabHolder.i(), BorderLayout.CENTER);

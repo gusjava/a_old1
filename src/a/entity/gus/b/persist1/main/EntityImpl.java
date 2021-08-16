@@ -15,6 +15,7 @@ public class EntityImpl implements Entity, G, F, R, V {
 	{
 		builder = Outside.service(this,"gus.b.persist1.build");
 		File dir = (File) Outside.resource(this,"path#path.persistencedir");
+		if(dir==null) throw new Exception("Persistence dir not found");
 		holder = builder.t(dir);
 	}
 	
