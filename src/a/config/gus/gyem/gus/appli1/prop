@@ -1,7 +1,7 @@
 app.maingui=gus.c.appli1.maingui
 app.title=Appli 1
 app.icon=app
-app.size=1000 800
+app.size=1000 700
 app.category=1
 app.startdate=20210806
 app.author.name=Augustin Delale
