@@ -9,9 +9,7 @@ public class Module extends GyemSystem implements T {
 		String configLoc = (String) obj;
 		if(configLoc==null) return null;
 		
-		String configId = (String) moduleG(M009_G_CONFIG_ID).g();
-		if(configId==null) return CONFIGPATH_ROOT + configLoc;
-		
-		return CONFIGPATH_ROOT + configId.replace(".","/") + "/" + configLoc;
+		String configRoot = (String) moduleG(M051_G_CONFIG_ROOT).g();
+		return configRoot + configLoc;
 	}
 }

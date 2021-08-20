@@ -122,4 +122,6 @@ public class GyemConst {
 	public static final Class M048_G_MAPPING = 					a.core.gus.gyem.m048.g.mapping.Module.class;
 	public static final Class M049_G_MAPPING_CONFIG = 			a.core.gus.gyem.m049.g.mapping.config.Module.class;
 	public static final Class M050_G_ERR_LIST = 				a.core.gus.gyem.m050.g.err.list.Module.class;
+	public static final Class M051_G_CONFIG_ROOT = 				a.core.gus.gyem.m051.g.config.root.Module.class;
+	public static final Class M052_T_CONFIGID_TO_ROOT = 		a.core.gus.gyem.m052.t.configid.to.root.Module.class;
 }

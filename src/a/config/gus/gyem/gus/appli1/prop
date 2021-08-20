@@ -9,6 +9,7 @@ before.0=e:gus.b.lookandfeel1.init
 before.1=e:gus.b.menu1.init
 cust0.beep=gus.a.awt.beep
 cust0.m025.e.mainframe.exit=gus.b.cust1.exit
+cust0.m033.t.config.load.icon=gus.b.cust1.load.icon
 cust0.rb.prop=gus.b.cust1.rb.prop
 cust0.rb.param=gus.b.cust1.rb.param
 cust0.rb.path=gus.b.cust1.rb.path
