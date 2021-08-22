@@ -29,14 +29,14 @@ public class EntityImpl implements Entity, T {
 		for(int i=0;i<nb; i++) {
 			String entry = formatEntry((String) entries.get(i));
 			
-			if(entry.startsWith("a.framework.")) 
-				list1.add(entry.substring(12));
-			else if(entry.startsWith("a.core.")) 
-				list2.add(entry.substring(7));
-			else if(entry.startsWith("a.entity.")) 
-				list3.add(entry.substring(9));
+			if(entry.startsWith("a/framework/")) 
+				list1.add(entry);
+			else if(entry.startsWith("a/core/")) 
+				list2.add(entry);
+			else if(entry.startsWith("a/entity/")) 
+				list3.add(entry);
 			else if(entry.startsWith("a/config/")) 
-				list4.add(entry.substring(9));
+				list4.add(entry);
 		}
 		
 		return new List[] {list1, list2, list3, list4};
@@ -44,9 +44,6 @@ public class EntityImpl implements Entity, T {
 	
 	
 	private String formatEntry(String entry) {
-		entry = entry.replace("\\", "/");
-		if(entry.endsWith(".class"))
-			return entry.substring(0, entry.length()-6).replace("/",".");
-		return entry;
+		return entry.replace("\\", "/");
 	}
 }

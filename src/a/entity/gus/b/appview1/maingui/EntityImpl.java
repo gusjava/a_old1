@@ -122,7 +122,7 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 	{
 		try
 		{
-			if(list.isSelectionEmpty()) {viewer.p(null);return;}
+			if(list.isSelectionEmpty()) {viewer.p(null); return;}
 			String entry = (String) list.getSelectedValue();
 			viewer.p(new Object[] {location, entry});
 		}
