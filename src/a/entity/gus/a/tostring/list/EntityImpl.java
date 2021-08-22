@@ -1,4 +1,4 @@
-package a.entity.gus.b.tostring1.list;
+package a.entity.gus.a.tostring.list;
 
 import java.util.List;
 

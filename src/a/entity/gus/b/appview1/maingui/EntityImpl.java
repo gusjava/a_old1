@@ -43,7 +43,7 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 	public EntityImpl() throws Exception {
 		buildEntries = Outside.service(this,"gus.b.appview1.build.entries");
 		splitCust = Outside.service(this,"gus.a.swing.splitpane.cust.cust1");
-		listRenderer = Outside.service(this,"gus.a.swing.list.cust.renderer.obj");
+		listRenderer = Outside.service(this,"gus.b.swing1.list.cust.renderer.icon.ext");
 		getIcon = Outside.service(this,"gus.a.file.icon.os");
 		viewer = Outside.service(this,"*gus.b.appview1.entryview");
 

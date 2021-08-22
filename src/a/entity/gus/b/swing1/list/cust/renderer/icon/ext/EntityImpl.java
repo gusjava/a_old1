@@ -1,21 +1,31 @@
-package a.entity.gus.a.swing.list.cust.renderer.obj;
+package a.entity.gus.b.swing1.list.cust.renderer.icon.ext;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import a.framework.Entity;
+import a.framework.Outside;
 import a.framework.P;
+import a.framework.Service;
 
 public class EntityImpl implements Entity, P {
 	public String creationDate() {return "20210813";}
 	
 	public static final Color COLOR_SELECT = new Color(244,244,244);
 	public static final Color COLOR_UNSELECT = Color.WHITE;
+	
+	private Service pathToIcon;
+	
+	public EntityImpl() throws Exception
+	{
+		pathToIcon = Outside.service(this,"gus.b.files1.icon.name");
+	}
 
 	
 	public void p(Object obj) throws Exception
@@ -46,6 +56,7 @@ public class EntityImpl implements Entity, P {
 			setText(getText(value));
 			setFont(getFont(value));
 			setBackground(getBackground(isSelected));
+			setIcon(icon(value));
 			return this;
 		}
 		
@@ -57,5 +68,12 @@ public class EntityImpl implements Entity, P {
 		
 		public Color getBackground(boolean isSelected)
 		{return isSelected ? COLOR_SELECT : COLOR_UNSELECT;}
+	}
+	
+	
+	private Icon icon(Object obj) {
+		try {return (Icon) pathToIcon.t(obj);}
+		catch (Exception e) {Outside.err(this,"icon(Object)",e);}
+		return null;
 	}
 }

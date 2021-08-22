@@ -1,4 +1,4 @@
-package a.entity.gus.b.appview1.build.entries.dir;
+package a.entity.gus.a.dir.listing.files.relpath;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class EntityImpl implements Entity, T {
 		File dir = (File) obj;
 		int len = dir.getAbsolutePath().length()+1;
 
-		List entries = new ArrayList<>();
+		List entries = new ArrayList();
 		handleDir(entries, dir, len);
 		return entries;
 	}

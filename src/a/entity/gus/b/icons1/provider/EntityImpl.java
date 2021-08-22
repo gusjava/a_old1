@@ -9,14 +9,14 @@ public class EntityImpl implements Entity, T, R {
 
 	private Service iconLoader;
 	private Service iconsToIcon;
-	private Service extensionToIcon;
+	private Service extToIcon;
 	
 
 	public EntityImpl() throws Exception
 	{
 		iconLoader = Outside.service(this,"gus.b.icons1.loader");
 		iconsToIcon = Outside.service(this,"gus.b.convert1.iconstoicon");
-		extensionToIcon = Outside.service(this,"gus.b.files1.ext.icon.os");
+		extToIcon = Outside.service(this,"gus.b.icons1.fileext.icon.os");
 	}
 	
 	
@@ -66,8 +66,8 @@ public class EntityImpl implements Entity, T, R {
 	
 	private Icon fileIcon(String key) throws Exception
 	{
-		if(key.equals("DIR")) return (Icon) extensionToIcon.g();
-		if(key.startsWith("FILE_")) return (Icon) extensionToIcon.t(key.substring(5));
+		if(key.equals("DIR")) return (Icon) extToIcon.g();
+		if(key.startsWith("FILE_")) return (Icon) extToIcon.t(key.substring(5));
 		return null;
 	}
 }

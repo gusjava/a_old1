@@ -10,6 +10,7 @@ public class EntityImpl implements Entity, I, V {
 	
 	private Service panelJava;
 	private Service panelClass;
+	private Service panelJar;
 	private Service panelGif;
 	private Service panelImage;
 	private Service panelDefault;
@@ -21,6 +22,7 @@ public class EntityImpl implements Entity, I, V {
 	
 		panelJava = Outside.service(this,"*gus.b.appview1.entryview.panel.java");
 		panelClass = Outside.service(this,"*gus.b.appview1.entryview.panel.class1");
+		panelJar = Outside.service(this,"*gus.b.appview1.entryview.panel.jar");
 		panelGif = Outside.service(this,"*gus.b.appview1.entryview.panel.gif");
 		panelImage = Outside.service(this,"*gus.b.appview1.entryview.panel.image");
 		panelDefault = Outside.service(this,"*gus.b.appview1.entryview.panel.default1");
@@ -49,6 +51,7 @@ public class EntityImpl implements Entity, I, V {
 	{
 		if(key.equals("java")) return panelJava;
 		if(key.equals("class")) return panelClass;
+		if(key.equals("jar")) return panelJar;
 		
 		if(key.equals("gif")) return panelGif;
 		if(key.equals("png")) return panelGif;

@@ -1,4 +1,4 @@
-package a.entity.gus.b.appview1.build.entries.jar;
+package a.entity.gus.a.file.jar.build.entries;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,13 +18,13 @@ public class EntityImpl implements Entity, T {
 	public Object t(Object obj) throws Exception {
 		File jarFile = (File) obj;
 
-		List entries = new ArrayList<>();
+		List entries = new ArrayList();
 		JarFile jar = new JarFile(jarFile,true,JarFile.OPEN_READ);
 		
 		Enumeration en = jar.entries();
 		while(en.hasMoreElements())
 		{
-			JarEntry entry = (JarEntry)en.nextElement();
+			JarEntry entry = (JarEntry) en.nextElement();
 			entries.add(entry.getName());
 		}
 		Collections.sort(entries);

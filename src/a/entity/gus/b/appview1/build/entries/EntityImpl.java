@@ -14,8 +14,8 @@ public class EntityImpl implements Entity, T {
 	private Service buildFromDir;
 
 	public EntityImpl() throws Exception {
-		buildFromJar = Outside.service(this,"gus.b.appview1.build.entries.jar");
-		buildFromDir = Outside.service(this,"gus.b.appview1.build.entries.dir");
+		buildFromJar = Outside.service(this,"gus.a.file.jar.build.entries");
+		buildFromDir = Outside.service(this,"gus.a.dir.listing.files.relpath");
 	}
 	
 	

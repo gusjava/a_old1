@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.io.File;
 import java.io.InputStream;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,6 +21,7 @@ public class EntityImpl implements Entity, P, I {
 	
 	private Service handleInputStream;
 	private Service entryViewPanel;
+	private Service pathToIcon;
 	
 	private JPanel panel;
 	private JLabel labelTitle;
@@ -31,6 +33,7 @@ public class EntityImpl implements Entity, P, I {
 	public EntityImpl() throws Exception {
 		handleInputStream = Outside.service(this,"gus.b.appview1.handle.entryinputstream");
 		entryViewPanel = Outside.service(this,"*gus.b.appview1.entryview.panel");
+		pathToIcon = Outside.service(this,"gus.b.files1.icon.name");
 		
 		labelTitle = new JLabel(" ");
 		
@@ -63,12 +66,15 @@ public class EntityImpl implements Entity, P, I {
 	
 	private void resetGui() throws Exception {
 		labelTitle.setText(" ");
+		labelTitle.setIcon(null);
 		entryViewPanel.v(null,null);
 	}
 	
 	
 	private void updateGui() throws Exception {
 		labelTitle.setText(entry);
+		labelTitle.setIcon(icon(entry));
+		
 		P handler = obj->handleInputStream((InputStream) obj);
 		handleInputStream.p(new Object[] {location, entry, handler});
 	}
@@ -88,5 +94,12 @@ public class EntityImpl implements Entity, P, I {
 		
 		String[] n = entry.split("\\."); 
 		return n[n.length-1];
+	}
+	
+	
+	private Icon icon(Object obj) {
+		try {return (Icon) pathToIcon.t(obj);}
+		catch (Exception e) {Outside.err(this,"icon(Object)",e);}
+		return null;
 	}
 }

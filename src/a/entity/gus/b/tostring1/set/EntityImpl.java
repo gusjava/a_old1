@@ -18,7 +18,7 @@ public class EntityImpl implements Entity, T {
 
 	public EntityImpl() throws Exception
 	{
-		listToString = Outside.service(this,"gus.b.tostring1.list");
+		listToString = Outside.service(this,"gus.a.tostring.list");
 	}
 
 	public Object t(Object obj) throws Exception
