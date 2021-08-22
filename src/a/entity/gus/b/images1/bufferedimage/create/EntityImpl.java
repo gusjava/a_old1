@@ -18,7 +18,7 @@ public class EntityImpl implements Entity, T {
 	private Service toDim;
 	
 	public EntityImpl() throws Exception
-	{toDim = Outside.service(this,"gus.b.convert1.stringtodimension");}
+	{toDim = Outside.service(this,"gus.b.find1.dimension");}
 
 	
 	

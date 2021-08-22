@@ -16,7 +16,7 @@ public class EntityImpl implements Entity, T {
 
 	
 	private Service iconOs;
-	private Service buildIcon;
+	private Service loadIcon;
 	private Service getExt;
 	
 	
@@ -24,7 +24,7 @@ public class EntityImpl implements Entity, T {
 	public EntityImpl() throws Exception
 	{
 		iconOs = Outside.service(this,"gus.a.file.icon.os");
-		buildIcon = Outside.service(this,"gus.b.icons1.builder");
+		loadIcon = Outside.service(this,"gus.b.icons1.loader");
 		getExt = Outside.service(this,"gus.a.file.getext");
 	}
 	
@@ -35,7 +35,7 @@ public class EntityImpl implements Entity, T {
 		File file = (File) obj;
 		
 		String iconId = iconId(file);
-		Icon icon = (Icon) buildIcon.t(iconId);
+		Icon icon = (Icon) loadIcon.t(iconId);
 		if(icon!=null) return icon;
 		
 		return iconOs.t(file);

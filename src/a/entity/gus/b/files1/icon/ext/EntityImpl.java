@@ -21,7 +21,7 @@ public class EntityImpl implements Entity, T, R, G {
 	
 	private Service iconOs;
 	private Service fileSample;
-	private Service buildIcon;
+	private Service loadIcon;
 	
 	private Map cache;
 	
@@ -30,7 +30,7 @@ public class EntityImpl implements Entity, T, R, G {
 	{
 		iconOs = Outside.service(this,"gus.a.file.icon.os");
 		fileSample = Outside.service(this,"gus.b.files1.ext.sample");
-		buildIcon = Outside.service(this,"gus.b.icons1.builder");
+		loadIcon = Outside.service(this,"gus.b.icons1.loader");
 		
 		cache = new HashMap();
 	}
@@ -59,7 +59,7 @@ public class EntityImpl implements Entity, T, R, G {
 	private Icon build(String ext) throws Exception
 	{
 		String iconId = iconId(ext);
-		Icon icon = (Icon) buildIcon.t(iconId);
+		Icon icon = (Icon) loadIcon.t(iconId);
 		if(icon!=null) return icon;
 		
 		File file = sampleFile(ext);

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.io.File;
 import java.io.InputStream;
 
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -36,6 +37,7 @@ public class EntityImpl implements Entity, P, I {
 		pathToIcon = Outside.service(this,"gus.b.files1.icon.name");
 		
 		labelTitle = new JLabel(" ");
+		labelTitle.setBorder(BorderFactory.createRaisedBevelBorder());
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(labelTitle, BorderLayout.NORTH);

@@ -15,8 +15,10 @@ public class EntityImpl implements Entity, I {
 
 	private Service tabPersist;
 	private Service tabHolder;
-	private Service monitorGui;
-	private Service toolsGui;
+	
+	private Service gui1;
+	private Service gui2;
+	private Service gui3;
 	private Service entitiesGui;
 	
 	private JPanel panel;
@@ -26,12 +28,14 @@ public class EntityImpl implements Entity, I {
 		tabPersist = Outside.service(this,"gus.b.persist1.swing.tabbedpane.tab");
 		tabHolder = Outside.service(this,"*gus.b.swing1.tabbedpane.holder1");
 		
-		monitorGui = Outside.service(this,"*gus.c.appli1.gui1.monitor");
-		toolsGui = Outside.service(this,"*gus.c.appli1.gui2.tools");
+		gui1 = Outside.service(this,"*gus.c.appli1.gui1.monitor");
+		gui2 = Outside.service(this,"*gus.c.appli1.gui2.tools");
+		gui3 = Outside.service(this,"*gus.c.appli1.gui3.content");
 		entitiesGui = Outside.service(this,"*gus.b.entitysrc1.listinggui1.main");
 		
-		tabHolder.v("GUI_monitor#Runtime", monitorGui);
-		tabHolder.v("GUI_tools#Tools", toolsGui);
+		tabHolder.v("GUI_monitor#Runtime", gui1);
+		tabHolder.v("GUI_tools#Tools", gui2);
+		tabHolder.v("FILE_jar_search#Content", gui3);
 		tabHolder.v("entity#Entities", entitiesGui);
 		
 		tabPersist.v(getClass().getName()+"_tab",tabHolder.i());

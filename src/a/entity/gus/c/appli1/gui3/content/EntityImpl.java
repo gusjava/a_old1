@@ -1,23 +1,27 @@
-package a.entity.gus.c.appli1.gui1.monitor;
+package a.entity.gus.c.appli1.gui3.content;
 
 import a.framework.*;
 
 public class EntityImpl implements Entity, I {
-	public String creationDate() {return "20210820";}
+	public String creationDate() {return "20210822";}
+
 
 	private Service tabPersist;
 	private Service tabHolder;
 	
-	private Service mainViewer;
+	private Service appViewer1;
+	private Service appViewer2;
 
 	
 	public EntityImpl() throws Exception {
 		tabPersist = Outside.service(this,"gus.b.persist1.swing.tabbedpane.tab");
 		tabHolder = Outside.service(this,"*gus.b.swing1.tabbedpane.holder1");
 		
-		mainViewer = Outside.service(this,"*gus.b.dataview1.map.main");
+		appViewer1 = Outside.service(this,"*gus.b.appview1.maingui.self");
+		appViewer2 = Outside.service(this,"*gus.b.appview2.maingui.self");
 		
-		tabHolder.v("GUI_main#main", mainViewer);
+		tabHolder.v("GUI_app1#raw", appViewer1);
+		tabHolder.v("STRUCT#struct", appViewer2);
 		
 		tabPersist.v(getClass().getName()+"_tab",tabHolder.i());
 	}

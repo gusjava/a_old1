@@ -1,9 +1,8 @@
-package a.entity.gus.b.appview1.maingui;
+package a.entity.gus.b.appview2.maingui;
 
 import java.awt.BorderLayout;
 import java.io.File;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -23,46 +22,58 @@ import a.framework.P;
 import a.framework.Service;
 
 public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
-	public String creationDate() {return "20210813";}
+	public String creationDate() {return "20210822";}
 
 
-	private Service buildEntries;
-	private Service splitCust;
+	private Service buildLists;
 	private Service listRenderer;
-	private Service viewer;
 	private Service getIcon;
+	private Service shift;
 	
 	private JPanel panel;
 	private JList list;
-	private JLabel labelNumber;
 	private JLabel labelTitle;
 	
 	private File location;
+	private List[] lists;
+	private Service[] guis;
 	
 
 	public EntityImpl() throws Exception {
-		buildEntries = Outside.service(this,"gus.b.appview1.build.entries");
-		splitCust = Outside.service(this,"gus.a.swing.splitpane.cust.cust1");
-		listRenderer = Outside.service(this,"gus.b.swing1.list.cust.renderer.icon.ext");
-		viewer = Outside.service(this,"*gus.b.appview1.entryview");
+		buildLists = Outside.service(this,"gus.b.appview2.build.lists");
+		listRenderer = Outside.service(this,"gus.b.swing1.list.cust.renderer.display");
 		getIcon = Outside.service(this,"gus.b.files1.icon");
+		shift = Outside.service(this,"*gus.a.swing.panel.shiftpanel");
+		
+		guis = new Service[4];
+		guis[0] = Outside.service(this,"*gus.b.appview2.gui1.framework");
+		guis[1] = Outside.service(this,"*gus.b.appview2.gui2.core");
+		guis[2] = Outside.service(this,"*gus.b.appview2.gui3.entity");
+		guis[3] = Outside.service(this,"*gus.b.appview2.gui4.config");
+		
+		String[] displays = new String[4];
+		displays[0] = "STRUCT_framework#framework";
+		displays[1] = "STRUCT_core#core";
+		displays[2] = "STRUCT_entity#entity";
+		displays[3] = "STRUCT_config#config";
 
 		list = new JList();
 		list.addListSelectionListener(this);
 		listRenderer.p(list);
+		
+		list.setListData(displays);
         
-		labelNumber = new JLabel(" ");
 		labelTitle = new JLabel(" ");
         
 		JPanel p = new JPanel(new BorderLayout());
 		p.add(new JScrollPane(list),BorderLayout.CENTER);
-		p.add(labelNumber,BorderLayout.SOUTH);
 		
 		JSplitPane split = new JSplitPane();
-		splitCust.p(split);
+		split.setDividerSize(3);
+		split.setDividerLocation(100);
 		
 		split.setLeftComponent(p);
-		split.setRightComponent((JComponent) viewer.i());
+		split.setRightComponent((JComponent) shift.i());
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(labelTitle, BorderLayout.NORTH);
@@ -89,27 +100,19 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 	
 	
 	private void resetGui() throws Exception {
-		list.setListData(new Vector());
-		labelNumber.setText(" ");
-		
+		lists = null;
 		labelTitle.setText(" ");
 		labelTitle.setIcon(null);
-		
-		viewer.p(null);
+		shift.p(null);
 	}
 	
 	
 	private void updateGui() throws Exception {
-		List entries = (List) buildEntries.t(location);
-		
-		Vector vec = new Vector(entries);
-		list.setListData(vec);
-		labelNumber.setText(" "+entries.size());
+		lists = (List[]) buildLists.t(location);
+		shift.p(null);
 		
 		labelTitle.setText(location.getAbsolutePath());
 		labelTitle.setIcon((Icon) getIcon.t(location));
-		
-		viewer.p(null);
 	}
 
 
@@ -122,9 +125,12 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 	{
 		try
 		{
-			if(list.isSelectionEmpty()) {viewer.p(null);return;}
-			String entry = (String) list.getSelectedValue();
-			viewer.p(new Object[] {location, entry});
+			if(list.isSelectionEmpty()) {shift.p(null);return;}
+			if(lists==null) {shift.p(null);return;}
+			
+			int index = list.getSelectedIndex();
+			guis[index].p(new Object[] {location, lists[index]});
+			shift.p(guis[index]);
 		}
 		catch(Exception e)
 		{Outside.err(this,"selectionChanged()",e);}
