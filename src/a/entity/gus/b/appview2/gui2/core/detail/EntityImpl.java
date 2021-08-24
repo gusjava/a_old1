@@ -1,4 +1,4 @@
-package a.entity.gus.b.appview2.gui1.framework;
+package a.entity.gus.b.appview2.gui2.core.detail;
 
 import java.awt.BorderLayout;
 import java.io.File;
@@ -17,21 +17,16 @@ import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import a.framework.Entity;
-import a.framework.I;
-import a.framework.Outside;
-import a.framework.P;
-import a.framework.Service;
+import a.framework.*;
 
 public class EntityImpl implements Entity, P, I, ListSelectionListener {
-	public String creationDate() {return "20210822";}
+	public String creationDate() {return "20210823";}
+
 
 	public static final String ICONID = "FILE_java";
-	public static final int FRAMEWORK_START = 12;
 
-	private Service findSrcLocation;
 	private Service buildJList;
-	private Service viewer;
+	private Service srcViewer;
 
 	private JPanel panel;
 	private JList list;
@@ -44,9 +39,8 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	
 
 	public EntityImpl() throws Exception {
-		findSrcLocation = Outside.service(this,"gus.b.appview2.find.srclocation");
 		buildJList = Outside.service(this,"gus.b.swing1.list.build.fromicon");
-		viewer = Outside.service(this,"*gus.b.appview1.entryview");
+		srcViewer = Outside.service(this,"*gus.b.appview1.entryview");
 
 		list = (JList) buildJList.t(ICONID);
 		list.addListSelectionListener(this);
@@ -58,9 +52,11 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		p.add(labelNumber,BorderLayout.SOUTH);
 		
 		JSplitPane split = new JSplitPane();
+		split.setDividerSize(3);
+		split.setDividerLocation(250);
 		
 		split.setLeftComponent(p);
-		split.setRightComponent((JComponent) viewer.i());
+		split.setRightComponent((JComponent) srcViewer.i());
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(split, BorderLayout.CENTER);
@@ -68,28 +64,22 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	
 	
 	public void p(Object obj) throws Exception {
+		if(obj==null) {resetGui();return;}
+		
 		Object[] o = (Object[]) obj;
 		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
 		
-		appLocation = (File) o[0];
+		srcLocation = (File) o[0];
 		entries = (List) o[1];
-		
-		srcLocation = (File) findSrcLocation.t(appLocation);
 		
 		map = new HashMap();
 		int nb = entries.size();
 		for(int i=0;i<nb;i++) {
-			String entry = (String) entries.get(i);
-			if(entry.endsWith(".class") && !entry.contains("$")) {
-				String baseEntry = entry.substring(0, entry.length()-6);
-				String javaEntry = baseEntry+".java";
-				String path = baseEntry.replace("\\",".").replace("/",".");
-				
-				if(javaEntryFound(javaEntry)) {
-					String path0 = path.substring(FRAMEWORK_START);
-					map.put(path0, javaEntry);
-				}
-			}
+			String javaEntry = (String) entries.get(i);
+			String baseEntry = javaEntry.substring(0, javaEntry.length()-5);
+			String path = baseEntry.replace("\\",".").replace("/",".");
+			String path0 = findPath0(path);
+			map.put(path0, javaEntry);
 		}
 		
 		Vector vec = new Vector(map.keySet());
@@ -97,14 +87,25 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		list.setListData(vec);
 		labelNumber.setText(" "+vec.size());
 		
-		viewer.p(null);
+		srcViewer.p(null);
 	}
 	
 	
-	private boolean javaEntryFound(String javaEntry) {
-		if(srcLocation.isDirectory())
-			return new File(srcLocation, javaEntry).isFile();
-		return entries.contains(javaEntry);
+	private void resetGui() throws Exception {
+		list.setListData(new Vector());
+		labelNumber.setText(" ");
+		srcViewer.p(null);
+	}
+	
+	
+	private String findPath0(String path) {
+		String[] nn = path.split("\\.");
+		StringBuffer b = new StringBuffer();
+		for(int i=4;i<nn.length;i++) {
+			b.append(nn[i]);
+			if(i<nn.length-1) b.append(".");
+		}
+		return b.toString();
 	}
 	
 	
@@ -122,12 +123,12 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	{
 		try
 		{
-			if(list.isSelectionEmpty()) {viewer.p(null);return;}
+			if(list.isSelectionEmpty()) {srcViewer.p(null);return;}
 			
 			String path0 = (String) list.getSelectedValue();
 			String javaEntry = (String) map.get(path0);
 			
-			viewer.p(new Object[] {srcLocation, javaEntry});
+			srcViewer.p(new Object[] {srcLocation, javaEntry});
 		}
 		catch(Exception e)
 		{Outside.err(this,"selectionChanged()",e);}

@@ -2,6 +2,7 @@ package a.entity.gus.b.appview2.gui2.core;
 
 import java.awt.BorderLayout;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,20 +26,24 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	public static final String ICONID = "core";
 	public static final int CORE_START = 7;
 
+	private Service findSrcLocation;
 	private Service buildJList;
-	private Service viewer;
-
-	private File srcLocation;
-	private Map map;
+	private Service coreViewer;
 
 	private JPanel panel;
 	private JList list;
 	private JLabel labelNumber;
+
+	private File appLocation;
+	private File srcLocation;
+	private List entries;
+	private Map map;
 	
 
 	public EntityImpl() throws Exception {
+		findSrcLocation = Outside.service(this,"gus.b.appview2.find.srclocation");
 		buildJList = Outside.service(this,"gus.b.swing1.list.build.fromicon");
-		viewer = Outside.service(this,"*gus.b.appview1.entryview");
+		coreViewer = Outside.service(this,"*gus.b.appview2.gui2.core.detail");
 
 		list = (JList) buildJList.t(ICONID);
 		list.addListSelectionListener(this);
@@ -50,9 +55,11 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		p.add(labelNumber,BorderLayout.SOUTH);
 		
 		JSplitPane split = new JSplitPane();
+		split.setDividerSize(3);
+		split.setDividerLocation(100);
 		
 		split.setLeftComponent(p);
-		split.setRightComponent((JComponent) viewer.i());
+		split.setRightComponent((JComponent) coreViewer.i());
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(split, BorderLayout.CENTER);
@@ -63,26 +70,10 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		Object[] o = (Object[]) obj;
 		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
 		
-		File appLocation = (File) o[0];
-		List entries = (List) o[1];
-		
-		srcLocation = findSrcLocation(appLocation);
-		
-		updateGui(entries);
-	}
-	
-	
-	
-	private File findSrcLocation(File appLocation) {
-		if(!appLocation.isDirectory()) return appLocation;
-		File root = appLocation.getParentFile();
-		File srcDir = new File(root,"src");
-		return srcDir.isDirectory() ? srcDir : null;
-	}
-	
-	
-	
-	private void updateGui(List entries) throws Exception {
+		appLocation = (File) o[0];
+		entries = (List) o[1];
+
+		srcLocation = (File) findSrcLocation.t(appLocation);
 		
 		map = new HashMap();
 		int nb = entries.size();
@@ -91,19 +82,13 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 			if(entry.endsWith(".class") && !entry.contains("$")) {
 				String baseEntry = entry.substring(0, entry.length()-6);
 				String javaEntry = baseEntry+".java";
-				
 				String path = baseEntry.replace("\\",".").replace("/",".");
-				String path0 = path.substring(CORE_START);
 				
-				
-				if(srcLocation.isDirectory()) {
-					File srcFile = new File(srcLocation, javaEntry);
-					if(srcFile.isFile()) {
-						map.put(path0, javaEntry);
-					}
-				}
-				else if(entries.contains(javaEntry)) {
-					map.put(path0, javaEntry);
+				if(javaEntryFound(javaEntry)) {
+					String coreName = findCoreName(path);
+					if(!map.containsKey(coreName))
+						map.put(coreName, new ArrayList());
+					((List) map.get(coreName)).add(javaEntry);
 				}
 			}
 		}
@@ -113,7 +98,20 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		list.setListData(vec);
 		labelNumber.setText(" "+vec.size());
 		
-		viewer.p(null);
+		coreViewer.p(null);
+	}
+	
+	
+	private boolean javaEntryFound(String javaEntry) {
+		if(srcLocation.isDirectory())
+			return new File(srcLocation, javaEntry).isFile();
+		return entries.contains(javaEntry);
+	}
+	
+	private String findCoreName(String path) throws Exception {
+		String[] nn = path.substring(CORE_START).split("\\.");
+		if(nn.length<3) throw new Exception("Invalid class path for core component: "+path);
+		return nn[0]+"."+nn[1];
 	}
 	
 	
@@ -131,11 +129,12 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	{
 		try
 		{
-			if(list.isSelectionEmpty()) {viewer.p(null);return;}
+			if(list.isSelectionEmpty()) {coreViewer.p(null);return;}
 			
-			String path = (String) list.getSelectedValue();
-			String entry = (String) map.get(path);
-			viewer.p(new Object[] {srcLocation, entry});
+			String name = (String) list.getSelectedValue();
+			List javaEntries = (List) map.get(name);
+			
+			coreViewer.p(new Object[] {srcLocation, javaEntries});
 		}
 		catch(Exception e)
 		{Outside.err(this,"selectionChanged()",e);}

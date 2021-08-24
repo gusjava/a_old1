@@ -34,7 +34,7 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 	private JList list;
 	private JLabel labelTitle;
 	
-	private File location;
+	private File appLocation;
 	private List[] lists;
 	private Service[] guis;
 	
@@ -87,14 +87,14 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 	
 	
 	public Object g() throws Exception {
-		return location;
+		return appLocation;
 	}
 	
 	
 	public void p(Object obj) throws Exception {
-		location = (File) obj;
+		appLocation = (File) obj;
 		
-		if(location==null || !location.exists()) resetGui();
+		if(appLocation==null || !appLocation.exists()) resetGui();
 		else updateGui();
 	}
 	
@@ -108,11 +108,11 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 	
 	
 	private void updateGui() throws Exception {
-		lists = (List[]) buildLists.t(location);
+		lists = (List[]) buildLists.t(appLocation);
 		shift.p(null);
 		
-		labelTitle.setText(location.getAbsolutePath());
-		labelTitle.setIcon((Icon) getIcon.t(location));
+		labelTitle.setText(appLocation.getAbsolutePath());
+		labelTitle.setIcon((Icon) getIcon.t(appLocation));
 	}
 
 
@@ -129,7 +129,7 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 			if(lists==null) {shift.p(null);return;}
 			
 			int index = list.getSelectedIndex();
-			guis[index].p(new Object[] {location, lists[index]});
+			guis[index].p(new Object[] {appLocation, lists[index]});
 			shift.p(guis[index]);
 		}
 		catch(Exception e)
