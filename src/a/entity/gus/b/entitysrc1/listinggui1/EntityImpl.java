@@ -26,7 +26,7 @@ import a.framework.Service;
 public class EntityImpl extends S1 implements Entity, G, P, I, E, ActionListener, ListSelectionListener {
 	public String creationDate() {return "20210818";}
 
-	public static final String ICONID = "entity";
+	public static final String ICONID = "ELEMENT_entity";
 
 	private Service fieldHolder;
 	private Service buildJList;

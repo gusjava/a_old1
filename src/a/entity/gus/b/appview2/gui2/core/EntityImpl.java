@@ -23,7 +23,7 @@ import a.framework.*;
 public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	public String creationDate() {return "20210822";}
 	
-	public static final String ICONID = "core";
+	public static final String ICONID = "ELEMENT_core";
 	public static final int CORE_START = 7;
 
 	private Service findSrcLocation;

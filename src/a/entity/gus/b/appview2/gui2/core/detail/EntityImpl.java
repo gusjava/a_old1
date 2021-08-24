@@ -32,7 +32,6 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	private JList list;
 	private JLabel labelNumber;
 
-	private File appLocation;
 	private File srcLocation;
 	private List entries;
 	private Map map;
