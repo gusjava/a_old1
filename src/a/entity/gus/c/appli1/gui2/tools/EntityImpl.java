@@ -21,7 +21,7 @@ public class EntityImpl implements Entity, I {
 		callerGui = Outside.service(this,"*gus.b.servicecaller1.maingui");
 
 		tabHolder.v("GUI_generator#generator", generatorGui);
-		tabHolder.v("GUI_import#import", importGui);
+		tabHolder.v("GUI_import#gus06 import", importGui);
 		tabHolder.v("GUI_servicecall#caller", callerGui);
 		
 		tabPersist.v(getClass().getName()+"_tab",tabHolder.i());

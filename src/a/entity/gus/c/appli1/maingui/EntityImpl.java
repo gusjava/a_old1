@@ -36,7 +36,7 @@ public class EntityImpl implements Entity, I {
 		tabHolder.v("GUI_monitor#Runtime", gui1);
 		tabHolder.v("GUI_tools#Tools", gui2);
 		tabHolder.v("FILE_jar_search#Content", gui3);
-		tabHolder.v("entity#Entities", entitiesGui);
+		tabHolder.v("ELEMENT_entity#Entities", entitiesGui);
 		
 		tabPersist.v(getClass().getName()+"_tab",tabHolder.i());
 		

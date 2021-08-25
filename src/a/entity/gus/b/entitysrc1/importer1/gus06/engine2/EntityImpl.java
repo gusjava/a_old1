@@ -37,6 +37,9 @@ public class EntityImpl implements Entity, P {
 		if(!inputName.startsWith("gus.")) inputName = "gus."+inputName;
 		if(!outputName.startsWith("gus.")) outputName = "gus."+outputName;
 		
+		System.out.println("Importing gus06 entity "+inputName);
+		System.out.println("Into "+outputName);
+		
 		String inputPackage = "gus06.entity."+inputName;
 		String outputPackage = "a.entity."+outputName;
 		

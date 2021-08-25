@@ -9,6 +9,8 @@ public class EntityImpl implements Entity, I {
 	private Service tabHolder;
 	
 	private Service mainViewer;
+	private Service envPropViewer;
+	private Service classPathViewer;
 
 	
 	public EntityImpl() throws Exception {
@@ -16,8 +18,12 @@ public class EntityImpl implements Entity, I {
 		tabHolder = Outside.service(this,"*gus.b.swing1.tabbedpane.holder1");
 		
 		mainViewer = Outside.service(this,"*gus.b.dataview1.map.main");
+		envPropViewer = Outside.service(this,"*gus.a.jre.system.envprop.gui1");
+		classPathViewer = Outside.service(this,"*gus.b.jre.prop.classpath.view1");
 		
 		tabHolder.v("GUI_main#main", mainViewer);
+		tabHolder.v("FILE_properties#prop/env", envPropViewer);
+		tabHolder.v("GUI_classpath#classpath", classPathViewer);
 		
 		tabPersist.v(getClass().getName()+"_tab",tabHolder.i());
 	}

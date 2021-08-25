@@ -58,6 +58,8 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		p.add(labelNumber,BorderLayout.SOUTH);
 		
 		JSplitPane split = new JSplitPane();
+		split.setDividerSize(3);
+		split.setDividerLocation(100);
 		
 		split.setLeftComponent(p);
 		split.setRightComponent((JComponent) viewer.i());
