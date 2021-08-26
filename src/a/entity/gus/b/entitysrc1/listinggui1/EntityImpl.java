@@ -20,10 +20,11 @@ import a.framework.G;
 import a.framework.I;
 import a.framework.Outside;
 import a.framework.P;
+import a.framework.R;
 import a.framework.S1;
 import a.framework.Service;
 
-public class EntityImpl extends S1 implements Entity, G, P, I, E, ActionListener, ListSelectionListener {
+public class EntityImpl extends S1 implements Entity, G, P, I, E, R, ActionListener, ListSelectionListener {
 	public String creationDate() {return "20210818";}
 
 	public static final String ICONID = "ELEMENT_entity";
@@ -79,6 +80,15 @@ public class EntityImpl extends S1 implements Entity, G, P, I, E, ActionListener
 	
 	public void e() throws Exception
 	{refresh();}
+	
+	
+	public Object r(String key) throws Exception
+	{
+		if(key.equals("field")) return field;
+		if(key.equals("keys")) return new String[] {"field"};
+		
+		throw new Exception("Unknown key: "+key);
+	}
 	
 	
 	

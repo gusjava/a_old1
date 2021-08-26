@@ -25,6 +25,8 @@ public class EntityImpl implements Entity, I, ActionListener {
 	private Service viewer;
 	private Service actionClear;
 	private Service comboWhite;
+	private Service persister1;
+	private Service persister2;
 	
 	private JPanel panel;
 	private JLabel label;
@@ -35,6 +37,8 @@ public class EntityImpl implements Entity, I, ActionListener {
 		viewer = Outside.service(this,"*gus.b.dataview1.object");
 		actionClear = Outside.service(this,"gus.a.swing.textcomp.cust.action.escap.clear");
 		comboWhite = Outside.service(this,"gus.a.swing.combobox.cust.white");
+		persister1 = Outside.service(this,"gus.b.persist1.swing.textcomp");
+		persister2 = Outside.service(this,"gus.b.persist1.swing.combobox.index");
 		
 		field = new JTextField();
 		field.setMargin(new Insets(3,3,3,3));
@@ -58,6 +62,9 @@ public class EntityImpl implements Entity, I, ActionListener {
 		panel = new JPanel(new BorderLayout());
 		panel.add(panelInput, BorderLayout.NORTH);
 		panel.add(panelView, BorderLayout.CENTER);
+		
+		persister1.v(getClass().getName()+"_field", field);
+		persister2.v(getClass().getName()+"_combo", combo);
 	}
 	
 	

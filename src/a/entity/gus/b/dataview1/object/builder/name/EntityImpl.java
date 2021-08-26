@@ -19,6 +19,7 @@ public class EntityImpl implements Entity, T {
 	public String creationDate() {return "20210811";}
 
 
+	public static final String CLASS = "gus.b.dataview1.class1";
 	public static final String STRING = "gus.b.dataview1.string";
 	public static final String DATE = "gus.b.dataview1.date";
 
@@ -39,6 +40,8 @@ public class EntityImpl implements Entity, T {
 	
 	public Object t(Object obj) throws Exception {
 		Map names = new HashMap();
+		
+		if(obj instanceof Class) names.put("Class",CLASS);
 		
 		if(obj instanceof String) names.put("String",STRING);
 		if(obj instanceof Date) names.put("Date",DATE);
