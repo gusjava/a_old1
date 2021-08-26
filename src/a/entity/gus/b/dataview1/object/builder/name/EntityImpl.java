@@ -1,7 +1,7 @@
 package a.entity.gus.b.dataview1.object.builder.name;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +20,8 @@ public class EntityImpl implements Entity, T {
 
 
 	public static final String CLASS = "gus.b.dataview1.class1";
+	public static final String EXCEPTION = "gus.b.dataview1.exception";
+	
 	public static final String STRING = "gus.b.dataview1.string";
 	public static final String DATE = "gus.b.dataview1.date";
 
@@ -39,9 +41,10 @@ public class EntityImpl implements Entity, T {
 	
 	
 	public Object t(Object obj) throws Exception {
-		Map names = new HashMap();
+		Map names = new LinkedHashMap();
 		
 		if(obj instanceof Class) names.put("Class",CLASS);
+		if(obj instanceof Exception) names.put("Exception",EXCEPTION);
 		
 		if(obj instanceof String) names.put("String",STRING);
 		if(obj instanceof Date) names.put("Date",DATE);

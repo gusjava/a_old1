@@ -5,3 +5,4 @@ mainframe=g#m024.g.mainframe.find
 newentity=m017.t.entity.generate
 entityname=m045.t.entity.findname
 defaultdir=pool#
+errlist=g#m050.g.err.list

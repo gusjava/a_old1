@@ -15,6 +15,7 @@ public class EntityImpl implements Entity, I {
 
 	private Service tabPersist;
 	private Service tabHolder;
+	private Service bottomBar;
 	
 	private Service gui1;
 	private Service gui2;
@@ -27,6 +28,7 @@ public class EntityImpl implements Entity, I {
 	public EntityImpl() throws Exception {
 		tabPersist = Outside.service(this,"gus.b.persist1.swing.tabbedpane.tab");
 		tabHolder = Outside.service(this,"*gus.b.swing1.tabbedpane.holder1");
+		bottomBar = Outside.service(this,"*gus.c.appli1.bottombar");
 		
 		gui1 = Outside.service(this,"*gus.c.appli1.gui1.monitor");
 		gui2 = Outside.service(this,"*gus.c.appli1.gui2.tools");
@@ -42,6 +44,7 @@ public class EntityImpl implements Entity, I {
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add((JComponent) tabHolder.i(), BorderLayout.CENTER);
+		panel.add((JComponent) bottomBar.i(), BorderLayout.SOUTH);
 	}
 	
 	public Object i() throws Exception {

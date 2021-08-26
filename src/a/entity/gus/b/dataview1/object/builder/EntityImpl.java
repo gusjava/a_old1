@@ -1,7 +1,7 @@
 package a.entity.gus.b.dataview1.object.builder;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import a.framework.Entity;
@@ -26,7 +26,7 @@ public class EntityImpl implements Entity, T {
 	public Object t(Object obj) throws Exception {
 		Map names = (Map) findNames.t(obj);
 		
-		Map map = new HashMap();
+		Map map = new LinkedHashMap();
 		
 		Iterator it = names.keySet().iterator();
 		while(it.hasNext()) {
