@@ -20,8 +20,8 @@ public class EntityImpl implements Entity, I {
 		
 		mainViewer = Outside.service(this,"*gus.b.dataview1.map.main");
 		errorViewer = Outside.service(this,"*gus.b.errors1.gui1");
-		envPropViewer = Outside.service(this,"*gus.a.jre.system.envprop.gui1");
-		classPathViewer = Outside.service(this,"*gus.b.jre.prop.classpath.view1");
+		envPropViewer = Outside.service(this,"*gus.b.jre1.system.envprop.gui1");
+		classPathViewer = Outside.service(this,"*gus.b.jre1.prop.classpath.view1");
 		
 		tabHolder.v("GUI_main#main", mainViewer);
 		tabHolder.v("UTIL_error#errors", errorViewer);

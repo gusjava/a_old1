@@ -1,4 +1,4 @@
-package a.entity.gus.b.jre.prop.classpath.view1;
+package a.entity.gus.b.jre1.prop.classpath.view1;
 
 import a.framework.*;
 

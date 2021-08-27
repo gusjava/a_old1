@@ -1,27 +1,26 @@
 package a.entity.gus.b.dataview1.object.panel.class1;
 
-import javax.swing.JPanel;
-
 import a.framework.Entity;
 import a.framework.I;
+import a.framework.Outside;
 import a.framework.P;
+import a.framework.Service;
 
 public class EntityImpl implements Entity, P, I {
 	public String creationDate() {return "20210811";}
 
 	
-	private JPanel panel;
+	private Service viewer;
 
 	public EntityImpl() throws Exception {
-		panel = new JPanel();
+		viewer = Outside.service(this,"*gus.b.dataview1.class1");
 	}
-	
 	
 	public void p(Object obj) throws Exception {
+		viewer.p(obj);
 	}
 	
-	
 	public Object i() throws Exception {
-		return panel;
+		return viewer.i();
 	}
 }

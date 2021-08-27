@@ -7,10 +7,11 @@ import java.nio.charset.Charset;
 import org.mozilla.universalchardet.UniversalDetector;
 
 import a.framework.Entity;
+import a.framework.G;
 import a.framework.Outside;
 import a.framework.T;
 
-public class EntityImpl implements Entity, T {
+public class EntityImpl implements Entity, T, G {
 	public String creationDate() {return "20210820";}
 
 
@@ -49,5 +50,10 @@ public class EntityImpl implements Entity, T {
     			Outside.err(this,"t(Object)",new Exception(message,e));
     			return Charset.defaultCharset();
 		}
+	}
+	
+	
+	public Object g() throws Exception {
+		return new UniversalDetector(null);
 	}
 }

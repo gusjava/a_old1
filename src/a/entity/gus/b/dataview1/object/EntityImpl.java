@@ -60,7 +60,7 @@ public class EntityImpl implements Entity, G, P, I {
 			tabbedPane.addTab(title, viewersTab(viewers));
 		}
 		infoViewer.p(data);
-		classViewer.p(data);
+		classViewer.p(data.getClass());
 				
 		tabbedPane.addTab("INFOS", (JComponent) infoViewer.i());
 		tabbedPane.addTab("CLASS", (JComponent) classViewer.i());
