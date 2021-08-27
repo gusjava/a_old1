@@ -155,8 +155,8 @@ public class EntityImpl implements Entity, I, ActionListener {
 	private String sourceName(Object source)
 	{
 		if(source==null) return "null";
-		if(source instanceof Class) return ((Class)source).getSimpleName();
-		return source.getClass().getSimpleName();
+		if(source instanceof Class) return "("+((Class)source).getName()+")";
+		return source.getClass().getName();
 	}
 	
 	

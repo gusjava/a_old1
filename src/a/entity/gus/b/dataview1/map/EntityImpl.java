@@ -20,9 +20,10 @@ import a.framework.G;
 import a.framework.I;
 import a.framework.Outside;
 import a.framework.P;
+import a.framework.R;
 import a.framework.Service;
 
-public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
+public class EntityImpl implements Entity, G, P, I, R, ListSelectionListener {
 	public String creationDate() {return "20210811";}
 
 	
@@ -81,6 +82,13 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 	public Object i() throws Exception {
 		return split;
 	}
+
+
+	public Object r(String key) throws Exception {
+		if(key.equals("list")) return list;
+		if(key.equals("keys")) return new String[] {"list"};
+		throw new Exception("Unknown key: "+key);
+	}
 	
 	
 	
@@ -100,6 +108,7 @@ public class EntityImpl implements Entity, G, P, I, ListSelectionListener {
 			}
 					
 			labelNumber.setText(" "+data.size());
+			labelTitle.setText(" ");
 			viewer.p(null);
 		}
 		catch(Exception e)

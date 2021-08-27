@@ -1,8 +1,7 @@
-package a.entity.gus.b.dataview1.date;
+package a.entity.gus.b.dataview1.url;
 
 import java.awt.Insets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.net.URL;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -13,11 +12,10 @@ import a.framework.I;
 import a.framework.P;
 
 public class EntityImpl implements Entity, G, P, I {
-	public String creationDate() {return "20210811";}
+	public String creationDate() {return "20210827";}
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-	private Date data;
+	private URL data;
 
 	private JTextArea area;
 	private JScrollPane scroll;
@@ -39,13 +37,13 @@ public class EntityImpl implements Entity, G, P, I {
 	
 	
 	public void p(Object obj) throws Exception {
-		data = (Date) obj;
+		data = (URL) obj;
 		area.setText(display());
 	}
 	
 	
 	private String display() {
 		if(data==null) return "";
-		return data+"\n"+sdf.format(data)+"\ntime: "+data.getTime();
+		return data.toString();
 	}
 }

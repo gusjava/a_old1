@@ -12,7 +12,7 @@ public class Module extends GyemSystem implements T {
 		
 		Entity entity = null;
 		try {
-			entity = (Entity) c.newInstance();
+			entity = (Entity) c.getDeclaredConstructor().newInstance();
 			
 			String date = entity.creationDate();
 			if(date==null) throw new Exception("Invalid entity creationDate null value");

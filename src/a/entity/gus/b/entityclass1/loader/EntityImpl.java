@@ -1,6 +1,9 @@
 package a.entity.gus.b.entityclass1.loader;
 
-import a.framework.*;
+import a.framework.Entity;
+import a.framework.Outside;
+import a.framework.Service;
+import a.framework.T;
 
 public class EntityImpl implements Entity, T {
 	public String creationDate() {return "20210820";}
@@ -20,6 +23,14 @@ public class EntityImpl implements Entity, T {
 		String classPath = (String) nameToPath.t(entityName);
 		
 		ClassLoader cl = (ClassLoader) findCl.g();
-		return Class.forName(classPath, true, cl);
+		Class c = Class.forName(classPath, true, cl);
+		ClassLoader cl1 = c.getClassLoader();
+
+//		System.out.println("--------------");
+//		System.out.println("c: "+c);
+//		System.out.println("cl: "+cl);
+//		System.out.println("cl1: "+cl1);
+		
+		return c;
 	}
 }

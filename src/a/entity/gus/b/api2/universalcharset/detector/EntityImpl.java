@@ -16,7 +16,7 @@ public class EntityImpl implements Entity, T, G {
 
 
 	public EntityImpl() throws Exception {
-		
+		UniversalDetector detector = new UniversalDetector(null);
 	}
 	
 	
