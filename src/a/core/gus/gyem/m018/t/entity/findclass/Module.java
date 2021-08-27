@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import a.core.gus.gyem.GyemSystem;
+import a.framework.E;
 import a.framework.G;
 import a.framework.T;
 
-public class Module extends GyemSystem implements T, G {
+public class Module extends GyemSystem implements T, G, E {
 	
 	private Map map = new HashMap();
 	
@@ -21,5 +22,9 @@ public class Module extends GyemSystem implements T, G {
 	
 	public Object g() throws Exception {
 		return map;
+	}
+
+	public void e() throws Exception {
+		map.clear();
 	}
 }
