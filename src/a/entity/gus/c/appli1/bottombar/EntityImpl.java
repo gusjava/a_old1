@@ -14,15 +14,15 @@ public class EntityImpl implements Entity, I {
 	public String creationDate() {return "20210826";}
 
 	
-	private Service errorLabel;
+	private Service iconsPanel;
 	
 	private JPanel panel;
 
 	public EntityImpl() throws Exception {
-		errorLabel = Outside.service(this,"*gus.b.errors1.watcher.icon");
+		iconsPanel = Outside.service(this,"*gus.b.gyem1.watcher.icons");
 		
 		panel = new JPanel(new BorderLayout());
-		panel.add((JComponent) errorLabel.i(), BorderLayout.EAST);
+		panel.add((JComponent) iconsPanel.i(), BorderLayout.EAST);
 	}
 	
 	

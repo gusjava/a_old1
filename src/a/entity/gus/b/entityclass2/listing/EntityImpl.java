@@ -1,22 +1,19 @@
-package a.entity.gus.b.entitysrc1.listing;
+package a.entity.gus.b.entityclass2.listing;
 
 import java.io.File;
 
-import a.framework.Entity;
-import a.framework.Outside;
-import a.framework.Service;
-import a.framework.T;
+import a.framework.*;
 
 public class EntityImpl implements Entity, T {
-	public String creationDate() {return "20210817";}
-	
-	
+	public String creationDate() {return "20210828";}
+
+
 	private Service buildFromJar;
 	private Service buildFromDir;
 
 	public EntityImpl() throws Exception {
-		buildFromJar = Outside.service(this,"gus.b.entitysrc1.listing.jar");
-		buildFromDir = Outside.service(this,"gus.b.entitysrc1.listing.dir");
+		buildFromJar = Outside.service(this,"gus.b.entityclass2.listing.jar");
+		buildFromDir = Outside.service(this,"gus.b.entityclass2.listing.dir");
 	}
 	
 	public Object t(Object obj) throws Exception {
