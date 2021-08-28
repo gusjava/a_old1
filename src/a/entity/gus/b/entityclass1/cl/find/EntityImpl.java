@@ -13,14 +13,12 @@ public class EntityImpl implements Entity, G {
 	public String creationDate() {return "20210820";}
 
 	
-	private Service findUrls;
-	private Service appLocation;
+	private Service findClasspath;
 	
 	private ClassLoader cl;
 
 	public EntityImpl() throws Exception {
-		findUrls = Outside.service(this,"gus.b.entityclass1.cl.urls");
-		appLocation = Outside.service(this,"gus.a.app.location");
+		findClasspath = Outside.service(this,"gus.b.entityclass1.cl.classpath");
 	}
 	
 	public Object g() throws Exception {
@@ -29,15 +27,13 @@ public class EntityImpl implements Entity, G {
 	}
 	
 	private void init() throws Exception {
-		URL[] urls = (URL[]) findUrls.g();
-		File location = (File) appLocation.g();
+		File[] classpath = (File[]) findClasspath.g();
 		
-		URL[] urls1 = new URL[urls.length+1];
-		urls1[0] = location.toURI().toURL();
-		for(int i=0;i<urls.length;i++)
-			urls1[i+1] = urls[i];
+		URL[] urls = new URL[classpath.length];
+		for(int i=0;i<classpath.length;i++)
+			urls[i] = classpath[i].toURI().toURL();
 		
-		cl = new EntityClassLoader(urls1);
+		cl = new EntityClassLoader(urls);
 	}
 	
 	

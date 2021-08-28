@@ -34,7 +34,7 @@ public class EntityImpl implements Entity, I {
 		tabHolder.v("ENTITY_class#class", classViewer);
 		tabHolder.v("UTIL_error#errors", errorViewer);
 		tabHolder.v("FILE_properties#prop/env", envPropViewer);
-		tabHolder.v("GUI_classpath#classpath", classPathViewer);
+		tabHolder.v("GUI_classpath#appli classpath", classPathViewer);
 		tabHolder.v("GUI_classpath_entity#entity classpath", classPathEViewer);
 		
 		tabPersist.v(getClass().getName()+"_tab",tabHolder.i());

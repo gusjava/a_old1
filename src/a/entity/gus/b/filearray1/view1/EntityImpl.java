@@ -59,9 +59,11 @@ public class EntityImpl implements Entity, P, G, I {
 	
 	private void resetGui() {
 		list.setListData(new File[0]);
+		label.setText(" ");
 	}
 	
 	private void updateGui() {
 		list.setListData(data);
+		label.setText(" "+data.length);
 	}
 }
