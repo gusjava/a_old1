@@ -1,8 +1,12 @@
 package a.entity.gus.b.entityclass2.listing;
 
 import java.io.File;
+import java.util.ArrayList;
 
-import a.framework.*;
+import a.framework.Entity;
+import a.framework.Outside;
+import a.framework.Service;
+import a.framework.T;
 
 public class EntityImpl implements Entity, T {
 	public String creationDate() {return "20210828";}
@@ -18,10 +22,10 @@ public class EntityImpl implements Entity, T {
 	
 	public Object t(Object obj) throws Exception {
 		File location = (File) obj;
-		if(location==null) return null;
+		if(location==null) return new ArrayList();
 		
 		if(location.isFile()) return buildFromJar.t(location);
 		if(location.isDirectory()) return buildFromDir.t(location);
-		return null;
+		return new ArrayList();
 	}
 }

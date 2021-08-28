@@ -97,9 +97,10 @@ public class EntityImpl extends S1 implements Entity, G, P, I, E, R, ActionListe
 		try
 		{
 			if(listingProvider==null) throw new Exception("listingProvider not initialized yet");
-			String search = (String) fieldHolder.g();
-			
 			List listing = (List) listingProvider.g();
+			if(listing==null) throw new Exception("provided listing is null");
+			
+			String search = (String) fieldHolder.g();
 			Vector keys = toVector((List) filterList.t(new Object[] {listing, search}));
 			list.setListData(keys);
 			label.setText(" number: "+keys.size());

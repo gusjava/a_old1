@@ -1,8 +1,12 @@
 package a.entity.gus.b.entitysrc1.listing.main;
 
 import java.io.File;
+import java.util.ArrayList;
 
-import a.framework.*;
+import a.framework.Entity;
+import a.framework.G;
+import a.framework.Outside;
+import a.framework.Service;
 
 public class EntityImpl implements Entity, G {
 
@@ -21,7 +25,7 @@ public class EntityImpl implements Entity, G {
 	
 	public Object g() throws Exception
 	{
-		if(rootDir==null) return null;
+		if(rootDir==null) return new ArrayList();
 		return dirToListing.t(rootDir);
 	}
 }

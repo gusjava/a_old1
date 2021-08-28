@@ -1,6 +1,7 @@
 package a.entity.gus.b.entitysrc1.listing;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import a.framework.Entity;
 import a.framework.Outside;
@@ -21,10 +22,10 @@ public class EntityImpl implements Entity, T {
 	
 	public Object t(Object obj) throws Exception {
 		File location = (File) obj;
-		if(location==null) return null;
+		if(location==null) return new ArrayList();
 		
 		if(location.isFile()) return buildFromJar.t(location);
 		if(location.isDirectory()) return buildFromDir.t(location);
-		return null;
+		return new ArrayList();
 	}
 }
