@@ -1,7 +1,7 @@
 package a.core.gus.gyem.m018.t.entity.findclass;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import a.core.gus.gyem.GyemSystem;
 import a.framework.E;
@@ -10,7 +10,7 @@ import a.framework.T;
 
 public class Module extends GyemSystem implements T, G, E {
 	
-	private Map map = new HashMap();
+	private Map map = new ConcurrentHashMap();
 	
 	public Object t(Object obj) throws Exception {
 		String entityName = (String) obj;
