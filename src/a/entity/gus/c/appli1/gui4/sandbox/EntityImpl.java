@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -39,6 +40,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 	private Service barFactory;
 	private Service actionBuilder;
 	private Service uniqueLoader;
+	private Service viewer;
 	
 	private List listEntityClass;
 	private Map mapEntityLoaded;
@@ -54,6 +56,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 	private JScrollPane scroll;
 	private JTable table;
 	private TableModel0 model;
+	private JLabel labelTitle;
 
 	
 	public EntityImpl() throws Exception {
@@ -61,6 +64,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 		barFactory = Outside.service(this,"gus.a.swing.toolbar.factory1");
 		actionBuilder = Outside.service(this,"gus.b.actions1.builder0");
 		uniqueLoader = Outside.service(this,"m016.t.entity.unique");
+		viewer = Outside.service(this,"*gus.b.dataview1.object");
 		
 		listEntityClass = (List) Outside.resource(this,"g#gus.b.entityclass2.listing.main");
 		mapEntityLoaded = (Map) Outside.resource(this, "g#m018.t.entity.findclass");
@@ -91,16 +95,23 @@ public class EntityImpl implements Entity, I, ActionListener {
 		
 		JToolBar bar = (JToolBar) barFactory.i();
 		bar.add(actionUnique);
+
+		labelTitle = new JLabel(" ");
 		
 		JPanel panelLeft = new JPanel(new BorderLayout());
 		panelLeft.add(scroll, BorderLayout.CENTER);
 		panelLeft.add(bar, BorderLayout.SOUTH);
+		
+		JPanel panelRight = new JPanel(new BorderLayout());
+		panelRight.add(labelTitle, BorderLayout.NORTH);
+		panelRight.add((JComponent) viewer.i(), BorderLayout.CENTER);
 		
 		split = new JSplitPane();
 		split.setDividerSize(3);
 		split.setDividerLocation(350);
 		
 		split.setLeftComponent(panelLeft);
+		split.setRightComponent(panelRight);
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(split,BorderLayout.CENTER);
@@ -142,7 +153,8 @@ public class EntityImpl implements Entity, I, ActionListener {
 			if(index==-1) return;
 			
 			String entityName = (String) listEntityClass.get(index);
-			uniqueLoader.t(entityName);
+			Object entity = uniqueLoader.t(entityName);
+			viewer.p(entity);
 			refresh();
 		}
 		catch(Exception e) {
