@@ -1,6 +1,7 @@
 package a.entity.gus.b.entityclass1.cl.classpath;
 
 import java.io.File;
+import java.util.List;
 
 import a.framework.Entity;
 import a.framework.G;
@@ -11,18 +12,14 @@ public class EntityImpl implements Entity, G {
 	public String creationDate() {return "20210820";}
 
 	
-	private Service initDir;
-	private Service dirToFiles;
+	private Service getJarList;
 	private Service appLocation;
-	private File jarDir;
 	
 	private File[] classpath;
 
 	public EntityImpl() throws Exception {
-		initDir = Outside.service(this,"gus.b.entityclass1.jardir.init");
-		dirToFiles = Outside.service(this,"gus.a.dir.jar.files");
+		getJarList = Outside.service(this,"gus.b.entityclass1.cl.classpath.jarlist");
 		appLocation = Outside.service(this,"gus.a.app.location");
-		jarDir = (File) Outside.resource(this,"path#path.jardir");
 	}
 	
 	
@@ -33,13 +30,12 @@ public class EntityImpl implements Entity, G {
 	
 	
 	private void init() throws Exception {
-		initDir.e();
-		File[] jars = (File[]) dirToFiles.t(jarDir);
-		File location = (File) appLocation.g();
+		List jarList = (List) getJarList.g();
+		int nb = jarList.size();
 		
-		classpath = new File[jars.length+1];
-		classpath[0] = location;
-		for(int i=0;i<jars.length;i++)
-			classpath[i+1] = jars[i];
+		classpath = new File[nb+1];
+		classpath[0] = (File) appLocation.g();
+		for(int i=0;i<nb;i++)
+			classpath[i+1] = (File) jarList.get(i);
 	}
 }

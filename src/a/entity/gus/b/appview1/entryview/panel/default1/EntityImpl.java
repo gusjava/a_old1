@@ -13,7 +13,7 @@ public class EntityImpl implements Entity, P, I {
 
 	public EntityImpl() throws Exception {
 		view = Outside.service(this,"*gus.b.dataview1.string");
-		isToString = Outside.service(this,"gus.a.io.transfer.tostring");
+		isToString = Outside.service(this,"gus.a.io.build.string");
 	}
 	
 	

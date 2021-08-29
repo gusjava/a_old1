@@ -18,7 +18,7 @@ public class EntityImpl implements Entity, P, I {
 	public EntityImpl() throws Exception
 	{
 		screen = Outside.service(this,"*gus.a.swing.panel.imagepanel.fit");
-		toImage = Outside.service(this,"gus.a.io.transfer.toimage");
+		toImage = Outside.service(this,"gus.a.io.build.image");
 	}
 	
 	

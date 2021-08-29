@@ -1,4 +1,4 @@
-package a.entity.gus.a.io.transfer.tostring;
+package a.entity.gus.a.io.build.string;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

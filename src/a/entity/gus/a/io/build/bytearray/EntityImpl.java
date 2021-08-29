@@ -1,4 +1,4 @@
-package a.entity.gus.a.io.transfer.tobytearray;
+package a.entity.gus.a.io.build.bytearray;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

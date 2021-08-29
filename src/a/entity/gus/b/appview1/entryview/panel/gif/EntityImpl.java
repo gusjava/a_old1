@@ -20,7 +20,7 @@ public class EntityImpl implements Entity, P, I {
 	
 	public EntityImpl() throws Exception
 	{
-		isToByteArray = Outside.service(this,"gus.a.io.transfer.tobytearray");
+		isToByteArray = Outside.service(this,"gus.a.io.build.bytearray");
 		label = new JLabel(" ");
 	}
 	
