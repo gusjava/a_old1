@@ -35,7 +35,13 @@ public class EntityImpl implements Entity, G {
 		if(rootPath!=null) return new File(rootPath);
 
 		File location = (File) appLocation.g();
-		if(location.isDirectory()) return new File(location.getParentFile(), "src");
+		File parentDir = location.getParentFile();
+		
+		File srcDir1 = new File(parentDir, "src");
+		if(srcDir1.isDirectory()) return srcDir1;
+		
+		File srcDir2 = new File(parentDir.getParentFile(), "src");
+		if(srcDir2.isDirectory()) return srcDir2;
 		
 		File userDir = new File(System.getProperty("user.dir"));
 		return new File(userDir, "src");

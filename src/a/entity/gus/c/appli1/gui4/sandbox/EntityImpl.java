@@ -178,7 +178,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 		
 		public String getColumnName(int y) {
 			if(y==0) return "Entity name";
-			if(y==1) return "CP";
+			if(y==1) return "cp";
 			if(y==2) return "+";
 			
 			return "";
@@ -196,7 +196,9 @@ public class EntityImpl implements Entity, I, ActionListener {
 		}
 		
 		public void run() {
+			int index = table.getSelectedRow();
 			fireTableDataChanged();
+			if(index!=-1) table.getSelectionModel().setSelectionInterval(index, index);
 		}
 	}
 	

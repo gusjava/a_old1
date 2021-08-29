@@ -1,7 +1,6 @@
 package a.entity.gus.b.dataview1.map.main.loadedentity;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
@@ -9,6 +8,7 @@ import java.util.Map;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 import a.framework.Entity;
@@ -28,6 +28,7 @@ public class EntityImpl implements Entity, I {
 	
 	private JButton buttonClear;
 	private JPanel panel;
+	private JList list;
 	
 
 	
@@ -52,7 +53,7 @@ public class EntityImpl implements Entity, I {
 		panel.add((JComponent) viewer.i(), BorderLayout.CENTER);
 		panel.add(buttonClear, BorderLayout.SOUTH);
 		
-		Object list = viewer.r("list");
+		list = (JList) viewer.r("list");
 		renderer.p(new Object[] {list, icon});
 		
 		viewer.p(map);
@@ -75,7 +76,7 @@ public class EntityImpl implements Entity, I {
 	
 	private void refresh() {
 		try {
-			viewer.p(map);
+			viewer.e();
 		}
 		catch(Exception e) {
 			Outside.err(this,"refresh()",e);

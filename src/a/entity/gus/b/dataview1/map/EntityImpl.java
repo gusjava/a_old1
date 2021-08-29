@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import a.framework.E;
 import a.framework.Entity;
 import a.framework.G;
 import a.framework.I;
@@ -23,7 +24,7 @@ import a.framework.P;
 import a.framework.R;
 import a.framework.Service;
 
-public class EntityImpl implements Entity, G, P, I, R, ListSelectionListener {
+public class EntityImpl implements Entity, G, P, I, R, E, ListSelectionListener {
 	public String creationDate() {return "20210811";}
 
 	
@@ -78,6 +79,10 @@ public class EntityImpl implements Entity, G, P, I, R, ListSelectionListener {
 		else updateGui();
 	}
 	
+	public void e() throws Exception {
+		if(data!=null) reload();
+	}
+	
 	
 	public Object i() throws Exception {
 		return split;
@@ -96,8 +101,6 @@ public class EntityImpl implements Entity, G, P, I, R, ListSelectionListener {
 		SwingUtilities.invokeLater((Runnable) this::updateGui_);
 	}
 	
-	
-	
 	private void updateGui_()
 	{
 		try {
@@ -115,6 +118,33 @@ public class EntityImpl implements Entity, G, P, I, R, ListSelectionListener {
 		{Outside.err(this,"updateGui_()",e);}
 	}
 	
+	
+	
+	
+	private void reload() {
+		SwingUtilities.invokeLater((Runnable) this::reload_);
+	}
+	
+	private void reload_() {
+		try {
+			synchronized(data) {
+				Vector vec = new Vector(data.keySet());
+				Collections.sort(vec);
+				
+				Object selected = list.getSelectedValue();
+				list.setListData(vec);
+				if(selected!=null) list.setSelectedValue(selected, true);
+			}
+					
+			labelNumber.setText(" "+data.size());
+			if(list.isSelectionEmpty()) {
+				labelTitle.setText(" ");
+				viewer.p(null);
+			}
+		}
+		catch(Exception e)
+		{Outside.err(this,"reload_()",e);}
+	}
 	
 	
 	private void resetGui() throws Exception {

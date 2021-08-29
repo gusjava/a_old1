@@ -1,5 +1,6 @@
 package a.entity.gus.b.dataview1.object.builder.name;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -26,6 +27,7 @@ public class EntityImpl implements Entity, T {
 	public static final String STRING = "gus.b.dataview1.string";
 	public static final String DATE = "gus.b.dataview1.date";
 	public static final String URL = "gus.b.dataview1.url";
+	public static final String FILE = "gus.b.dataview1.file";
 
 	public static final String MAP = "gus.b.dataview1.map";
 	public static final String LIST = "gus.b.dataview1.list";
@@ -51,6 +53,7 @@ public class EntityImpl implements Entity, T {
 		if(obj instanceof String) names.put("String",STRING);
 		if(obj instanceof Date) names.put("Date",DATE);
 		if(obj instanceof URL) names.put("URL",URL);
+		if(obj instanceof File) names.put("File",FILE);
 
 		if(obj instanceof Map) names.put("Map",MAP);
 		if(obj instanceof List) names.put("List",LIST);

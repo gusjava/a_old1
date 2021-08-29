@@ -75,7 +75,7 @@ public class EntityImpl implements Entity, I {
 	
 	private void refresh() {
 		try {
-			viewer.p(map);
+			viewer.e();
 		}
 		catch(Exception e) {
 			Outside.err(this,"refresh()",e);
