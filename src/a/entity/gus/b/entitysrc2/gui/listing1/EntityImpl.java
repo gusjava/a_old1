@@ -47,14 +47,13 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 	
 	private Icon iconEntity;
 	
-	private Map data;
-	private List names;
+	private List data;
 	
 	
 	public EntityImpl() throws Exception {
 		fieldHolder = Outside.service(this,"*gus.b.swing1.textfield.editor1");
 		linkerListField = Outside.service(this,"gus.a.swing.table.textfield.linker");
-		filterList = Outside.service(this,"gus.b.entitysrc1.listinggui1.filter");
+		filterList = Outside.service(this,"gus.b.entitysrc2.gui.listing1.filter");
 		iconEntity = (Icon) Outside.resource(this,"icon#ELEMENT_entity");
 
 		label = new JLabel(" ");
@@ -93,8 +92,23 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 	
 	public void p(Object obj) throws Exception
 	{
-		data = (Map) obj;
-		names = data!=null ? new ArrayList(data.keySet()) : null;
+		Map m = (Map) obj;
+		
+		if(m!=null) {
+			List keys = new ArrayList(m.keySet());
+			Collections.sort(keys);
+			
+			data = new ArrayList();
+			int nb = keys.size();
+			for(int i=0;i<nb;i++) {
+				String key = (String) keys.get(i);
+				String features = (String) ((Map) m.get(key)).get(KEY_FEATURES);
+				data.add(new String[] {key, features});
+			}
+		}
+		else {
+			data = null;
+		}
 		
 		refresh();
 	}
@@ -124,14 +138,14 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 	
 	private class TableModel0 extends AbstractTableModel implements Runnable
 	{
-		private List list;
+		private List list = new ArrayList();
 		
 		public int getColumnCount() {
 			return 2;
 		}
 		
 		public int getRowCount() {
-			return list!=null ? list.size() : 0;
+			return list.size();
 		}
 		
 		public String getColumnName(int y) {
@@ -146,20 +160,13 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 		}
 
 		public Object getValueAt(int x, int y){
-			if(list==null) return "";
-			
-			String name = (String) list.get(x);
-			if(y==0) return name;
-			if(!data.containsKey(name))return "";
-			
-			Map m = (Map) data.get(name);
-			return m.get(KEY_FEATURES);
+			String[] name = (String[]) list.get(x);
+			return name[y];
 		}
 		
 		public void run() {
 			list = buildList();
-			Collections.sort(list);
-			label.setText(" number: "+(list!=null ? list.size() : ""));
+			label.setText(" number: "+list.size());
 			fireTableDataChanged();
 			field.requestFocusInWindow();
 		}
@@ -170,9 +177,9 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 	{
 		try
 		{
-			if(names==null) return null;
+			if(data==null) return new ArrayList();
 			String search = (String) fieldHolder.g();
-			return (List) filterList.t(new Object[] {names, search});
+			return (List) filterList.t(new Object[] {data, search});
 		}
 		catch(Exception e)
 		{Outside.err(this,"buildList()",e);}

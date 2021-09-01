@@ -76,17 +76,17 @@ public class EntityImpl implements Entity, T {
 			
 			String part = " "+n[1].replace(","," ")+" ";
 
-			if(part.contains("B")) b.append("b");
-			if(part.contains("E")) b.append("e");
-			if(part.contains("F")) b.append("f");
-			if(part.contains("G")) b.append("g");
-			if(part.contains("H")) b.append("h");
-			if(part.contains("I")) b.append("i");
-			if(part.contains("P")) b.append("p");
-			if(part.contains("R")) b.append("r");
-			if(extendsS1 || part.contains("S")) b.append("s");
-			if(part.contains("T")) b.append("t");
-			if(part.contains("V")) b.append("v");
+			if(part.contains(" B ")) b.append("b");
+			if(part.contains(" E ")) b.append("e");
+			if(part.contains(" F ")) b.append("f");
+			if(part.contains(" G ")) b.append("g");
+			if(part.contains(" H ")) b.append("h");
+			if(part.contains(" I ")) b.append("i");
+			if(part.contains(" P ")) b.append("p");
+			if(part.contains(" R ")) b.append("r");
+			if(extendsS1 || part.contains(" S ")) b.append("s");
+			if(part.contains(" T ")) b.append("t");
+			if(part.contains(" V ")) b.append("v");
 			return b.toString();
 		}
 		return null;
