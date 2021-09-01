@@ -35,7 +35,9 @@ public class EntityImpl implements Entity, I {
 		gui2 = Outside.service(this,"*gus.c.appli1.gui2.tools");
 		gui3 = Outside.service(this,"*gus.c.appli1.gui3.content");
 		gui4 = Outside.service(this,"*gus.c.appli1.gui4.sandbox");
-		entitiesGui = Outside.service(this,"*gus.b.entitysrc1.listinggui1.main");
+		
+//		entitiesGui = Outside.service(this,"*gus.b.entitysrc1.listinggui1.main");
+		entitiesGui = Outside.service(this,"*gus.b.entitysrc2.gui.maingui");
 		
 		tabHolder.v("GUI_monitor#Runtime", gui1);
 		tabHolder.v("GUI_tools#Tools", gui2);

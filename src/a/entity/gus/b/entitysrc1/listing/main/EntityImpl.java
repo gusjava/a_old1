@@ -9,19 +9,16 @@ import a.framework.Outside;
 import a.framework.Service;
 
 public class EntityImpl implements Entity, G {
-
 	public String creationDate() {return "20210817";}
 
 	private Service dirToListing;
 	private File rootDir;
-	
 	
 	public EntityImpl() throws Exception
 	{
 		dirToListing = Outside.service(this,"gus.b.entitysrc1.listing");
 		rootDir = (File) Outside.resource(this,"g#gus.b.entitysrc1.rootdir");
 	}
-	
 	
 	public Object g() throws Exception
 	{
