@@ -10,6 +10,7 @@ public class EntityImpl implements Entity, I {
 	
 	private Service generatorGui;
 	private Service importGui;
+	private Service genTestGui;
 	private Service callerGui;
 
 	public EntityImpl() throws Exception {
@@ -18,10 +19,12 @@ public class EntityImpl implements Entity, I {
 		
 		generatorGui = Outside.service(this,"*gus.b.entitysrc1.generator1.multi.gui");
 		importGui = Outside.service(this,"*gus.b.entitysrc1.importer1.gus06.gui1");
+		genTestGui = Outside.service(this,"*gus.b.entitysrc1.generator1.testing.gui");
 		callerGui = Outside.service(this,"*gus.b.servicecaller1.maingui");
 
 		tabHolder.v("GUI_generator#generator", generatorGui);
 		tabHolder.v("GUI_import#gus06 import", importGui);
+		tabHolder.v("GUI_test#generation testing", genTestGui);
 		tabHolder.v("GUI_servicecall#caller", callerGui);
 		
 		tabPersist.v(getClass().getName()+"_tab",tabHolder.i());

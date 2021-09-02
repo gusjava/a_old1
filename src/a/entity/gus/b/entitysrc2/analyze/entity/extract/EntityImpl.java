@@ -1,6 +1,8 @@
 package a.entity.gus.b.entitysrc2.analyze.entity.extract;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +18,8 @@ public class EntityImpl implements Entity, T {
 	public static final String KEY_PACKAGE = "package";
 	public static final String KEY_FEATURES = "features";
 	public static final String KEY_CREATIONDATE = "creationdate";
+	public static final String KEY_RESOURCES = "resources";
+	public static final String KEY_SERVICES = "services";
 
 	
 
@@ -33,6 +37,8 @@ public class EntityImpl implements Entity, T {
 		put(data, KEY_PACKAGE, extractPackage(lines));
 		put(data, KEY_FEATURES, extractFeatures(lines));
 		put(data, KEY_CREATIONDATE, extractCreationDate(lines));
+		put(data, KEY_RESOURCES, extractResources(lines));
+		put(data, KEY_SERVICES, extractServices(lines));
 		
 		return data;
 	}
@@ -110,5 +116,39 @@ public class EntityImpl implements Entity, T {
 			throw new Exception("CreationDate extraction failed for line: "+lines[i+1]);
 		}
 		return null;
+	}
+	
+	/*
+	 * RESOURCES
+	 */
+
+	public static final Pattern P_RESOURCES = Pattern.compile("\"([^\"]+)\"");
+	
+	private List extractResources(String[] lines) throws Exception
+	{
+		List list = new ArrayList();
+		for(String line:lines)
+		if(line.contains("Outside.resource(")) {
+			Matcher m = P_RESOURCES.matcher(line);
+			if(m.find()) list.add(m.group(1));
+		}
+		return list;
+	}
+	
+	/*
+	 * SERVICES
+	 */
+
+	public static final Pattern P_SERVICES = Pattern.compile("\"([^\"]+)\"");
+	
+	private List extractServices(String[] lines) throws Exception
+	{
+		List list = new ArrayList();
+		for(String line:lines)
+		if(line.contains("Outside.service(")) {
+			Matcher m = P_SERVICES.matcher(line);
+			if(m.find()) list.add(m.group(1));
+		}
+		return list;
 	}
 }
