@@ -18,7 +18,7 @@ public class EntityImpl implements Entity, R, V, ActionListener {
 	public String creationDate() {return "20210814";}
 
 
-	public static final long LAPSE = 1500;
+	public static final long LAPSE = 2000;
 	
 	private Service persister1;
 	private Service timer;

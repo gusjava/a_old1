@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,22 +22,29 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import a.framework.E;
 import a.framework.Entity;
+import a.framework.G;
 import a.framework.I;
 import a.framework.Outside;
 import a.framework.P;
+import a.framework.R;
+import a.framework.S1;
 import a.framework.Service;
 
-public class EntityImpl implements Entity, P, I, E, ActionListener {
+public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListener, ListSelectionListener {
 	public String creationDate() {return "20210830";}
 	
 	public static final String KEY_FEATURES = "features";
 	public static final String KEY_RESOURCES = "resources";
 	public static final String KEY_SERVICES = "services";
+	
+	public static final int LOCK_MAX = 100;
 
 	
 	private Service fieldHolder;
@@ -95,6 +101,7 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 				}
 			}
 		});
+		table.getSelectionModel().addListSelectionListener(this);
 		
 		scroll = new JScrollPane(table);
 		scroll.getViewport().setBackground(Color.WHITE);
@@ -159,6 +166,26 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 	{refresh();}
 	
 	
+	public Object g() throws Exception
+	{
+		if(table.getSelectionModel().isSelectionEmpty()) return null;
+		int row = table.getSelectedRow();
+		return table.getValueAt(row, 0);
+	}
+	
+	
+	
+	public Object r(String key) throws Exception
+	{
+		if(key.equals("field")) return field;
+		if(key.equals("lockSet")) return lockSet;
+		if(key.equals("keys")) return new String[] {"field", "lockSet"};
+		
+		throw new Exception("Unknown key: "+key);
+	}
+	
+	
+	
 	public void actionPerformed(ActionEvent e)
 	{refresh();}
 	
@@ -174,8 +201,10 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 	private void lockSelected() {
 		int[] rows = table.getSelectedRows();
 		for(int row : rows) {
-			String[] infos = (String[]) table.getValueAt(row,0);
-			lockSet.add(infos[0]);
+			String name = (String) table.getValueAt(row, 0);
+			
+			if(lockSet.size()<LOCK_MAX)
+			lockSet.add(name);
 		}
 		SwingUtilities.invokeLater(model);
 	}
@@ -183,8 +212,8 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 	private void unlockSelected() {
 		int[] rows = table.getSelectedRows();
 		for(int row : rows) {
-			String[] infos = (String[]) table.getValueAt(row,0);
-			lockSet.remove(infos[0]);
+			String name = (String) table.getValueAt(row, 0);
+			lockSet.remove(name);
 		}
 		SwingUtilities.invokeLater(model);
 	}
@@ -194,16 +223,18 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 	
 	private void lockAll() {
 		for(int i=0;i<table.getRowCount();i++) {
-			String[] infos = (String[]) table.getValueAt(i,0);
-			lockSet.add(infos[0]);
+			String name = (String) table.getValueAt(i, 0);
+			
+			if(lockSet.size()<LOCK_MAX)
+			lockSet.add(name);
 		}
 		SwingUtilities.invokeLater(model);
 	}
 	
 	private void unlockAll() {
 		for(int i=0;i<table.getRowCount();i++) {
-			String[] infos = (String[]) table.getValueAt(i,0);
-			lockSet.remove(infos[0]);
+			String name = (String) table.getValueAt(i, 0);
+			lockSet.remove(name);
 		}
 		SwingUtilities.invokeLater(model);
 	}
@@ -237,7 +268,8 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 		}
 
 		public Object getValueAt(int x, int y){
-			return (String[]) list.get(x);
+			String[] infos = (String[]) list.get(x);
+			return infos[y];
 		}
 		
 		public void run() {
@@ -273,17 +305,16 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 			setOpaque(true);
 		}
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-			String[] infos = (String[]) value;
-			String name = infos[0];
+			String s = (String) value;
 			
 			if(column==0) {
-				Icon icon = lockSet.contains(name) ? iconEntityLock : iconEntity;
+				Icon icon = lockSet.contains(s) ? iconEntityLock : iconEntity;
 				setIcon(icon);
-				setText(name);
+				setText(s);
 			}
 			else {
 				setIcon(null);
-				setText(" "+infos[column]);
+				setText(" "+s);
 			}
 			
 			setBackground(getBackground(isSelected));
@@ -294,4 +325,13 @@ public class EntityImpl implements Entity, P, I, E, ActionListener {
 		{return isSelected ? COLOR_SELECT : COLOR_UNSELECT;}
 	}
 
+	
+
+	public void valueChanged(ListSelectionEvent e) {
+		selectionChanged();
+	}
+	
+	private void selectionChanged() {
+		send(this,"selectionChanged()");
+	}
 }

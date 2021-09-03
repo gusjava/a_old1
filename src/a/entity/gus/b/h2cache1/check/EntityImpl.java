@@ -34,28 +34,45 @@ public class EntityImpl implements Entity, P {
 		Date date = (Date) queryOne(cx, sql2);
 		
 		if(date==null) {
-			System.out.println("Initialize database'structure");
-			((P) init).p(cx);
-			
-			String sql3 = "INSERT INTO "+TABLENAME_INITIALIZED+" (date) VALUES ('"+formatDate(new Date())+"')";
-			execute(cx, sql3);
+			initialize(cx,init);
 			return;
 		}
-		
-		String lastUpdate = (String) ((G) init).g();
-		Date date0 = parseDate(lastUpdate);
+		Date date0 = parseDate((String) ((G) init).g());
 		if(date0.after(date)) {
-			System.out.println("Reset database'structure");
-
-			String sql4 = "DROP ALL OBJECTS";
-			execute(cx, sql4);
-			check(cx, init);
+			reset(cx,init);
 			return;
 		}
-		
 		System.out.println("Database'structure is up to date");
-		
 	}
+	
+	
+	
+	private void initialize(Connection cx, Object init) throws Exception {
+		System.out.println("Database'structure not found");
+		System.out.println("Initializing structure...");
+		((P) init).p(cx);
+		
+		String sql1 = "INSERT INTO "+TABLENAME_INITIALIZED+" (date) VALUES ('"+formatDate(new Date())+"')";
+		execute(cx, sql1);
+	}
+	
+	
+	private void reset(Connection cx, Object init) throws Exception {
+		System.out.println("Database'structure is out to date");
+		System.out.println("Reseting structure...");
+
+		String sql1 = "DROP ALL OBJECTS";
+		execute(cx, sql1);
+		
+		String sql2 = "CREATE TABLE "+TABLENAME_INITIALIZED+" (date DATETIME)";
+		execute(cx, sql2);
+		
+		((P) init).p(cx);
+		
+		String sql3 = "INSERT INTO "+TABLENAME_INITIALIZED+" (date) VALUES ('"+formatDate(new Date())+"')";
+		execute(cx, sql3);
+	}
+	
 	
 	
 	

@@ -17,6 +17,7 @@ public class EntityImpl implements Entity, T {
 	public static final String KEY_CREATIONDATE = "creationdate";
 	
 	public static final String KEY_ENTITYNAME = "entityname";
+	public static final String KEY_LENGTH = "length";
 
 	
 	private Service nameToFile;
@@ -48,6 +49,7 @@ public class EntityImpl implements Entity, T {
 	private Map extractDataFrom(File javaFile, String entityName) throws Exception {
 		try {
 			String javaSrc = (String) readFile.t(javaFile);
+			int length = javaSrc.length();
 			
 			Map data = (Map) extract.t(javaSrc);
 			
@@ -59,6 +61,7 @@ public class EntityImpl implements Entity, T {
 			if(!package1.equals("a.entity."+entityName)) throw new Exception("Invalid package value: "+package1);
 			
 			data.put(KEY_ENTITYNAME, entityName);
+			data.put(KEY_LENGTH, length);
 			return data;
 		}
 		catch(Exception e) {
