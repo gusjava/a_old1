@@ -40,9 +40,8 @@ import a.framework.Service;
 public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListener, ListSelectionListener {
 	public String creationDate() {return "20210830";}
 	
-	public static final String KEY_FEATURES = "features";
-	public static final String KEY_RESOURCES = "resources";
-	public static final String KEY_SERVICES = "services";
+	public static final String COL_FEATURES = "features";
+	public static final String COL_CALLNB = "callnb";
 	
 	public static final int LOCK_MAX = 100;
 
@@ -141,13 +140,11 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 				String key = (String) keys.get(i);
 				Map value = (Map) map.get(key);
 				
-				String features = (String) value.get(KEY_FEATURES);
-				List resources = (List) value.get(KEY_RESOURCES);
-				List services = (List) value.get(KEY_SERVICES);
-				int n = resources.size() + services.size();
-				String nStr =  n>0 ? ""+n : "";
+				String features = (String) value.get(COL_FEATURES);
+				int callNb = (int) value.get(COL_CALLNB);
+				String call =  callNb>0 ? ""+callNb : "";
 				
-				data.add(new String[] {key, features, nStr});
+				data.add(new String[] {key, features, call});
 			}
 		}
 		else {

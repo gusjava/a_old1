@@ -15,6 +15,8 @@ public class EntityImpl implements Entity, P {
 	
 	public static final String TABLENAME_INITIALIZED = "initialized";
 	
+	public static final String FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
+	
 	
 	public void p(Object obj) throws Exception {
 		Object[] o = (Object[]) obj;
@@ -38,7 +40,7 @@ public class EntityImpl implements Entity, P {
 			return;
 		}
 		Date date0 = parseDate((String) ((G) init).g());
-		if(date0.after(date)) {
+		if(date0==null || date0.after(date)) {
 			reset(cx,init);
 			return;
 		}
@@ -58,8 +60,8 @@ public class EntityImpl implements Entity, P {
 	
 	
 	private void reset(Connection cx, Object init) throws Exception {
-		System.out.println("Database'structure is out to date");
-		System.out.println("Reseting structure...");
+		System.out.println("Database'structure is out dated");
+		System.out.println("Resetting structure...");
 
 		String sql1 = "DROP ALL OBJECTS";
 		execute(cx, sql1);
@@ -95,12 +97,11 @@ public class EntityImpl implements Entity, P {
 	 */
 	
 	private String formatDate(Date value) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return sdf.format(value);
+		return new SimpleDateFormat(FORMAT_DATE).format(value);
 	}
 	
 	private Date parseDate(String s) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return sdf.parse(s);
+		if(s==null) return null;
+		return new SimpleDateFormat(FORMAT_DATE).parse(s);
 	}
 }

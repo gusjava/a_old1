@@ -62,6 +62,8 @@ public class EntityImpl implements Entity, P {
 		packageDir.mkdirs();
 		
 		File javaFile = new File(packageDir, entityClassName + ".java");
+		if(javaFile.exists()) throw new Exception("Entity java file already exists: "+javaFile);
+		
 		PrintStream p = new PrintStream(javaFile);
 		
 		p.println("package "+entityPackage+";");

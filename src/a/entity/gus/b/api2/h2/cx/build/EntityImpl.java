@@ -1,7 +1,6 @@
 package a.entity.gus.b.api2.h2.cx.build;
 
 import java.io.File;
-import java.sql.DriverManager;
 
 import org.h2.jdbcx.JdbcDataSource;
 
@@ -21,7 +20,7 @@ public class EntityImpl implements Entity, T {
 		String user = (String) o[1];
 		String pwd = (String) o[1];
 		
-		String url = "jdbc:h2:file:"+file;
+		String url = "jdbc:h2:file:"+file+";MODE=MySQL;";
 		file.getParentFile().mkdirs();
 		
 		JdbcDataSource dataSource = new JdbcDataSource();

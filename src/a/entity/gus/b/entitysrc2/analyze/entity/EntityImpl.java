@@ -1,7 +1,7 @@
 package a.entity.gus.b.entitysrc2.analyze.entity;
 
 import java.io.File;
-import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 
 import a.framework.Entity;
@@ -15,9 +15,12 @@ public class EntityImpl implements Entity, T {
 	public static final String KEY_PACKAGE = "package";
 	public static final String KEY_FEATURES = "features";
 	public static final String KEY_CREATIONDATE = "creationdate";
+	public static final String KEY_RESOURCES = "resources";
+	public static final String KEY_SERVICES = "services";
 	
-	public static final String KEY_ENTITYNAME = "entityname";
+	public static final String KEY_NAME = "name";
 	public static final String KEY_LENGTH = "length";
+	public static final String KEY_CALLNB = "callnb";
 
 	
 	private Service nameToFile;
@@ -33,16 +36,13 @@ public class EntityImpl implements Entity, T {
 	
 	public Object t(Object obj) throws Exception {
 		Object[] o = (Object[]) obj;
-		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
+		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
 		
 		String entityName = (String) o[0];
 		File rootDir = (File) o[1];
-		Connection cx = (Connection) o[2];
 		
 		File javaFile = (File) nameToFile.t(new Object[] {rootDir, entityName});
-		Map data = extractDataFrom(javaFile, entityName);
-		//record data inside BDD
-		return data;
+		return extractDataFrom(javaFile, entityName);
 	}
 	
 	
@@ -56,12 +56,20 @@ public class EntityImpl implements Entity, T {
 			if(!data.containsKey(KEY_PACKAGE)) throw new Exception("Package not found");
 			if(!data.containsKey(KEY_FEATURES)) throw new Exception("Features not found");
 			if(!data.containsKey(KEY_CREATIONDATE)) throw new Exception("Creation date not found");
+			if(!data.containsKey(KEY_RESOURCES)) throw new Exception("Resources not found");
+			if(!data.containsKey(KEY_SERVICES)) throw new Exception("Services date not found");
 			
 			String package1 = (String) data.get(KEY_PACKAGE);
 			if(!package1.equals("a.entity."+entityName)) throw new Exception("Invalid package value: "+package1);
+
+			List resources = (List) data.get(KEY_RESOURCES);
+			List services = (List) data.get(KEY_SERVICES);
+			int callNb = resources.size() + services.size();
 			
-			data.put(KEY_ENTITYNAME, entityName);
+			data.put(KEY_NAME, entityName);
 			data.put(KEY_LENGTH, length);
+			data.put(KEY_CALLNB, callNb);
+			
 			return data;
 		}
 		catch(Exception e) {

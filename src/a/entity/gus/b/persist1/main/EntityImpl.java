@@ -7,23 +7,35 @@ public class EntityImpl implements Entity, G, F, R, V {
 	public String creationDate() {return "20210814";}
 
 
+	private Service changeDetector;
 	private Service builder;
 	private Object holder;
+	private File dir;
+	
 
 
 	public EntityImpl() throws Exception
 	{
+		changeDetector = Outside.service(this,"*gus.b.changedetect1.check");
 		builder = Outside.service(this,"gus.b.persist1.build");
-		File dir = (File) Outside.resource(this,"path#path.persistencedir");
+		dir = (File) Outside.resource(this,"path#path.persistencedir");
+		
 		if(dir==null) throw new Exception("Persistence dir not found");
 		holder = builder.t(dir);
 	}
 	
 	public Object r(String key) throws Exception
-	{return ((R) holder).r(key);}
+	{
+		Object value = ((R) holder).r(key);
+		if(value instanceof String) changeDetector.p(new String[] {key, (String)value});
+		return value;
+	}
 	
 	public void v(String key, Object obj) throws Exception
-	{((V) holder).v(key,obj);}
+	{
+		boolean changed = obj instanceof String ? changeDetector.f(new String[] {key, (String) obj}) : true;
+		if(changed) ((V) holder).v(key,obj);
+	}
 	
 	public Object g() throws Exception
 	{return ((G) holder).g();}
