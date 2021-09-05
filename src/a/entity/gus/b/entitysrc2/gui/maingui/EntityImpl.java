@@ -2,7 +2,6 @@ package a.entity.gus.b.entitysrc2.gui.maingui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
@@ -44,8 +43,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 		split.setLeftComponent((JComponent) guiListing.i());
 		split.setRightComponent((JComponent) guiDetail.i());
 		
-		Object data = engine.g();
-		guiListing.p(data);
+		guiListing.p(engine);
 		
 		guiListing.addActionListener(this);
 	}
@@ -67,8 +65,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 			String entityName = (String) guiListing.g();
 			if(entityName==null) {guiDetail.p(null);return;}
 			
-			File rootDir = (File) engine.r("rootDir");
-			guiDetail.p(new Object[] {entityName, rootDir});
+			guiDetail.p(new Object[] {entityName, engine});
 		}
 		catch(Exception e) {
 			Outside.err(this,"selectionChanged()",e);

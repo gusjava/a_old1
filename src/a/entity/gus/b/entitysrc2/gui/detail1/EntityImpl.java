@@ -12,6 +12,7 @@ import a.framework.Entity;
 import a.framework.I;
 import a.framework.Outside;
 import a.framework.P;
+import a.framework.R;
 
 public class EntityImpl implements Entity, P, I {
 	public String creationDate() {return "20210903";}
@@ -22,7 +23,7 @@ public class EntityImpl implements Entity, P, I {
 	private Icon entityIcon;
 	
 	private String entityName;
-	private File rootDir;
+	private Object engine;
 	
 
 	public EntityImpl() throws Exception {
@@ -43,16 +44,19 @@ public class EntityImpl implements Entity, P, I {
 		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
 		
 		entityName = (String) o[0];
-		rootDir = (File) o[1];
+		engine = o[1];
 		
 		labelTitle.setText(entityName);
 		labelTitle.setIcon(entityIcon);
+		
+
+		File rootDir = (File) ((R) engine).r("rootDir");
 	}
 	
 	
 	private void reset() {
 		entityName = null;
-		rootDir = null;
+		engine = null;
 		
 		labelTitle.setText(" ");
 		labelTitle.setIcon(null);

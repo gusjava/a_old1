@@ -37,7 +37,7 @@ import a.framework.R;
 import a.framework.S1;
 import a.framework.Service;
 
-public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListener, ListSelectionListener {
+public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelectionListener {
 	public String creationDate() {return "20210830";}
 	
 	public static final String COL_FEATURES = "features";
@@ -49,6 +49,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 	private Service fieldHolder;
 	private Service linkerListField;
 	private Service filterList;
+	private Service engineHolder;
 
 	private JPanel panel;
 	private JScrollPane scroll;
@@ -60,6 +61,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 	private Icon iconEntity;
 	private Icon iconEntityLock;
 	
+	private Object engine;
 	private List data;
 	private Set lockSet;
 	
@@ -68,6 +70,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 		fieldHolder = Outside.service(this,"*gus.b.swing1.textfield.editor1");
 		linkerListField = Outside.service(this,"gus.a.swing.table.textfield.linker");
 		filterList = Outside.service(this,"gus.b.entitysrc2.gui.listing1.filter");
+		engineHolder = Outside.service(this,"*gus.a.features.s.holder");
 		
 		iconEntity = (Icon) Outside.resource(this,"icon#ELEMENT_entity");
 		iconEntityLock = (Icon) Outside.resource(this,"icon#ELEMENT_entity_lock");
@@ -115,7 +118,15 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 		initColumnSize(2,20);
 		
 		linkerListField.p(new Object[]{table,field});
-		fieldHolder.addActionListener(this);
+		fieldHolder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{refresh();}
+		});
+		
+		engineHolder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{reload();}
+		});
 	}
 	
 	
@@ -128,30 +139,9 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 	
 	public void p(Object obj) throws Exception
 	{
-		Map map = (Map) obj;
-		
-		if(map!=null) {
-			List keys = new ArrayList(map.keySet());
-			Collections.sort(keys);
-			
-			data = new ArrayList();
-			int nb = keys.size();
-			for(int i=0;i<nb;i++) {
-				String key = (String) keys.get(i);
-				Map value = (Map) map.get(key);
-				
-				String features = (String) value.get(COL_FEATURES);
-				int callNb = (int) value.get(COL_CALLNB);
-				String call =  callNb>0 ? ""+callNb : "";
-				
-				data.add(new String[] {key, features, call});
-			}
-		}
-		else {
-			data = null;
-		}
-		
-		refresh();
+		engine = obj;
+		engineHolder.p(engine);
+		reload();
 	}
 	
 	
@@ -183,8 +173,39 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 	
 	
 	
-	public void actionPerformed(ActionEvent e)
-	{refresh();}
+	private void reload()
+	{
+		try {
+			data = buildData();
+			refresh();
+		}
+		catch(Exception e) {
+			Outside.err(this, "reload()", e);
+		}
+	}
+	
+	
+	private List buildData() throws Exception {
+		Map map = (Map) ((G) engine).g();
+		if(map==null) return null;
+		
+		List keys = new ArrayList(map.keySet());
+		Collections.sort(keys);
+		
+		List list = new ArrayList();
+		int nb = keys.size();
+		for(int i=0;i<nb;i++) {
+			String key = (String) keys.get(i);
+			Map entityData = (Map) map.get(key);
+			
+			String features = (String) entityData.get(COL_FEATURES);
+			int callNb = (int) entityData.get(COL_CALLNB);
+			String call =  callNb>0 ? ""+callNb : "";
+			
+			list.add(new String[] {key, features, call});
+		}
+		return list;
+	}
 	
 	
 	private void refresh()
@@ -270,7 +291,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 		}
 		
 		public void run() {
-			list = buildList();
+			list = buildListForTable();
 			label.setText(" number: "+list.size());
 			fireTableDataChanged();
 			field.requestFocusInWindow();
@@ -278,7 +299,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 	}
 	
 	
-	private List buildList()
+	private List buildListForTable()
 	{
 		try
 		{
@@ -287,7 +308,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ActionListe
 			return (List) filterList.t(new Object[] {data, search, lockSet});
 		}
 		catch(Exception e)
-		{Outside.err(this,"buildList()",e);}
+		{Outside.err(this,"buildListForTable()",e);}
 		return null;
 	}
 	

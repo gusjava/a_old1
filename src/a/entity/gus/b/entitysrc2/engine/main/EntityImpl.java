@@ -2,14 +2,17 @@ package a.entity.gus.b.entitysrc2.engine.main;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.Map;
 
+import a.framework.E;
 import a.framework.Entity;
 import a.framework.G;
 import a.framework.Outside;
 import a.framework.R;
+import a.framework.S1;
 import a.framework.Service;
 
-public class EntityImpl implements Entity, G, R {
+public class EntityImpl extends S1 implements Entity, G, R, E {
 	public String creationDate() {return "20210829";}
 	
 	public static final String PERSIST_KEY = EntityImpl.class.getName()+"_last";
@@ -19,6 +22,9 @@ public class EntityImpl implements Entity, G, R {
 	private Service persist;
 	private Service getConnection;
 	private Service getRootDir;
+	
+	private Map map;
+	
 
 	public EntityImpl() throws Exception {
 		engine = Outside.service(this,"gus.b.entitysrc2.engine");
@@ -28,12 +34,14 @@ public class EntityImpl implements Entity, G, R {
 	}
 	
 	
+	public void e() throws Exception {
+		load();
+	}
+	
+	
 	public Object g() throws Exception {
-		File rootDir = (File) getRootDir.g();
-		Connection cx = (Connection) getConnection.g();
-		Long lastTime = findLastTime();
-		
-		return engine.t(new Object[] {rootDir, cx, lastTime});
+		if(map==null) load();
+		return map;
 	}
 	
 	
@@ -45,10 +53,28 @@ public class EntityImpl implements Entity, G, R {
 		throw new Exception("Unknown key: "+key);
 	}
 	
+	
+	
+	
+	private void load() throws Exception {
+		File rootDir = (File) getRootDir.g();
+		Connection cx = (Connection) getConnection.g();
+		Long lastTime = findLastTime();
+		
+		map = (Map) engine.t(new Object[] {rootDir, cx, lastTime});
+		changed();
+	}
+	
+	
 	private long findLastTime() throws Exception {
 		String str = (String) persist.r(PERSIST_KEY);
 		long time = str!=null ? Long.parseLong(str) : 0L;
 		persist.v(PERSIST_KEY, ""+System.currentTimeMillis());
 		return time;
+	}
+	
+	
+	private void changed() {
+		send(this,"changed()");
 	}
 }
