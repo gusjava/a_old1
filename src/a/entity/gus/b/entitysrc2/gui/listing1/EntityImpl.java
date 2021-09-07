@@ -165,8 +165,9 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	public Object r(String key) throws Exception
 	{
 		if(key.equals("field")) return field;
+		if(key.equals("table")) return table;
 		if(key.equals("lockSet")) return lockSet;
-		if(key.equals("keys")) return new String[] {"field", "lockSet"};
+		if(key.equals("keys")) return new String[] {"field", "table", "lockSet"};
 		
 		throw new Exception("Unknown key: "+key);
 	}

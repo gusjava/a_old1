@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 
 import a.framework.Entity;
 import a.framework.I;
@@ -19,6 +20,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 	private Service guiListing;
 	private Service guiDetail;
 	private Service persistTextComp;
+	private Service persistTable;
 	private Service persistSet;
 	
 	private JSplitPane split;
@@ -28,6 +30,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 		guiListing = Outside.service(this,"*gus.b.entitysrc2.gui.listing1");
 		guiDetail = Outside.service(this,"*gus.b.entitysrc2.gui.detail1");
 		persistTextComp = Outside.service(this,"gus.b.persist1.swing.textcomp");
+		persistTable = Outside.service(this,"gus.b.persist1.swing.table.selectedrow");
 		persistSet = Outside.service(this,"gus.b.persist1.set.string");
 		
 		Object field = guiListing.r("field");
@@ -44,8 +47,21 @@ public class EntityImpl implements Entity, I, ActionListener {
 		split.setRightComponent((JComponent) guiDetail.i());
 		
 		guiListing.p(engine);
-		
 		guiListing.addActionListener(this);
+		
+		SwingUtilities.invokeLater(this::persistTable);
+	}
+	
+	
+	private void persistTable()
+	{
+		try {
+			Object table = guiListing.r("table");
+			persistTable.v(getClass().getName()+"_table", table);
+		}
+		catch(Exception e) {
+			Outside.err(this, "persistTable()", e);
+		}
 	}
 	
 	
