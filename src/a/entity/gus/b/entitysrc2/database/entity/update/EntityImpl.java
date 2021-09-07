@@ -11,13 +11,14 @@ import a.framework.P;
 public class EntityImpl implements Entity, P {
 	public String creationDate() {return "20210904";}
 
-	public static final String TABLENAME_ENTITY = "entity";
+	public static final String TABLENAME = "entity";
 
 	public static final String COL_NAME = "name";
 	public static final String COL_FEATURES = "features";
 	public static final String COL_CREATIONDATE = "creationdate";
 	public static final String COL_LENGTH = "length";
 	public static final String COL_CALLNB = "callnb";
+	public static final String COL_FILENB = "filenb";
 
 
 	public EntityImpl() throws Exception {
@@ -37,16 +38,18 @@ public class EntityImpl implements Entity, P {
 		Object creationdate = data.get(COL_CREATIONDATE);
 		Object length = data.get(COL_LENGTH);
 		Object callNb = data.get(COL_CALLNB);
+		Object fileNb = data.get(COL_FILENB);
 		
-		String sql = "UPDATE "+TABLENAME_ENTITY+" SET "
-				+ COL_FEATURES + "=?, "
-				+ COL_CREATIONDATE + "=?, "
-				+ COL_LENGTH + "=?, "
-				+ COL_CALLNB + "=? "
-				+ "WHERE " + COL_NAME + "=?";
+		String sql = "UPDATE "+TABLENAME+" SET "
+				+COL_FEATURES+"=?, "
+				+COL_CREATIONDATE+"=?, "
+				+COL_LENGTH+"=?, "
+				+COL_CALLNB+"=?, "
+				+COL_FILENB+"=? "
+				+"WHERE "+COL_NAME+"=?";
 		
 		executeUpdate(cx, sql, 
-				features, creationdate, length, callNb,
+				features, creationdate, length, callNb, fileNb,
 				name);
 	}
 	

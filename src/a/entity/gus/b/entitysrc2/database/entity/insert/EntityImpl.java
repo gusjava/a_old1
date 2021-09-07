@@ -11,16 +11,14 @@ import a.framework.P;
 public class EntityImpl implements Entity, P {
 	public String creationDate() {return "20210903";}
 
-	public static final String TABLENAME_ENTITY = "entity";
+	public static final String TABLENAME = "entity";
 
 	public static final String COL_NAME = "name";
 	public static final String COL_FEATURES = "features";
 	public static final String COL_CREATIONDATE = "creationdate";
 	public static final String COL_LENGTH = "length";
 	public static final String COL_CALLNB = "callnb";
-
-	public static final String KEY_RESOURCES = "resources";
-	public static final String KEY_SERVICES = "services";
+	public static final String COL_FILENB = "filenb";
 
 
 	public EntityImpl() throws Exception {
@@ -35,17 +33,23 @@ public class EntityImpl implements Entity, P {
 		Connection cx = (Connection) o[0];
 		Map data = (Map) o[1];
 		
-		String name = (String) data.get(COL_NAME);
-		String features = (String) data.get(COL_FEATURES);
-		String creationdate = (String) data.get(COL_CREATIONDATE);
-		int length = (int) data.get(COL_LENGTH);
-		int callNb = (int) data.get(COL_CALLNB);
+		Object name = data.get(COL_NAME);
+		Object features = data.get(COL_FEATURES);
+		Object creationdate = data.get(COL_CREATIONDATE);
+		Object length = data.get(COL_LENGTH);
+		Object callNb = data.get(COL_CALLNB);
+		Object fileNb = data.get(COL_FILENB);
 		
-		String sql = "INSERT INTO "+TABLENAME_ENTITY+" "
-				+ "("+COL_NAME+","+COL_FEATURES+","+COL_CREATIONDATE+","+COL_LENGTH+","+COL_CALLNB+") "
-				+ "VALUES (?,?,?,?,?) ";
+		String sql = "INSERT INTO "+TABLENAME+" ("
+				+COL_NAME+","
+				+COL_FEATURES+","
+				+COL_CREATIONDATE+","
+				+COL_LENGTH+","
+				+COL_CALLNB+","
+				+COL_FILENB+") VALUES (?,?,?,?,?,?)";
 		
-		executeUpdate(cx, sql, name, features, creationdate, length, callNb);
+		executeUpdate(cx, sql, 
+				name, features, creationdate, length, callNb, fileNb);
 		
 	}
 	

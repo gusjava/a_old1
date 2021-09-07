@@ -14,19 +14,28 @@ import a.framework.T;
 public class EntityImpl implements Entity, T {
 	public String creationDate() {return "20210830";}
 
-	
+
+	private Service analyzeEntity;
 	private Service getListing;
 	private Service findAll;
-	private Service insert;
-	private Service update;
-	private Service analyzeEntity;
+	private Service insertEntity;
+	private Service updateEntity;
+	private Service insertServices;
+	private Service deleteServices;
+	private Service insertResources;
+	private Service deleteResources;
 
+	
 	public EntityImpl() throws Exception {
+		analyzeEntity = Outside.service(this,"gus.b.entitysrc2.analyze.entity");
 		getListing = Outside.service(this,"gus.b.entitysrc2.listing.lastmodified");
 		findAll = Outside.service(this,"gus.b.entitysrc2.database.entity.findall.asmap");
-		insert = Outside.service(this,"gus.b.entitysrc2.database.entity.insert");
-		update = Outside.service(this,"gus.b.entitysrc2.database.entity.update");
-		analyzeEntity = Outside.service(this,"gus.b.entitysrc2.analyze.entity");
+		insertEntity = Outside.service(this,"gus.b.entitysrc2.database.entity.insert");
+		updateEntity = Outside.service(this,"gus.b.entitysrc2.database.entity.update");
+		insertServices = Outside.service(this,"gus.b.entitysrc2.database.entity_service.insert");
+		deleteServices = Outside.service(this,"gus.b.entitysrc2.database.entity_service.delete");
+		insertResources = Outside.service(this,"gus.b.entitysrc2.database.entity_resource.insert");
+		deleteResources = Outside.service(this,"gus.b.entitysrc2.database.entity_resource.delete");
 	}
 	
 	
@@ -79,12 +88,36 @@ public class EntityImpl implements Entity, T {
 	}
 	
 	
-	private Map findEntityMap(File rootDir, Connection cx, String entityName, Map dbMap, boolean outDated, boolean dbFound)  throws Exception {
+	
+	private Map findEntityMap(File rootDir, Connection cx, String entityName, Map dbMap, boolean outDated, boolean dbFound) throws Exception
+	{
 		if(!outDated && dbFound) return (Map) dbMap.get(entityName);
-		
+		return analyzeEntity(rootDir, cx, entityName, dbFound);
+	}
+	
+	
+	
+	private Map analyzeEntity(File rootDir, Connection cx, String entityName, boolean dbFound) throws Exception
+	{
 		Map entityMap = (Map) analyzeEntity.t(new Object[] {entityName, rootDir});
-		if(dbFound) update.p(new Object[] {cx,entityMap});
-		else insert.p(new Object[] {cx,entityMap});
+		
+		if(dbFound)
+		{
+			updateEntity.p(new Object[] {cx,entityMap});
+			
+			deleteServices.p(new Object[] {cx,entityName});
+			deleteResources.p(new Object[] {cx,entityName});
+			
+			insertServices.p(new Object[] {cx,entityMap});
+			insertResources.p(new Object[] {cx,entityMap});
+		}
+		else
+		{
+			insertEntity.p(new Object[] {cx,entityMap});
+			
+			insertServices.p(new Object[] {cx,entityMap});
+			insertResources.p(new Object[] {cx,entityMap});
+		}
 		
 		return entityMap;
 	}

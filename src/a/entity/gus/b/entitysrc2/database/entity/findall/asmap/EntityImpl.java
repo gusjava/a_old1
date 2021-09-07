@@ -20,6 +20,7 @@ public class EntityImpl implements Entity, T {
 	public static final String COL_CREATIONDATE = "creationdate";
 	public static final String COL_LENGTH = "length";
 	public static final String COL_CALLNB = "callnb";
+	public static final String COL_FILENB = "filenb";
 
 
 	public EntityImpl() throws Exception {
@@ -42,6 +43,7 @@ public class EntityImpl implements Entity, T {
 			transfer(m,rs,COL_CREATIONDATE);
 			transfer(m,rs,COL_LENGTH);
 			transfer(m,rs,COL_CALLNB);
+			transfer(m,rs,COL_FILENB);
 			
 			String name = (String) m.get(COL_NAME);
 			data.put(name,m);
