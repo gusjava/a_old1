@@ -71,7 +71,7 @@ public class EntityImpl implements Entity, P, F {
 		
 		src = src.replace("package a.entity."+name0+";", "package a.entity."+name1+";");
 		
-		String creationDateRegex = "public String creationDate\\(\\) \\{return \"([0-9] {8})\";\\}";
+		String creationDateRegex = "public String creationDate\\(\\) \\{return \"([0-9]{8})\";\\}";
 		String creationDateCurrent = "public String creationDate() {return \""+today()+"\";}";
 		
 		src = src.replaceFirst(creationDateRegex, creationDateCurrent);

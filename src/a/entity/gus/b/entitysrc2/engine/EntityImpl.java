@@ -2,8 +2,10 @@ package a.entity.gus.b.entitysrc2.engine;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import a.framework.Entity;
@@ -18,24 +20,30 @@ public class EntityImpl implements Entity, T {
 	private Service analyzeEntity;
 	private Service getListing;
 	private Service findAll;
+	private Service deleteEntityIn;
 	private Service insertEntity;
 	private Service updateEntity;
 	private Service insertServices;
 	private Service deleteServices;
+	private Service deleteServicesIn;
 	private Service insertResources;
 	private Service deleteResources;
+	private Service deleteResourcesIn;
 
 	
 	public EntityImpl() throws Exception {
 		analyzeEntity = Outside.service(this,"gus.b.entitysrc2.analyze.entity");
 		getListing = Outside.service(this,"gus.b.entitysrc2.listing.lastmodified");
 		findAll = Outside.service(this,"gus.b.entitysrc2.database.entity.findall.asmap");
+		deleteEntityIn = Outside.service(this,"gus.b.entitysrc2.database.entity.delete.in");
 		insertEntity = Outside.service(this,"gus.b.entitysrc2.database.entity.insert");
 		updateEntity = Outside.service(this,"gus.b.entitysrc2.database.entity.update");
 		insertServices = Outside.service(this,"gus.b.entitysrc2.database.entity_service.insert");
 		deleteServices = Outside.service(this,"gus.b.entitysrc2.database.entity_service.delete");
+		deleteServicesIn = Outside.service(this,"gus.b.entitysrc2.database.entity_service.delete.in");
 		insertResources = Outside.service(this,"gus.b.entitysrc2.database.entity_resource.insert");
 		deleteResources = Outside.service(this,"gus.b.entitysrc2.database.entity_resource.delete");
+		deleteResourcesIn = Outside.service(this,"gus.b.entitysrc2.database.entity_resource.delete.in");
 	}
 	
 	
@@ -47,16 +55,25 @@ public class EntityImpl implements Entity, T {
 		Connection cx = (Connection) o[1];
 		Long lastTime = (Long) o[2];
 		
+		long t1 = System.currentTimeMillis();
 		
 		Map listing = (Map) getListing.t(rootDir);
 		Map dbMap = (Map) findAll.t(cx);
 		if(dbMap==null) throw new Exception("null data retrieved from cx");
 		
+		List over = new ArrayList(dbMap.keySet());
+		over.removeAll(listing.keySet());
+		if(!over.isEmpty()) {
+			deleteServicesIn.p(new Object[] {cx, over});
+			deleteResourcesIn.p(new Object[] {cx, over});
+			deleteEntityIn.p(new Object[] {cx, over});
+		}
+		
 		Map results = new HashMap();
 		
-		int foundNb = 0;
-		int outDatedNb = 0;
-		int analyzedNb = 0;
+		int dirExistingNb = 0;
+		int dirOutDatedNb = 0;
+		int dirAnalyzedNb = 0;
 		
 		Iterator it = listing.keySet().iterator();
 		while(it.hasNext()) {
@@ -66,23 +83,30 @@ public class EntityImpl implements Entity, T {
 			boolean outDated = lastModified > lastTime;
 			boolean dbFound = dbMap.containsKey(entityName);
 			
-			if(dbFound) foundNb++;
-			if(outDated) outDatedNb++;
-			if(outDated || !dbFound) analyzedNb++;
+			if(dbFound) dirExistingNb++;
+			if(outDated) dirOutDatedNb++;
+			if(outDated || !dbFound) dirAnalyzedNb++;
 			
 			Map entityMap = findEntityMap(rootDir, cx, entityName, dbMap, outDated, dbFound);
 			results.put(entityName, entityMap);
 		}
 		
-		int totalNb = listing.size();
-		int newNb = totalNb - foundNb;
+		int dbTotalNb = dbMap.size();
+		int dbRemovedNb = over.size();
+		int dirTotalNb = listing.size();
+		int dirNewNb = dirTotalNb - dirExistingNb;
 		
 		System.out.println("ENTITY SRC LOADING:");
-		System.out.println("- Total nb: "+totalNb);
-		System.out.println("- Found nb: "+foundNb);
-		System.out.println("- New nb: "+newNb);
-		System.out.println("- Out dated nb: "+outDatedNb);
-		System.out.println("- Analyzed nb: "+analyzedNb);
+		System.out.println("- DB total: "+dbTotalNb);
+		System.out.println("- DB removed: "+dbRemovedNb);
+		System.out.println("- DIR total: "+dirTotalNb);
+		System.out.println("- DIR existing: "+dirExistingNb);
+		System.out.println("- DIR new: "+dirNewNb);
+		System.out.println("- DIR outdated: "+dirOutDatedNb);
+		System.out.println("- DIR analyzed: "+dirAnalyzedNb);
+
+		long t2 = System.currentTimeMillis();
+		System.out.println("- duration: "+(t2-t1));
 		
 		return results;
 	}
