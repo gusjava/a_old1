@@ -51,6 +51,11 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private Service filterList;
 	private Service engineHolder;
 
+	private Service entityDelete;
+	private Service entityCreate;
+	private Service entityRename;
+	private Service entityDuplicate;
+
 	private JPanel panel;
 	private JScrollPane scroll;
 	private JTable table;
@@ -72,6 +77,11 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		filterList = Outside.service(this,"gus.b.entitysrc2.gui.listing1.filter");
 		engineHolder = Outside.service(this,"*gus.a.features.s.holder");
 		
+		entityDelete = Outside.service(this,"gus.b.entitysrc2.perform.delete.ask");
+		entityCreate = Outside.service(this,"gus.b.entitysrc2.perform.create.ask");
+		entityRename = Outside.service(this,"gus.b.entitysrc2.perform.rename.ask");
+		entityDuplicate = Outside.service(this,"gus.b.entitysrc2.perform.duplicate.ask");
+		
 		iconEntity = (Icon) Outside.resource(this,"icon#ELEMENT_entity");
 		iconEntityLock = (Icon) Outside.resource(this,"icon#ELEMENT_entity_lock");
 		
@@ -81,9 +91,15 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		field = (JComponent) fieldHolder.i();
 		field.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
+				int code = e.getKeyCode();
 				if(e.isControlDown()){
-					if(e.getKeyCode()==KeyEvent.VK_Q) lockAll();
-					else if(e.getKeyCode()==KeyEvent.VK_W) unlockAll();
+					if(code==KeyEvent.VK_Q) lockAll();
+					else if(code==KeyEvent.VK_W) unlockAll();
+				}
+				else {
+					if(code==KeyEvent.VK_F1) entityCreate();
+					else if(code==KeyEvent.VK_F2) entityRename();
+					else if(code==KeyEvent.VK_F3) entityDuplicate();
 				}
 			}
 		});
@@ -97,9 +113,16 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		table.setDefaultRenderer(String.class, new TableCellRenderer1());
 		table.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
+				int code = e.getKeyCode();
 				if(e.isControlDown()){
-					if(e.getKeyCode()==KeyEvent.VK_Q) lockSelected();
-					else if(e.getKeyCode()==KeyEvent.VK_W) unlockSelected();
+					if(code==KeyEvent.VK_Q) lockSelected();
+					else if(code==KeyEvent.VK_W) unlockSelected();
+				}
+				else {
+					if(code==KeyEvent.VK_DELETE) entityDelete();
+					else if(code==KeyEvent.VK_F1) entityCreate();
+					else if(code==KeyEvent.VK_F2) entityRename();
+					else if(code==KeyEvent.VK_F3) entityDuplicate();
 				}
 			}
 		});
@@ -154,11 +177,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	
 	public Object g() throws Exception
-	{
-		if(table.getSelectionModel().isSelectionEmpty()) return null;
-		int row = table.getSelectedRow();
-		return table.getValueAt(row, 0);
-	}
+	{return getSelectedName();}
 	
 	
 	
@@ -171,7 +190,6 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		
 		throw new Exception("Unknown key: "+key);
 	}
-	
 	
 	
 	private void reload()
@@ -214,51 +232,6 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		SwingUtilities.invokeLater(model);
 		field.requestFocusInWindow();
 	}
-	
-	
-	
-	private void lockSelected() {
-		int[] rows = table.getSelectedRows();
-		for(int row : rows) {
-			String name = (String) table.getValueAt(row, 0);
-			
-			if(lockSet.size()<LOCK_MAX)
-			lockSet.add(name);
-		}
-		SwingUtilities.invokeLater(model);
-	}
-	
-	private void unlockSelected() {
-		int[] rows = table.getSelectedRows();
-		for(int row : rows) {
-			String name = (String) table.getValueAt(row, 0);
-			lockSet.remove(name);
-		}
-		SwingUtilities.invokeLater(model);
-	}
-	
-	
-	
-	
-	private void lockAll() {
-		for(int i=0;i<table.getRowCount();i++) {
-			String name = (String) table.getValueAt(i, 0);
-			
-			if(lockSet.size()<LOCK_MAX)
-			lockSet.add(name);
-		}
-		SwingUtilities.invokeLater(model);
-	}
-	
-	private void unlockAll() {
-		for(int i=0;i<table.getRowCount();i++) {
-			String name = (String) table.getValueAt(i, 0);
-			lockSet.remove(name);
-		}
-		SwingUtilities.invokeLater(model);
-	}
-	
-	
 	
 	
 	
@@ -314,6 +287,14 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	}
 	
 	
+	private String getSelectedName()
+	{
+		if(table.getSelectionModel().isSelectionEmpty()) return null;
+		int row = table.getSelectedRow();
+		return (String) table.getValueAt(row, 0);
+	}
+	
+	
 	public static final Color COLOR_SELECT = new Color(244,244,244);
 	public static final Color COLOR_UNSELECT = Color.WHITE;
 	
@@ -352,5 +333,97 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	private void selectionChanged() {
 		send(this,"selectionChanged()");
+	}
+	
+	
+	
+	
+	/*
+	 * ACTIONS LOCALES
+	 */
+	
+	private void lockSelected() {
+		int[] rows = table.getSelectedRows();
+		for(int row : rows) {
+			String name = (String) table.getValueAt(row, 0);
+			
+			if(lockSet.size()<LOCK_MAX)
+			lockSet.add(name);
+		}
+		SwingUtilities.invokeLater(model);
+	}
+	
+	private void unlockSelected() {
+		int[] rows = table.getSelectedRows();
+		for(int row : rows) {
+			String name = (String) table.getValueAt(row, 0);
+			lockSet.remove(name);
+		}
+		SwingUtilities.invokeLater(model);
+	}
+	
+	private void lockAll() {
+		for(int i=0;i<table.getRowCount();i++) {
+			String name = (String) table.getValueAt(i, 0);
+			
+			if(lockSet.size()<LOCK_MAX)
+			lockSet.add(name);
+		}
+		SwingUtilities.invokeLater(model);
+	}
+	
+	private void unlockAll() {
+		for(int i=0;i<table.getRowCount();i++) {
+			String name = (String) table.getValueAt(i, 0);
+			lockSet.remove(name);
+		}
+		SwingUtilities.invokeLater(model);
+	}
+	
+	
+	/*
+	 * ACTIONS GLOBALES
+	 */
+	
+	private void entityDelete() {
+		try {
+			String selectedName = getSelectedName();
+			if(selectedName==null) return;
+			entityDelete.p(new Object[] {engine, selectedName, table});
+		}
+		catch(Exception e) {
+			Outside.err(this,"entityDelete()",e);
+		}
+	}
+	
+	private void entityCreate() {
+		try {
+			entityCreate.p(new Object[] {engine, table});
+		}
+		catch(Exception e) {
+			Outside.err(this,"entityCreate()",e);
+		}
+	}
+
+	private void entityRename() {
+		try {
+			String selectedName = getSelectedName();
+			if(selectedName==null) return;
+			entityRename.p(new Object[] {engine, selectedName, table});
+		}
+		catch(Exception e) {
+			Outside.err(this,"entityRename()",e);
+		}
+	}
+
+	private void entityDuplicate() {
+		try {
+			String selectedName = getSelectedName();
+			if(selectedName==null) return;
+			entityDuplicate.p(new Object[] {engine, selectedName, table});
+		}
+		catch(Exception e) {
+			Outside.err(this,"entityDuplicate()",e);
+		}
 	}
 }

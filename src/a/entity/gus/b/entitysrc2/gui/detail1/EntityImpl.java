@@ -69,12 +69,16 @@ public class EntityImpl implements Entity, P, I {
 	}
 	
 	
-	private void reset() {
+	private void reset() throws Exception {
 		entityName = null;
 		engine = null;
 		
 		labelTitle.setText(" ");
 		labelTitle.setIcon(null);
+		
+		gui1.p(null);
+		gui2.p(null);
+		gui3.p(null);
 	}
 	
 	

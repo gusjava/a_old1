@@ -7,3 +7,4 @@ entityname=m045.t.entity.findname
 defaultdir=pool#
 errlist=g#m050.g.err.list
 err=gus.a.features.e.exception.random
+pending=gus.a.debug.dialog.pending

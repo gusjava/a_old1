@@ -23,6 +23,7 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 
 
 	public static final String ICONID = "FILE_java";
+	public static final String MAIN_NAME = "EntityImpl";
 
 	private Service buildJList;
 	private Service getName0;
@@ -83,10 +84,10 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		}
 		
 		Vector vec = new Vector(map.keySet());
-		if(!vec.contains("EntityImpl")) throw new Exception("EntityImpl class not found");
-		vec.remove("EntityImpl");
+		if(!vec.contains(MAIN_NAME)) throw new Exception("EntityImpl class not found");
+		vec.remove(MAIN_NAME);
 		Collections.sort(vec);
-		vec.add(0,"EntityImpl");
+		vec.add(0, MAIN_NAME);
 		
 		list.setListData(vec);
 		labelNumber.setText(" "+vec.size());

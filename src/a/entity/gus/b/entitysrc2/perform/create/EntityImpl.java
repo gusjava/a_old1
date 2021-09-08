@@ -1,4 +1,4 @@
-package a.entity.gus.b.entitysrc2.perform.generate;
+package a.entity.gus.b.entitysrc2.perform.create;
 
 import java.io.File;
 import a.framework.*;
