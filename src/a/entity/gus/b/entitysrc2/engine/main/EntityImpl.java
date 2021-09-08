@@ -22,6 +22,7 @@ public class EntityImpl extends S1 implements Entity, G, R, E {
 	private Service persist;
 	private Service getConnection;
 	private Service getRootDir;
+	private String devId;
 	
 	private Map map;
 	
@@ -31,6 +32,9 @@ public class EntityImpl extends S1 implements Entity, G, R, E {
 		persist = Outside.service(this,"gus.b.persist1.main");
 		getConnection = Outside.service(this,"gus.b.entitysrc2.database.cx.main");
 		getRootDir = Outside.service(this,"gus.b.entitysrc1.rootdir");
+		devId = (String) Outside.resource(this, "param#dev");
+		
+		if(devId==null) throw new Exception("dev not found inside params");
 	}
 	
 	
@@ -47,8 +51,10 @@ public class EntityImpl extends S1 implements Entity, G, R, E {
 	
 	public Object r(String key) throws Exception {
 		if(key.equals("rootDir")) return getRootDir.g();
+		if(key.equals("devId")) return devId;
 		if(key.equals("cx")) return getConnection.g();
-		if(key.equals("keys")) return new String[] {"rootDir","cx"};
+		
+		if(key.equals("keys")) return new String[] {"rootDir","devId","cx"};
 		
 		throw new Exception("Unknown key: "+key);
 	}

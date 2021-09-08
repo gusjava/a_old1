@@ -50,7 +50,10 @@ public class EntityImpl implements Entity, P, I {
 		packageDir = (File) findPackageDir.t(new Object[]{rootDir, entityName});
 		javaFiles = (File[]) findJavaFiles.t(packageDir);
 		
-		if(javaFiles.length==1) {
+		if(javaFiles==null) {
+			reset();
+		}
+		else if(javaFiles.length==1) {
 			editor.p(new Object[] {entityName, engine, javaFiles[0]});
 			shiftPanel.p(editor);
 		}

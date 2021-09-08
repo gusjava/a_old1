@@ -47,9 +47,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 
 	
 	private Service fieldHolder;
+	private Service engineHolder;
+	
 	private Service linkerListField;
 	private Service filterList;
-	private Service engineHolder;
+	private Service clipboard;
+	private Service clearCopyPasteCut;
 
 	private Service entityDelete;
 	private Service entityCreate;
@@ -73,9 +76,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	public EntityImpl() throws Exception {
 		fieldHolder = Outside.service(this,"*gus.b.swing1.textfield.editor1");
+		engineHolder = Outside.service(this,"*gus.a.features.s.holder");
+		
 		linkerListField = Outside.service(this,"gus.a.swing.table.textfield.linker");
 		filterList = Outside.service(this,"gus.b.entitysrc2.gui.listing1.filter");
-		engineHolder = Outside.service(this,"*gus.a.features.s.holder");
+		clipboard = Outside.service(this,"gus.a.clipboard.string");
+		clearCopyPasteCut = Outside.service(this,"gus.a.swing.comp.action.clear.copypastecut");
 		
 		entityDelete = Outside.service(this,"gus.b.entitysrc2.perform.delete.ask");
 		entityCreate = Outside.service(this,"gus.b.entitysrc2.perform.create.ask");
@@ -100,6 +106,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 					if(code==KeyEvent.VK_F1) entityCreate();
 					else if(code==KeyEvent.VK_F2) entityRename();
 					else if(code==KeyEvent.VK_F3) entityDuplicate();
+					else if(code==KeyEvent.VK_F5) forceReload();
 				}
 			}
 		});
@@ -111,22 +118,27 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		table.getTableHeader().setReorderingAllowed(false);
 		table.getTableHeader().setUI(null);
 		table.setDefaultRenderer(String.class, new TableCellRenderer1());
+		table.getSelectionModel().addListSelectionListener(this);
 		table.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				int code = e.getKeyCode();
 				if(e.isControlDown()){
 					if(code==KeyEvent.VK_Q) lockSelected();
 					else if(code==KeyEvent.VK_W) unlockSelected();
+					else if(code==KeyEvent.VK_C) copySelection();
+					else if(code==KeyEvent.VK_V) pasteSelection();
 				}
 				else {
 					if(code==KeyEvent.VK_DELETE) entityDelete();
 					else if(code==KeyEvent.VK_F1) entityCreate();
 					else if(code==KeyEvent.VK_F2) entityRename();
 					else if(code==KeyEvent.VK_F3) entityDuplicate();
+					else if(code==KeyEvent.VK_F5) forceReload();
 				}
 			}
 		});
-		table.getSelectionModel().addListSelectionListener(this);
+		
+		clearCopyPasteCut.p(table);
 		
 		scroll = new JScrollPane(table);
 		scroll.getViewport().setBackground(Color.WHITE);
@@ -190,6 +202,21 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		
 		throw new Exception("Unknown key: "+key);
 	}
+	
+	
+	
+	private void forceReload()
+	{
+		try {
+			((E) engine).e();
+			data = buildData();
+			refresh();
+		}
+		catch(Exception e) {
+			Outside.err(this, "forceReload()", e);
+		}
+	}
+	
 	
 	
 	private void reload()
@@ -378,6 +405,37 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			lockSet.remove(name);
 		}
 		SwingUtilities.invokeLater(model);
+	}
+	
+	private void copySelection() {
+		try {
+			StringBuffer b = new StringBuffer();
+			int[] rows = table.getSelectedRows();
+			for(int i=0;i<rows.length;i++) {
+				String name = (String) table.getValueAt(rows[i], 0);
+				b.append(name);
+				if(i<rows.length-1) b.append("\n");
+			}
+			clipboard.p(b.toString());
+		}
+		catch(Exception e) {
+			Outside.err(this,"copySelection()",e);
+		}
+	}
+	
+	private void pasteSelection() {
+		try {
+			String s = (String) clipboard.g();
+			String[] n = s.split("[\n\r]+");
+			for(int i=0;i<n.length;i++) {
+				if(lockSet.size()<LOCK_MAX)
+				lockSet.add(n[i]);
+			}
+			SwingUtilities.invokeLater(model);
+		}
+		catch(Exception e) {
+			Outside.err(this,"pasteSelection()",e);
+		}
 	}
 	
 	

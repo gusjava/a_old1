@@ -7,14 +7,21 @@ import java.util.Date;
 
 import a.framework.*;
 
-public class EntityImpl implements Entity, P {
+public class EntityImpl implements Entity, P, F {
 	public String creationDate() {return "20210906";}
+	
+	public static final String CLASS_NAME = "EntityImpl";
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	private String today() {return sdf.format(new Date());}
 
 	
-	public void p(Object obj) throws Exception {
+	public void p(Object obj) throws Exception
+	{f(obj);}
+	
+	
+	public boolean f(Object obj) throws Exception
+	{
 		Object[] o = (Object[]) obj;
 		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
 		
@@ -22,20 +29,22 @@ public class EntityImpl implements Entity, P {
 		String entityName = (String) o[1];
 		String features = (String) o[2];
 		
-		generateEntity(rootDir, entityName, features);
-	}
-	
-	
-	private void generateEntity(File rootDir, String entityName, String features) throws Exception
-	{
+		
 		features = features.toUpperCase();
 		
-		System.out.println("Generating entity "+entityName);
-		System.out.println("Src dir: "+rootDir);
-		System.out.println("Features: "+features);
-		
 		String entityPackage = "a.entity."+entityName;
-		String entityClassName = "EntityImpl";
+		
+		
+		File packageDir = new File(rootDir, entityPackage.replace(".",File.separator));
+		packageDir.mkdirs();
+		
+		File javaFile = new File(packageDir, CLASS_NAME + ".java");
+		if(javaFile.exists()) return false;
+		
+		
+		System.out.println("Generating entity "+entityName);
+		System.out.println("- Src dir: "+rootDir);
+		System.out.println("- Features: "+features);
 		
 		boolean isE = features.contains("E");
 		boolean isG = features.contains("G");
@@ -49,19 +58,14 @@ public class EntityImpl implements Entity, P {
 		boolean isV = features.contains("V");
 		boolean isS = features.contains("S");
 		
-		File packageDir = new File(rootDir, entityPackage.replace(".",File.separator));
-		packageDir.mkdirs();
-		
-		File javaFile = new File(packageDir, entityClassName + ".java");
-		if(javaFile.exists()) throw new Exception("Entity java file already exists: "+javaFile);
-		
 		PrintStream p = new PrintStream(javaFile);
 		
 		p.println("package "+entityPackage+";");
 		p.println();
 		p.println("import a.framework.*;");
 		p.println();
-		p.print("public class EntityImpl");
+		p.print("public class ");
+		p.print(CLASS_NAME);
 		if(isS) p.print(" extends S1");
 		p.print(" implements Entity");
 		if(isE) p.print(", E");
@@ -185,5 +189,7 @@ public class EntityImpl implements Entity, P {
 		
 		p.println("}");
 		p.close();
+		
+		return true;
 	}
 }
