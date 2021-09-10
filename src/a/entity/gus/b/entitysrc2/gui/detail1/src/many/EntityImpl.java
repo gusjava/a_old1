@@ -125,7 +125,10 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		panel = new JPanel(new BorderLayout());
 		panel.add(split, BorderLayout.CENTER);
 		
-		refreshActions();
+		actionAdd.setEnabled(false);
+		actionDelete.setEnabled(false);
+		actionRename.setEnabled(false);
+		actionDuplicate.setEnabled(false);
 	}
 	
 	
