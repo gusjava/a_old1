@@ -19,11 +19,26 @@ public class EntityImpl implements Entity, V {
 		final JComboBox comp = (JComboBox) obj;
 		
 		String text = (String) manager.r(key);
-		if(isInt(text)) comp.setSelectedIndex(toInt(text));
+		setSelectedIndex(comp, text);
 		
 		manager.v(key,new G(){
 			public Object g() throws Exception {return ""+comp.getSelectedIndex();}
 		});
+	}
+	
+	
+	private void setSelectedIndex(JComboBox comp, String text)
+	{
+		if(!isInt(text)) return;
+		
+		int number = comp.getItemCount();
+		if(number==0) return;
+		
+		int index = toInt(text);
+		if(index<0) index = 0;
+		if(index>=number) index = number-1;
+		
+		comp.setSelectedIndex(index);
 	}
 	
 	

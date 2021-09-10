@@ -229,23 +229,33 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		return (String) list.getSelectedValue();
 	}
 	
+	
 	private boolean hasSelection()
-	{
-		return !list.isSelectionEmpty();
-	}
+	{return !list.isSelectionEmpty();}
+	
 	
 	private boolean hasSelectionOther()
-	{
-		return hasSelection() && !getSelection().equals(MAIN_NAME);
-	}
+	{return hasSelection() && !getSelection().equals(MAIN_NAME);}
+	
+	
+	private boolean canModifyEntity() throws Exception
+	{return permission("canModifyEntity");}
+	
+	
+	private boolean permission(String permission) throws Exception
+	{return ((F) engine).f(new Object[] {permission, entityName});}
 
 	
-	private void refreshActions()
+	
+	private void refreshActions() throws Exception
 	{
-		boolean enabled = hasSelectionOther();
-		actionDelete.setEnabled(enabled);
-		actionRename.setEnabled(enabled);
-		actionDuplicate.setEnabled(enabled);
+		boolean hasSelectionOther = hasSelectionOther();
+		boolean canModify = canModifyEntity();
+		
+		actionAdd.setEnabled(canModify);
+		actionDelete.setEnabled(canModify && hasSelectionOther);
+		actionRename.setEnabled(canModify && hasSelectionOther);
+		actionDuplicate.setEnabled(canModify && hasSelectionOther);
 	}
 	
 	
@@ -260,6 +270,7 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	private void fileAdd()
 	{
 		try {
+			if(!canModifyEntity()) return;
 			performAdd.p(new Object[] {engine, entityName, list});
 		}
 		catch(Exception e) {
@@ -270,6 +281,7 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	private void fileDelete()
 	{
 		try {
+			if(!canModifyEntity()) return;
 			if(!hasSelectionOther()) return;
 			performDelete.p(new Object[] {engine, entityName, getSelection(), list});
 		}
@@ -281,6 +293,7 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	private void fileRename()
 	{
 		try {
+			if(!canModifyEntity()) return;
 			if(!hasSelectionOther()) return;
 			performRename.p(new Object[] {engine, entityName, getSelection(), list});
 		}
@@ -292,6 +305,7 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	private void fileDuplicate()
 	{
 		try {
+			if(!canModifyEntity()) return;
 			if(!hasSelectionOther()) return;
 			performDuplicate.p(new Object[] {engine, entityName, getSelection(), list});
 		}
@@ -303,12 +317,22 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	
 	private void filesCopy()
 	{
-		
+		try {
+			
+		}
+		catch(Exception e) {
+			Outside.err(this, "filesCopy()", e);
+		}
 	}
 	
 	
 	private void filesPaste()
 	{
-		
+		try {
+			if(!canModifyEntity()) return;
+		}
+		catch(Exception e) {
+			Outside.err(this, "filesPaste()", e);
+		}
 	}
 }

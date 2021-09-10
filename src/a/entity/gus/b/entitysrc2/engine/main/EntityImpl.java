@@ -6,13 +6,14 @@ import java.util.Map;
 
 import a.framework.E;
 import a.framework.Entity;
+import a.framework.F;
 import a.framework.G;
 import a.framework.Outside;
 import a.framework.R;
 import a.framework.S1;
 import a.framework.Service;
 
-public class EntityImpl extends S1 implements Entity, G, R, E {
+public class EntityImpl extends S1 implements Entity, G, R, E, F {
 	public String creationDate() {return "20210829";}
 	
 	public static final String PERSIST_KEY = EntityImpl.class.getName()+"_last";
@@ -82,5 +83,41 @@ public class EntityImpl extends S1 implements Entity, G, R, E {
 	
 	private void changed() {
 		send(this,"changed()");
+	}
+
+	
+	
+
+	public boolean f(Object obj) throws Exception {
+		Object[] o = (Object[]) obj;
+		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
+		
+		String permission = (String) o[0];
+		if(permission.equals("canDeleteEntity")) return canDeleteEntity((String) o[1]);
+		if(permission.equals("canRenameEntity")) return canRenameEntity((String) o[1]);
+		if(permission.equals("canDuplicateEntity")) return canDuplicateEntity((String) o[1]);
+		if(permission.equals("canModifyEntity")) return canModifyEntity((String) o[1]);
+		
+		throw new Exception("Unknown permission: "+permission);
+	}
+	
+	private boolean canDeleteEntity(String entityName) {
+		return isMyEntity(entityName);
+	}
+	
+	private boolean canRenameEntity(String entityName) {
+		return isMyEntity(entityName);
+	}
+	
+	private boolean canDuplicateEntity(String entityName) {
+		return true;
+	}
+	
+	private boolean canModifyEntity(String entityName) {
+		return isMyEntity(entityName);
+	}
+	
+	private boolean isMyEntity(String entityName) {
+		return entityName!=null && entityName.startsWith(devId+".");
 	}
 }

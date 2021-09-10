@@ -24,15 +24,26 @@ public class EntityImpl implements Entity, V {
 		final JTable comp = (JTable) obj;
 		
 		String text = (String) manager.r(key);
-		if(isInt(text))
-		{
-			int index = toInt(text);
-			comp.getSelectionModel().setSelectionInterval(index, index);
-		}
+		setSelectedIndex(comp, text);
 		
 		manager.v(key,new G(){
 			public Object g() throws Exception {return ""+comp.getSelectedRow();}
 		});
+	}
+	
+	
+	private void setSelectedIndex(JTable comp, String text)
+	{
+		if(!isInt(text)) return;
+		
+		int number = comp.getRowCount();
+		if(number==0) return;
+		
+		int index = toInt(text);
+		if(index<0) index = 0;
+		if(index>=number) index = number-1;
+
+		comp.getSelectionModel().setSelectionInterval(index, index);
 	}
 	
 	

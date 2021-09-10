@@ -10,6 +10,7 @@ import javax.swing.JToolBar;
 
 import a.framework.E;
 import a.framework.Entity;
+import a.framework.F;
 import a.framework.I;
 import a.framework.Outside;
 import a.framework.P;
@@ -67,7 +68,7 @@ public class EntityImpl implements Entity, P, I {
 		engine = o[1];
 		javaFile = (File) o[2];
 
-		actionAdd.setEnabled(true);
+		actionAdd.setEnabled(canModifyEntity());
 		editor.p(new Object[] {entityName, engine, javaFile});
 	}
 	
@@ -86,6 +87,14 @@ public class EntityImpl implements Entity, P, I {
 	
 	public Object i() throws Exception
 	{return panel;}
+	
+	
+	private boolean canModifyEntity() throws Exception
+	{return permission("canModifyEntity");}
+	
+	
+	private boolean permission(String permission) throws Exception
+	{return ((F) engine).f(new Object[] {permission, entityName});}
 	
 	
 	

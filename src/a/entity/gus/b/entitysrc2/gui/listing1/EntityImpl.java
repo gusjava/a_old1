@@ -30,6 +30,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import a.framework.E;
+import a.framework.F;
 import a.framework.Entity;
 import a.framework.G;
 import a.framework.I;
@@ -87,6 +88,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private Object engine;
 	private List data;
 	private Set lockSet;
+	private String string;
 	
 	
 	public EntityImpl() throws Exception {
@@ -329,16 +331,43 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		return !table.getSelectionModel().isSelectionEmpty();
 	}
 	
-	private void refreshActions()
+	private boolean canDeleteSelected() throws Exception
 	{
-		boolean has = hasSelection();
-		actionDelete.setEnabled(has);
-		actionRename.setEnabled(has);
-		actionDuplicate.setEnabled(has);
+		return hasSelection() && permission("canDeleteEntity",getSelectedName());
+	}
+	
+	private boolean canRenameSelected() throws Exception
+	{
+		return hasSelection() && permission("canRenameEntity",getSelectedName());
+	}
+	
+	private boolean canDuplicateSelected() throws Exception
+	{
+		return hasSelection() && permission("canDuplicateEntity",getSelectedName());
+	}
+	
+	private boolean permission(String permission, String entityName) throws Exception
+	{
+		return ((F) engine).f(new Object[] {permission, entityName});
 	}
 	
 	
 	
+	
+	
+	private void _refreshActions()
+	{
+		try {refreshActions();}
+		catch(Exception e)
+		{Outside.err(this,"_refreshActions()",e);}
+	}
+	
+	private void refreshActions() throws Exception
+	{
+		actionDelete.setEnabled(canDeleteSelected());
+		actionRename.setEnabled(canRenameSelected());
+		actionDuplicate.setEnabled(canDuplicateSelected());
+	}
 	
 	
 	/*
@@ -422,7 +451,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 
 	public void valueChanged(ListSelectionEvent e) {
-		refreshActions();
+		_refreshActions();
 		selectionChanged();
 	}
 	
@@ -511,17 +540,6 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	 * ACTIONS GLOBALES
 	 */
 	
-	private void entityDelete() {
-		try {
-			String selectedName = getSelectedName();
-			if(selectedName==null) return;
-			entityDelete.p(new Object[] {engine, selectedName, table});
-		}
-		catch(Exception e) {
-			Outside.err(this,"entityDelete()",e);
-		}
-	}
-	
 	private void entityCreate() {
 		try {
 			entityCreate.p(new Object[] {engine, table});
@@ -530,12 +548,21 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			Outside.err(this,"entityCreate()",e);
 		}
 	}
+	
+	private void entityDelete() {
+		try {
+			if(!canDeleteSelected()) return;
+			entityDelete.p(new Object[] {engine, getSelectedName(), table});
+		}
+		catch(Exception e) {
+			Outside.err(this,"entityDelete()",e);
+		}
+	}
 
 	private void entityRename() {
 		try {
-			String selectedName = getSelectedName();
-			if(selectedName==null) return;
-			entityRename.p(new Object[] {engine, selectedName, table});
+			if(!canRenameSelected()) return;
+			entityRename.p(new Object[] {engine, getSelectedName(), table});
 		}
 		catch(Exception e) {
 			Outside.err(this,"entityRename()",e);
@@ -544,9 +571,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 
 	private void entityDuplicate() {
 		try {
-			String selectedName = getSelectedName();
-			if(selectedName==null) return;
-			entityDuplicate.p(new Object[] {engine, selectedName, table});
+			if(!canDuplicateSelected()) return;
+			entityDuplicate.p(new Object[] {engine, getSelectedName(), table});
 		}
 		catch(Exception e) {
 			Outside.err(this,"entityDuplicate()",e);

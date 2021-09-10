@@ -15,13 +15,17 @@ public class EntityImpl implements Entity, I {
 
 	
 	private Service iconsPanel;
+	private Service devLabel;
+	
 	
 	private JPanel panel;
 
 	public EntityImpl() throws Exception {
 		iconsPanel = Outside.service(this,"*gus.b.gyem1.watcher.icons");
+		devLabel = Outside.service(this,"*gus.c.appli1.bottombar.devlabel");
 		
 		panel = new JPanel(new BorderLayout());
+		panel.add((JComponent) devLabel.i(), BorderLayout.WEST);
 		panel.add((JComponent) iconsPanel.i(), BorderLayout.EAST);
 	}
 	

@@ -19,7 +19,7 @@ public class EntityImpl implements Entity, V {
 		final JTabbedPane comp = (JTabbedPane) obj;
 		
 		String text = (String) manager.r(key);
-		setSelectedIndex(comp,text);
+		setSelectedIndex(comp, text);
 		
 		manager.v(key,new G(){
 			public Object g() throws Exception {return ""+comp.getSelectedIndex();}
@@ -40,7 +40,6 @@ public class EntityImpl implements Entity, V {
 		
 		comp.setSelectedIndex(index);
 	}
-	
 	
 	
 	
