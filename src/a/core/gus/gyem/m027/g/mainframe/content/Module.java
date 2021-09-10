@@ -21,6 +21,7 @@ public class Module extends GyemSystem implements G {
 		}
 		catch(Exception e) {
 			content = (Container) moduleT(M030_T_BUILDGUI_ERRORPANEL).t(e);
+			e.printStackTrace();
 		}
 	}
 }
