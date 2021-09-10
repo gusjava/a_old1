@@ -124,11 +124,8 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(split, BorderLayout.CENTER);
-		
-		actionAdd.setEnabled(false);
-		actionDelete.setEnabled(false);
-		actionRename.setEnabled(false);
-		actionDuplicate.setEnabled(false);
+
+		refreshActions();
 	}
 	
 	
@@ -192,6 +189,7 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		list.setListData(new Vector());
 		labelNumber.setText(" ");
 		editor.p(null);
+		
 		refreshActions();
 	}
 	
@@ -246,7 +244,7 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	
 	
 	private boolean permission(String permission) throws Exception
-	{return ((F) engine).f(new Object[] {permission, entityName});}
+	{return engine!=null && ((F) engine).f(new Object[] {permission, entityName});}
 
 	
 	

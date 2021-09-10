@@ -43,7 +43,7 @@ public class EntityImpl implements Entity, P, I {
 		editor = Outside.service(this,"*gus.b.entitysrc2.gui.javaeditor");
 		performAdd = Outside.service(this,"gus.b.entitysrc2.perform.file.add.ask");
 		
-		actionAdd = (Action) actionBuilder.t(new Object[] {DISPLAY_ADD, (E) this::addFile});
+		actionAdd = (Action) actionBuilder.t(new Object[] {DISPLAY_ADD, (E) this::fileAdd});
 		
 		bar = (JToolBar) toolbarFactory.i();
 		bar.setOrientation(JToolBar.VERTICAL);
@@ -94,17 +94,18 @@ public class EntityImpl implements Entity, P, I {
 	
 	
 	private boolean permission(String permission) throws Exception
-	{return ((F) engine).f(new Object[] {permission, entityName});}
+	{return engine!=null && ((F) engine).f(new Object[] {permission, entityName});}
 	
 	
 	
-	private void addFile()
+	private void fileAdd()
 	{
 		try {
+			if(!canModifyEntity()) return;
 			performAdd.p(new Object[] {engine, entityName, bar});
 		}
 		catch(Exception e) {
-			Outside.err(this, "addFile()", e);
+			Outside.err(this, "fileAdd()", e);
 		}
 	}
 }

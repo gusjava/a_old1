@@ -326,30 +326,25 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		return (String) table.getValueAt(row, 0);
 	}
 	
+	
 	private boolean hasSelection()
-	{
-		return !table.getSelectionModel().isSelectionEmpty();
-	}
+	{return !table.getSelectionModel().isSelectionEmpty();}
+	
 	
 	private boolean canDeleteSelected() throws Exception
-	{
-		return hasSelection() && permission("canDeleteEntity",getSelectedName());
-	}
+	{return hasSelection() && permission("canDeleteEntity",getSelectedName());}
+	
 	
 	private boolean canRenameSelected() throws Exception
-	{
-		return hasSelection() && permission("canRenameEntity",getSelectedName());
-	}
+	{return hasSelection() && permission("canRenameEntity",getSelectedName());}
+	
 	
 	private boolean canDuplicateSelected() throws Exception
-	{
-		return hasSelection() && permission("canDuplicateEntity",getSelectedName());
-	}
+	{return hasSelection() && permission("canDuplicateEntity",getSelectedName());}
+	
 	
 	private boolean permission(String permission, String entityName) throws Exception
-	{
-		return ((F) engine).f(new Object[] {permission, entityName});
-	}
+	{return engine!=null && ((F) engine).f(new Object[] {permission, entityName});}
 	
 	
 	
@@ -390,7 +385,6 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			if(y==0) return "Entity name";
 			if(y==1) return "Features";
 			if(y==2) return "N";
-			
 			return "";
 		}
 		
