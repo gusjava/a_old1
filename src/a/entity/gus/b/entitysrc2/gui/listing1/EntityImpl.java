@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -44,6 +46,11 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	public static final String COL_CALLNB = "callnb";
 	
 	public static final int LOCK_MAX = 100;
+	
+	public static final String DISPLAY_CREATE = "ELEMENT_entity_add#Create entity [F1]";
+	public static final String DISPLAY_DELETE = "ELEMENT_entity_delete#Delete entity [DEL]";
+	public static final String DISPLAY_RENAME = "ELEMENT_entity_rename#Rename entity [F2]";
+	public static final String DISPLAY_DUPLICATE = "ELEMENT_entity_duplicate#Duplicate entity [F3]";
 
 	
 	private Service fieldHolder;
@@ -52,6 +59,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private Service linkerListField;
 	private Service filterList;
 	private Service clipboard;
+	private Service actionBuilder;
+	private Service toolbarFactory;
 	private Service clearCopyPasteCut;
 
 	private Service entityDelete;
@@ -64,10 +73,16 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private JTable table;
 	private TableModel0 model;
 	private JComponent field;
-	private JLabel label;
+	private JLabel labelNumber;
+	private JToolBar bar;
 	
 	private Icon iconEntity;
 	private Icon iconEntityLock;
+	
+	private Action actionCreate;
+	private Action actionDelete;
+	private Action actionRename;
+	private Action actionDuplicate;
 	
 	private Object engine;
 	private List data;
@@ -81,6 +96,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		linkerListField = Outside.service(this,"gus.a.swing.table.textfield.linker");
 		filterList = Outside.service(this,"gus.b.entitysrc2.gui.listing1.filter");
 		clipboard = Outside.service(this,"gus.a.clipboard.string");
+		actionBuilder = Outside.service(this,"gus.b.actions1.builder0");
+		toolbarFactory = Outside.service(this,"gus.a.swing.toolbar.factory1");
 		clearCopyPasteCut = Outside.service(this,"gus.a.swing.comp.action.clear.copypastecut");
 		
 		entityDelete = Outside.service(this,"gus.b.entitysrc2.perform.delete.ask");
@@ -91,9 +108,22 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		iconEntity = (Icon) Outside.resource(this,"icon#ELEMENT_entity");
 		iconEntityLock = (Icon) Outside.resource(this,"icon#ELEMENT_entity_lock");
 		
+		actionCreate = (Action) actionBuilder.t(new Object[] {DISPLAY_CREATE, (E) this::entityCreate});
+		actionDelete = (Action) actionBuilder.t(new Object[] {DISPLAY_DELETE, (E) this::entityDelete});
+		actionRename = (Action) actionBuilder.t(new Object[] {DISPLAY_RENAME, (E) this::entityRename});
+		actionDuplicate = (Action) actionBuilder.t(new Object[] {DISPLAY_DUPLICATE, (E) this::entityDuplicate});
+		
+		
 		lockSet = new HashSet();
 
-		label = new JLabel(" ");
+		labelNumber = new JLabel(" ");
+		bar = (JToolBar) toolbarFactory.i();
+		
+		bar.add(actionCreate);
+		bar.add(actionDelete);
+		bar.add(actionRename);
+		bar.add(actionDuplicate);
+		
 		field = (JComponent) fieldHolder.i();
 		field.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
@@ -144,10 +174,14 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		scroll.getViewport().setBackground(Color.WHITE);
 		scroll.getViewport().setOpaque(true);
 		
+		JPanel bottomPanel = new JPanel(new BorderLayout());
+		bottomPanel.add(labelNumber,BorderLayout.CENTER);
+		bottomPanel.add(bar,BorderLayout.EAST);
+		
 		panel = new JPanel(new BorderLayout());
 		panel.add(field,BorderLayout.NORTH);
 		panel.add(scroll,BorderLayout.CENTER);
-		panel.add(label,BorderLayout.SOUTH);
+		panel.add(bottomPanel,BorderLayout.SOUTH);
 		
 		initColumnSize(1,70);
 		initColumnSize(2,20);
@@ -162,15 +196,13 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			public void actionPerformed(ActionEvent e)
 			{reload();}
 		});
+		
+		refreshActions();
 	}
 	
-	
-	private void initColumnSize(int index, int size)
-	{
-		table.getTableHeader().getColumnModel().getColumn(index).setMinWidth(size);
-		table.getTableHeader().getColumnModel().getColumn(index).setMaxWidth(size);
-	}
-	
+	/*
+	 * FEATURES
+	 */
 	
 	public void p(Object obj) throws Exception
 	{
@@ -203,13 +235,25 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		throw new Exception("Unknown key: "+key);
 	}
 	
+
 	
+	
+	
+	/*
+	 * INTERNAL
+	 */
+	
+	private void initColumnSize(int index, int size)
+	{
+		table.getTableHeader().getColumnModel().getColumn(index).setMinWidth(size);
+		table.getTableHeader().getColumnModel().getColumn(index).setMaxWidth(size);
+	}
 	
 	private void forceReload()
 	{
 		try {
 			((E) engine).e();
-			data = buildData();
+			data = buildFullData();
 			refresh();
 		}
 		catch(Exception e) {
@@ -218,11 +262,10 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	}
 	
 	
-	
 	private void reload()
 	{
 		try {
-			data = buildData();
+			data = buildFullData();
 			refresh();
 		}
 		catch(Exception e) {
@@ -231,7 +274,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	}
 	
 	
-	private List buildData() throws Exception {
+	private List buildFullData() throws Exception {
 		Map map = (Map) ((G) engine).g();
 		if(map==null) return null;
 		
@@ -260,7 +303,47 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		field.requestFocusInWindow();
 	}
 	
+	private List buildListForTable()
+	{
+		try
+		{
+			if(data==null) return new ArrayList();
+			String search = (String) fieldHolder.g();
+			return (List) filterList.t(new Object[] {data, search, lockSet});
+		}
+		catch(Exception e)
+		{Outside.err(this,"buildListForTable()",e);}
+		return null;
+	}
 	
+	
+	private String getSelectedName()
+	{
+		if(table.getSelectionModel().isSelectionEmpty()) return null;
+		int row = table.getSelectedRow();
+		return (String) table.getValueAt(row, 0);
+	}
+	
+	private boolean hasSelection()
+	{
+		return !table.getSelectionModel().isSelectionEmpty();
+	}
+	
+	private void refreshActions()
+	{
+		boolean has = hasSelection();
+		actionDelete.setEnabled(has);
+		actionRename.setEnabled(has);
+		actionDuplicate.setEnabled(has);
+	}
+	
+	
+	
+	
+	
+	/*
+	 * TABLE MODEL
+	 */
 	
 	private class TableModel0 extends AbstractTableModel implements Runnable
 	{
@@ -293,34 +376,18 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		
 		public void run() {
 			list = buildListForTable();
-			label.setText(" number: "+list.size());
+			labelNumber.setText(" "+list.size());
 			fireTableDataChanged();
 			field.requestFocusInWindow();
 		}
 	}
 	
 	
-	private List buildListForTable()
-	{
-		try
-		{
-			if(data==null) return new ArrayList();
-			String search = (String) fieldHolder.g();
-			return (List) filterList.t(new Object[] {data, search, lockSet});
-		}
-		catch(Exception e)
-		{Outside.err(this,"buildListForTable()",e);}
-		return null;
-	}
 	
 	
-	private String getSelectedName()
-	{
-		if(table.getSelectionModel().isSelectionEmpty()) return null;
-		int row = table.getSelectedRow();
-		return (String) table.getValueAt(row, 0);
-	}
-	
+	/*
+	 * TABLE RENDERER
+	 */
 	
 	public static final Color COLOR_SELECT = new Color(244,244,244);
 	public static final Color COLOR_UNSELECT = Color.WHITE;
@@ -355,6 +422,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 
 	public void valueChanged(ListSelectionEvent e) {
+		refreshActions();
 		selectionChanged();
 	}
 	

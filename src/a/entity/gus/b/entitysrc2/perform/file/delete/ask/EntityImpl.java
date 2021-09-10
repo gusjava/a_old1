@@ -1,4 +1,4 @@
-package a.entity.gus.b.entitysrc2.perform.delete.ask;
+package a.entity.gus.b.entitysrc2.perform.file.delete.ask;
 
 import java.awt.Component;
 import java.awt.Window;
@@ -9,17 +9,17 @@ import javax.swing.SwingUtilities;
 import a.framework.*;
 
 public class EntityImpl implements Entity, P, F {
-	public String creationDate() {return "20210908";}
+	public String creationDate() {return "20210909";}
 
-	public static final String TITLE = "Entity deletion";
-	public static final String MESSAGE = "Please, confirm deletion for entity: ";
+	public static final String TITLE = "File deletion";
+	public static final String MESSAGE = "Please, confirm deletion for file: ";
 
 
 	private Service perform;
 
 	public EntityImpl() throws Exception
 	{
-		perform = Outside.service(this, "gus.b.entitysrc2.perform.delete");
+		perform = Outside.service(this, "gus.b.entitysrc2.perform.file.delete");
 	}
 	
 	
@@ -30,17 +30,18 @@ public class EntityImpl implements Entity, P, F {
 	public boolean f(Object obj) throws Exception
 	{
 		Object[] o = (Object[]) obj;
-		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
+		if(o.length!=4) throw new Exception("Wrong data number: "+o.length);
 		
 		Object engine = o[0];
 		String entityName = (String) o[1];
-		Object anchor = o[2];
+		String className = (String) o[2];
+		Object anchor = o[3];
 		
-		String message = MESSAGE+"\n"+entityName;
+		String message = MESSAGE+"\n"+className;
 		Window window = SwingUtilities.getWindowAncestor((Component) anchor);
 		int r = JOptionPane.showConfirmDialog(window, message, TITLE, JOptionPane.YES_NO_OPTION);
 		if(r!=JOptionPane.YES_OPTION) return false;
 		
-		return perform.f(new Object[] {engine, entityName});
+		return perform.f(new Object[] {engine, entityName, className});
 	}
 }

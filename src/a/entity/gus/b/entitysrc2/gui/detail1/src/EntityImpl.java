@@ -13,7 +13,7 @@ public class EntityImpl implements Entity, P, I {
 
 
 	private Service shiftPanel;
-	private Service editor;
+	private Service panelSingle;
 	private Service panelMany;
 	private Service findPackageDir;
 	private Service findJavaFiles;
@@ -29,8 +29,8 @@ public class EntityImpl implements Entity, P, I {
 	public EntityImpl() throws Exception
 	{
 		shiftPanel = Outside.service(this,"*gus.a.swing.panel.shiftpanel");
-		editor = Outside.service(this,"*gus.b.entitysrc2.gui.javaeditor");
-		panelMany = Outside.service(this,"*gus.b.entitysrc2.gui.javaeditor.many");
+		panelSingle = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.src.single");
+		panelMany = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.src.many");
 		findPackageDir = Outside.service(this,"gus.a.entity.src.find.packagedir");
 		findJavaFiles = Outside.service(this,"gus.a.dir.listing0.files.java");
 	}
@@ -54,8 +54,8 @@ public class EntityImpl implements Entity, P, I {
 			reset();
 		}
 		else if(javaFiles.length==1) {
-			editor.p(new Object[] {entityName, engine, javaFiles[0]});
-			shiftPanel.p(editor);
+			panelSingle.p(new Object[] {entityName, engine, javaFiles[0]});
+			shiftPanel.p(panelSingle);
 		}
 		else {
 			panelMany.p(new Object[] {entityName, engine, javaFiles});
@@ -72,7 +72,7 @@ public class EntityImpl implements Entity, P, I {
 		packageDir = null;
 		javaFiles = null;
 
-		editor.p(null);
+		panelSingle.p(null);
 		panelMany.p(null);
 		shiftPanel.p(null);
 	}
