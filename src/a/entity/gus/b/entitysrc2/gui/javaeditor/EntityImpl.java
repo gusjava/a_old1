@@ -1,7 +1,6 @@
 package a.entity.gus.b.entitysrc2.gui.javaeditor;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.KeyAdapter;
@@ -36,9 +35,14 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	
 	private Service read;
 	private Service actionBuilder;
+	private Service undoRedo;
+	private Service buildArea;
+	private Service buildScroll;
+	private Service paintCaretLine;
 	
 	private JPanel panel;
 	private JTextArea area;
+	private JScrollPane scroll;
 
 	private Action actionSave;
 	private Action actionReload;
@@ -55,11 +59,18 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	{
 		read = Outside.service(this,"gus.a.file.string.read");
 		actionBuilder = Outside.service(this,"gus.b.actions1.builder0");
+		undoRedo = Outside.service(this,"gus.b.swing1.textcomp.cust.action.ctrl_zy.undoredo");
+		buildArea = Outside.service(this,"gus.b.swing1.textarea1.factory");
+		buildScroll = Outside.service(this,"gus.b.swing1.textarea.buildscrollpane.linenb");
+		paintCaretLine = Outside.service(this,"gus.b.swing1.textarea1.p.paint.caretline");
 		
 		actionSave = (Action) actionBuilder.t(new Object[] {DISPLAY_SAVE, (E) this::save});
 		actionReload = (Action) actionBuilder.t(new Object[] {DISPLAY_RELOAD, (E) this::reload});
 		
-		area = new JTextArea();
+		area = (JTextArea) buildArea.i();
+		paintCaretLine.p(area);
+		undoRedo.p(area);
+		
 		area.setMargin(new Insets(3, 3, 3, 3));
 		area.getDocument().addDocumentListener(this);
 		
@@ -73,8 +84,10 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 			}
 		});
 		
+		scroll = (JScrollPane) buildScroll.t(area);
+		
 		panel = new JPanel(new BorderLayout());
-		panel.add(new JScrollPane(area), BorderLayout.CENTER);
+		panel.add(scroll, BorderLayout.CENTER);
 		
 		canModify = false;
 		text0 = null;
