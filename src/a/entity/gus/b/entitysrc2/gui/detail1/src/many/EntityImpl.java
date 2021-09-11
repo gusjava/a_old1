@@ -49,6 +49,8 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	private Action actionDelete;
 	private Action actionRename;
 	private Action actionDuplicate;
+	private Action actionSave;
+	private Action actionReload;
 
 	private JPanel panel;
 	private JList list;
@@ -77,11 +79,16 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		actionDelete = (Action) actionBuilder.t(new Object[] {DISPLAY_DELETE, (E) this::fileDelete});
 		actionRename = (Action) actionBuilder.t(new Object[] {DISPLAY_RENAME, (E) this::fileRename});
 		actionDuplicate = (Action) actionBuilder.t(new Object[] {DISPLAY_DUPLICATE, (E) this::fileDuplicate});
+		actionSave = (Action) editor.r("actionSave");
+		actionReload = (Action) editor.r("actionReload");
 		
 
 		labelNumber = new JLabel(" ");
 		bar = (JToolBar) toolbarFactory.i();
 		
+		bar.add(actionSave);
+		bar.add(actionReload);
+		bar.addSeparator();
 		bar.add(actionAdd);
 		bar.add(actionDelete);
 		bar.add(actionRename);

@@ -88,7 +88,6 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private Object engine;
 	private List data;
 	private Set lockSet;
-	private String string;
 	
 	
 	public EntityImpl() throws Exception {
@@ -310,8 +309,10 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		try
 		{
 			if(data==null) return new ArrayList();
+			
 			String search = (String) fieldHolder.g();
-			return (List) filterList.t(new Object[] {data, search, lockSet});
+			String devId = (String) ((R) engine).r("devId");
+			return (List) filterList.t(new Object[] {data, search, devId, lockSet});
 		}
 		catch(Exception e)
 		{Outside.err(this,"buildListForTable()",e);}

@@ -25,38 +25,47 @@ public class EntityImpl implements Entity, T {
 	public Object t(Object obj) throws Exception
 	{
 		Object[] o = (Object[]) obj;
-		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
+		if(o.length!=4) throw new Exception("Wrong data number: "+o.length);
 
 		List list = (List) o[0];
 		String search = (String) o[1];
-		Set lockSet = (Set) o[2];
+		String devId = (String) o[2];
+		Set lockSet = (Set) o[3];
 		
-		F filter = new Filter(search, lockSet);
+		F filter = new Filter(search, devId, lockSet);
 		return filterList.t(new Object[]{list, filter});
 	}
 	
 	
 	private class Filter implements F {
+		private String devId;
 		private Set lockSet;
+		
 		private boolean all = false;
+		private boolean onlyMine = false;
 		private List ff = new ArrayList();
 		private List st = new ArrayList();
 		private List en = new ArrayList();
 		private List co = new ArrayList();
 		
-		public Filter(String search, Set lockSet) {
-			if(search==null || search.equals("")) {
+		public Filter(String search, String devId, Set lockSet) {
+			if(search==null || search.trim().equals("")) {
 				all = true;
 				return;
 			}
+			this.devId = devId;
 			this.lockSet = lockSet;
+			
 			
 			String[] nn = search.split(" +");
 			for(String n : nn) {
 				String n0 = n.toLowerCase();
 				String n1 = n.toUpperCase();
 				
-				if(n1.equals(n)) {
+				if(n.equals("&")) {
+					onlyMine = true;
+				}
+				else if(n1.equals(n)) {
 					for(int i=0;i<n.length();i++) {
 						ff.add(""+n0.charAt(i));
 					}
@@ -84,6 +93,8 @@ public class EntityImpl implements Entity, T {
 			String features = data[1];
 			
 			if(lockSet.contains(name)) return true;
+			
+			if(onlyMine && !name.startsWith(devId+".")) return false;
 			
 			for(int i=0;i<ff.size();i++) {
 				String f = (String) ff.get(i);

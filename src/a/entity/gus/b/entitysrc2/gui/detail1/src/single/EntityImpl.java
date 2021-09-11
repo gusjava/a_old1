@@ -28,6 +28,8 @@ public class EntityImpl implements Entity, P, I {
 	private Service performAdd;
 
 	private Action actionAdd;
+	private Action actionSave;
+	private Action actionReload;
 	
 	private JPanel panel;
 	private JToolBar bar;
@@ -44,9 +46,15 @@ public class EntityImpl implements Entity, P, I {
 		performAdd = Outside.service(this,"gus.b.entitysrc2.perform.file.add.ask");
 		
 		actionAdd = (Action) actionBuilder.t(new Object[] {DISPLAY_ADD, (E) this::fileAdd});
+		actionSave = (Action) editor.r("actionSave");
+		actionReload = (Action) editor.r("actionReload");
 		
 		bar = (JToolBar) toolbarFactory.i();
 		bar.setOrientation(JToolBar.VERTICAL);
+		
+		bar.add(actionSave);
+		bar.add(actionReload);
+		bar.addSeparator();
 		bar.add(actionAdd);
 		
 		panel = new JPanel(new BorderLayout());
