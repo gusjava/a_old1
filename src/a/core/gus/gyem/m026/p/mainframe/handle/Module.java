@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import a.core.gus.gyem.GyemSystem;
+import a.core.gus.gyem.utils.UtilLog;
 import a.framework.P;
 
 public class Module extends GyemSystem implements P {
@@ -30,7 +31,10 @@ public class Module extends GyemSystem implements P {
 		frame.setIconImage(toImage(iconId));
 		
 		frame.setLocationRelativeTo(null);
+		
+		UtilLog.println("Displaying main frame...");
 		frame.setVisible(true);
+		UtilLog.println("Main frame displayed");
 	}
 	
 	

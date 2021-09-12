@@ -3,6 +3,7 @@ package a.core.gus.gyem.m028.g.buildgui.entity;
 import java.util.Map;
 
 import a.core.gus.gyem.GyemSystem;
+import a.core.gus.gyem.utils.UtilLog;
 import a.framework.G;
 import a.framework.I;
 
@@ -13,6 +14,8 @@ public class Module extends GyemSystem implements G {
 		if(!prop.containsKey(PROP_APP_MAINGUI)) return null;
 		
 		String rule = (String) prop.get(PROP_APP_MAINGUI);
+		UtilLog.println("Building maingui entity with rule: "+rule);
+		
 		Object entity = moduleT(M015_T_ENTITY_PROVIDE).t(rule);
 		return ((I) entity).i();
 	}

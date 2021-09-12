@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import a.core.gus.gyem.utils.UtilArgs;
+import a.core.gus.gyem.utils.UtilDate;
 import a.framework.E;
 import a.framework.F;
 import a.framework.G;
@@ -64,7 +64,7 @@ public class GyemSystem extends GyemConst {
 	 */
 	
 	private static void initModule(Class c) throws Exception {
-		put(classToName(c),c.newInstance());
+		put(classToName(c), c.getDeclaredConstructor().newInstance());
 	}
 	
 	protected static Object module(Class c) {
@@ -158,14 +158,14 @@ public class GyemSystem extends GyemConst {
 	
 	
 	private static String abortTime() {
-		return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		return UtilDate.yyyymmdd_hhmmss(new Date());
 	}
 	
 	private static String startTime() {
 		if(!has(MAIN_LAUNCH_DATE)) return "not found";
 		Object obj = get(MAIN_LAUNCH_DATE);
 		if(!(obj instanceof Date)) return "Invalid type: "+obj.getClass().getName();
-		return new SimpleDateFormat("yyyyMMdd_HHmmss").format((Date) obj);
+		return UtilDate.yyyymmdd_hhmmss((Date) obj);
 	}
 	
 	private static String argsLine() {
