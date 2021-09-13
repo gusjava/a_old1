@@ -11,11 +11,13 @@ public class EntityImpl implements Entity, P {
 	public String creationDate() {return "20210806";}
 
 	private Service generate;
+	private Service validate;
 	private File rootDir;
 	private String devId;
 	
 	public EntityImpl() throws Exception {
 		generate = Outside.service(this,"gus.a.entity.src.generate1");
+		validate = Outside.service(this,"gus.a.entity.name.validate");
 		rootDir = (File) Outside.service(this, "gus.b.entitysrc1.rootdir").g();
 		devId = (String) Outside.resource(this, "param#dev");
 		
@@ -32,6 +34,7 @@ public class EntityImpl implements Entity, P {
 		if(!entityName.startsWith(devId+"."))
 			entityName = devId+"."+entityName;
 		
+		if(!validate.f(entityName)) throw new Exception("Invalid entity name: "+entityName);
 		generate.p(new Object[] {rootDir, entityName, features});
 	}
 }

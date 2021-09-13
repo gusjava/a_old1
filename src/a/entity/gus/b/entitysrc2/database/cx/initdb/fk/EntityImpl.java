@@ -26,6 +26,20 @@ public class EntityImpl implements Entity, P {
 					"REFERENCES entity(name)";
 			execute(cx, sql);
 		}
+		
+		{
+			String sql = "ALTER TABLE entity_link " + 
+					"ADD FOREIGN KEY (name1) " + 
+					"REFERENCES entity(name)";
+			execute(cx, sql);
+		}
+		
+		{
+			String sql = "ALTER TABLE entity_link " + 
+					"ADD FOREIGN KEY (name2) " + 
+					"REFERENCES entity(name)";
+			execute(cx, sql);
+		}
 	}
 	
 	private void execute(Connection cx, String sql) throws SQLException {

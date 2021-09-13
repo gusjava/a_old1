@@ -8,6 +8,8 @@ public class EntityImpl extends S1 implements Entity, E {
 	
 	public void e() throws Exception {
 		send(this,"exit");
+		
+		System.out.println("Exiting application...");
 		System.exit(0);
 	}
 }

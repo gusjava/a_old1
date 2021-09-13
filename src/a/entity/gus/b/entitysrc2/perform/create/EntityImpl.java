@@ -8,9 +8,12 @@ public class EntityImpl implements Entity, P, F {
 	
 	
 	private Service generate;
+	private Service validate;
 	
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception
+	{
 		generate = Outside.service(this,"gus.a.entity.src.generate1");
+		validate = Outside.service(this,"gus.a.entity.name.validate");
 	}
 	
 	
@@ -35,7 +38,8 @@ public class EntityImpl implements Entity, P, F {
 		
 		if(devId!=null && !entityName.startsWith(devId+".")) 
 			entityName = devId+"."+entityName;
-		
+
+		if(!validate.f(entityName)) return false;
 		boolean done = generate.f(new Object[] {rootDir, entityName, features});
 		if(!done) return false;
 		

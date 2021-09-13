@@ -12,12 +12,14 @@ public class EntityImpl implements Entity, P, F {
 
 	private Service findPackageDir;
 	private Service findJavaFiles;
+	private Service validate;
 	private Service read;
 
 	public EntityImpl() throws Exception
 	{
 		findPackageDir = Outside.service(this, "gus.a.entity.src.find.packagedir");
 		findJavaFiles = Outside.service(this, "gus.a.dir.listing0.files.java");
+		validate = Outside.service(this,"gus.a.entity.name.validate");
 		read = Outside.service(this, "gus.a.file.string.read");
 	}
 	
@@ -42,6 +44,8 @@ public class EntityImpl implements Entity, P, F {
 		
 		if(devId!=null && !name1.startsWith(devId+".")) 
 			name1 = devId+"."+name1;
+		
+		if(!validate.f(name1)) return false;
 		
 		File packageDir0 = (File) findPackageDir.t(new Object[] {rootDir, name0});
 		File packageDir1 = (File) findPackageDir.t(new Object[] {rootDir, name1});
