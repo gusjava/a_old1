@@ -2,8 +2,10 @@ package a.entity.gus.b.entitysrc2.analyze.entity.extract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,13 +22,16 @@ public class EntityImpl implements Entity, T {
 	public static final String KEY_CREATIONDATE = "creationdate";
 	public static final String KEY_RESOURCES = "resources";
 	public static final String KEY_SERVICES = "services";
+	public static final String KEY_LINKS = "links";
 
 	
 
 	private Service toArray;
+	private Service extractLinks;
 
 	public EntityImpl() throws Exception {
 		toArray = Outside.service(this,"gus.a.string.toarray.javasrc");
+		extractLinks = Outside.service(this,"gus.a.entity.name.extract");
 	}
 	
 	
@@ -39,6 +44,7 @@ public class EntityImpl implements Entity, T {
 		put(data, KEY_CREATIONDATE, extractCreationDate(lines));
 		put(data, KEY_RESOURCES, extractResources(lines));
 		put(data, KEY_SERVICES, extractServices(lines));
+		put(data, KEY_LINKS, extractLinks(lines));
 		
 		return data;
 	}
@@ -150,5 +156,23 @@ public class EntityImpl implements Entity, T {
 			if(m.find()) list.add(m.group(1));
 		}
 		return list;
+	}
+	
+	
+	
+	
+	/*
+	 * LINKS
+	 */
+
+	private Set extractLinks(String[] lines) throws Exception
+	{
+		Set set = new HashSet();
+		for(String line : lines)
+		{
+			List l = (List) extractLinks.t(line);
+			set.addAll(l);
+		}
+		return set;
 	}
 }

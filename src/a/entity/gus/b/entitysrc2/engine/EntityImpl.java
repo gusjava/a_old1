@@ -2,11 +2,11 @@ package a.entity.gus.b.entitysrc2.engine;
 
 import java.io.File;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import a.framework.Entity;
 import a.framework.Outside;
@@ -20,30 +20,38 @@ public class EntityImpl implements Entity, T {
 	private Service analyzeEntity;
 	private Service getListing;
 	private Service findAll;
-	private Service deleteEntityIn;
+	private Service remover;
+	
 	private Service insertEntity;
 	private Service updateEntity;
+	
 	private Service insertServices;
-	private Service deleteServices;
-	private Service deleteServicesIn;
 	private Service insertResources;
+	private Service insertLinks;
+	
+	private Service deleteServices;
 	private Service deleteResources;
-	private Service deleteResourcesIn;
+	private Service deleteLinks;
+	
 
 	
 	public EntityImpl() throws Exception {
 		analyzeEntity = Outside.service(this,"gus.b.entitysrc2.analyze.entity");
 		getListing = Outside.service(this,"gus.b.entitysrc2.listing.lastmodified");
 		findAll = Outside.service(this,"gus.b.entitysrc2.database.entity.findall.asmap");
-		deleteEntityIn = Outside.service(this,"gus.b.entitysrc2.database.entity.delete.in");
+		remover = Outside.service(this,"gus.b.entitysrc2.database.entity.remover");
+		
 		insertEntity = Outside.service(this,"gus.b.entitysrc2.database.entity.insert");
 		updateEntity = Outside.service(this,"gus.b.entitysrc2.database.entity.update");
+		
 		insertServices = Outside.service(this,"gus.b.entitysrc2.database.entity_service.insert");
 		deleteServices = Outside.service(this,"gus.b.entitysrc2.database.entity_service.delete");
-		deleteServicesIn = Outside.service(this,"gus.b.entitysrc2.database.entity_service.delete.in");
+		
 		insertResources = Outside.service(this,"gus.b.entitysrc2.database.entity_resource.insert");
 		deleteResources = Outside.service(this,"gus.b.entitysrc2.database.entity_resource.delete");
-		deleteResourcesIn = Outside.service(this,"gus.b.entitysrc2.database.entity_resource.delete.in");
+		
+		insertLinks = Outside.service(this,"gus.b.entitysrc2.database.entity_link.insert");
+		deleteLinks = Outside.service(this,"gus.b.entitysrc2.database.entity_link.delete1");
 	}
 	
 	
@@ -57,43 +65,68 @@ public class EntityImpl implements Entity, T {
 		
 		long t1 = System.currentTimeMillis();
 		
-		Map listing = (Map) getListing.t(rootDir);
-		Map dbMap = (Map) findAll.t(cx);
-		if(dbMap==null) throw new Exception("null data retrieved from cx");
+		Map mapRoot = (Map) getListing.t(rootDir);
+		Set setRoot = mapRoot.keySet();
 		
-		List over = new ArrayList(dbMap.keySet());
-		over.removeAll(listing.keySet());
-		if(!over.isEmpty()) {
-			deleteServicesIn.p(new Object[] {cx, over});
-			deleteResourcesIn.p(new Object[] {cx, over});
-			deleteEntityIn.p(new Object[] {cx, over});
-		}
+		Map mapDb = (Map) findAll.t(cx);
+		if(mapDb==null) throw new Exception("null data retrieved from cx");
+		
+		Set over = new HashSet(mapDb.keySet());
+		over.removeAll(setRoot);
+		if(!over.isEmpty()) remover.p(new Object[] {cx, over});
 		
 		Map results = new HashMap();
+		Set analyzed = new HashSet();
 		
 		int dirExistingNb = 0;
 		int dirOutDatedNb = 0;
 		int dirAnalyzedNb = 0;
 		
-		Iterator it = listing.keySet().iterator();
+		Iterator it = setRoot.iterator();
 		while(it.hasNext()) {
 			String entityName = (String) it.next();
-			long lastModified = (long) listing.get(entityName);
+			long lastModified = (long) mapRoot.get(entityName);
 			
 			boolean outDated = lastModified > lastTime;
-			boolean dbFound = dbMap.containsKey(entityName);
+			boolean dbFound = mapDb.containsKey(entityName);
+			boolean shouldAnalyze = outDated || !dbFound;
 			
 			if(dbFound) dirExistingNb++;
 			if(outDated) dirOutDatedNb++;
-			if(outDated || !dbFound) dirAnalyzedNb++;
+			if(shouldAnalyze) dirAnalyzedNb++;
 			
-			Map entityMap = findEntityMap(rootDir, cx, entityName, dbMap, outDated, dbFound);
+			Map entityMap = null;
+			
+			if(shouldAnalyze) {
+				entityMap = (Map) analyzeEntity.t(new Object[] {entityName, rootDir, setRoot});
+				analyzed.add(entityName);
+				
+				if(dbFound) updateEntity.p(new Object[] {cx,entityMap});
+				else insertEntity.p(new Object[] {cx,entityMap});
+			}
+			else entityMap = (Map) mapDb.get(entityName);
+			
 			results.put(entityName, entityMap);
 		}
 		
-		int dbTotalNb = dbMap.size();
+		it = analyzed.iterator();
+		while(it.hasNext()) {
+			String entityName = (String) it.next();
+			Map entityMap = (Map) results.get(entityName);
+			
+			if(mapDb.containsKey(entityName)) {
+				deleteServices.p(new Object[] {cx, entityName});
+				deleteResources.p(new Object[] {cx, entityName});
+				deleteLinks.p(new Object[] {cx, entityName});
+			}
+			insertServices.p(new Object[] {cx, entityMap});
+			insertResources.p(new Object[] {cx, entityMap});
+			insertLinks.p(new Object[] {cx, entityMap});
+		}
+		
+		int dbTotalNb = mapDb.size();
 		int dbRemovedNb = over.size();
-		int dirTotalNb = listing.size();
+		int dirTotalNb = mapRoot.size();
 		int dirNewNb = dirTotalNb - dirExistingNb;
 		
 		System.out.println("ENTITY SRC LOADING:");
@@ -109,40 +142,5 @@ public class EntityImpl implements Entity, T {
 		System.out.println("- duration: "+(t2-t1));
 		
 		return results;
-	}
-	
-	
-	
-	private Map findEntityMap(File rootDir, Connection cx, String entityName, Map dbMap, boolean outDated, boolean dbFound) throws Exception
-	{
-		if(!outDated && dbFound) return (Map) dbMap.get(entityName);
-		return analyzeEntity(rootDir, cx, entityName, dbFound);
-	}
-	
-	
-	
-	private Map analyzeEntity(File rootDir, Connection cx, String entityName, boolean dbFound) throws Exception
-	{
-		Map entityMap = (Map) analyzeEntity.t(new Object[] {entityName, rootDir});
-		
-		if(dbFound)
-		{
-			updateEntity.p(new Object[] {cx,entityMap});
-			
-			deleteServices.p(new Object[] {cx,entityName});
-			deleteResources.p(new Object[] {cx,entityName});
-			
-			insertServices.p(new Object[] {cx,entityMap});
-			insertResources.p(new Object[] {cx,entityMap});
-		}
-		else
-		{
-			insertEntity.p(new Object[] {cx,entityMap});
-			
-			insertServices.p(new Object[] {cx,entityMap});
-			insertResources.p(new Object[] {cx,entityMap});
-		}
-		
-		return entityMap;
 	}
 }

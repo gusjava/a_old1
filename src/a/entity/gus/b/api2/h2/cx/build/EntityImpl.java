@@ -23,6 +23,10 @@ public class EntityImpl implements Entity, T {
 		String url = "jdbc:h2:file:"+file+";MODE=MySQL;";
 		file.getParentFile().mkdirs();
 		
+//		url = "jdbc:h2:~/test;MODE=MySQL;";
+//		user = "sa";
+//		pwd = "";
+		
 		JdbcDataSource dataSource = new JdbcDataSource();
 		dataSource.setURL(url);
 		dataSource.setUser(user);

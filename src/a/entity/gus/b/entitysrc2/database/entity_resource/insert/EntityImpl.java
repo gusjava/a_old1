@@ -15,7 +15,7 @@ public class EntityImpl implements Entity, P {
 	public static final String TABLENAME = "entity_resource";
 	
 	public static final String COL_NAME = "name";
-	public static final String COL_CALL ="call";
+	public static final String COL_CALL = "call";
 
 	public static final String KEY_NAME = "name";
 	public static final String KEY_RESOURCES = "resources";

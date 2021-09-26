@@ -15,15 +15,8 @@ public class EntityImpl implements Entity, P, I {
 	private Service shiftPanel;
 	private Service panelSingle;
 	private Service panelMany;
-	private Service findPackageDir;
-	private Service findJavaFiles;
 	
-	private String entityName;
-	private Object engine;
-	
-	private File rootDir;
-	private File packageDir;
-	private File[] javaFiles;
+	private Object holder;
 	
 	
 	public EntityImpl() throws Exception
@@ -31,24 +24,18 @@ public class EntityImpl implements Entity, P, I {
 		shiftPanel = Outside.service(this,"*gus.a.swing.panel.shiftpanel");
 		panelSingle = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.src.single");
 		panelMany = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.src.many");
-		findPackageDir = Outside.service(this,"gus.a.entity.src.find.packagedir");
-		findJavaFiles = Outside.service(this,"gus.a.dir.listing0.files.java");
 	}
 	
 	
 	public void p(Object obj) throws Exception
 	{
 		if(obj==null) {reset();return;}
+		holder = obj;
 		
-		Object[] o = (Object[]) obj;
-		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
+		String entityName = (String) ((R) holder).r("entityName");
+		Object engine = ((R) holder).r("engine");
 		
-		entityName = (String) o[0];
-		engine = o[1];
-		
-		rootDir = (File) ((R) engine).r("rootDir");
-		packageDir = (File) findPackageDir.t(new Object[]{rootDir, entityName});
-		javaFiles = (File[]) findJavaFiles.t(packageDir);
+		File[] javaFiles = (File[]) ((R) holder).r("javaFiles");
 		
 		if(javaFiles==null) {
 			reset();
@@ -66,12 +53,7 @@ public class EntityImpl implements Entity, P, I {
 	
 	private void reset() throws Exception
 	{
-		entityName = null;
-		engine = null;
-		rootDir = null;
-		packageDir = null;
-		javaFiles = null;
-
+		holder = null;
 		panelSingle.p(null);
 		panelMany.p(null);
 		shiftPanel.p(null);

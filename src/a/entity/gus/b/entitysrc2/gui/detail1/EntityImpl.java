@@ -13,6 +13,7 @@ import a.framework.I;
 import a.framework.Outside;
 import a.framework.Service;
 import a.framework.P;
+import a.framework.R;
 
 public class EntityImpl implements Entity, P, I {
 	public String creationDate() {return "20210903";}
@@ -26,11 +27,11 @@ public class EntityImpl implements Entity, P, I {
 	private JLabel labelTitle;
 	private Icon entityIcon;
 	
-	private String entityName;
-	private Object engine;
+	private Object holder;
 	
 
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception
+	{
 		tabHolder = Outside.service(this,"*gus.b.swing1.tabbedpane.holder1");
 		gui1 = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.src");
 		gui2 = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.infos");
@@ -54,24 +55,21 @@ public class EntityImpl implements Entity, P, I {
 	public void p(Object obj) throws Exception {
 		if(obj==null) {reset();return;}
 		
-		Object[] o = (Object[]) obj;
-		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
+		holder = obj;
 		
-		entityName = (String) o[0];
-		engine = o[1];
+		String entityName = (String) ((R) holder).r("entityName");
 		
 		labelTitle.setText(entityName);
 		labelTitle.setIcon(entityIcon);
 		
-		gui1.p(obj);
-		gui2.p(obj);
-		gui3.p(obj);
+		gui1.p(holder);
+		gui2.p(holder);
+		gui3.p(holder);
 	}
 	
 	
 	private void reset() throws Exception {
-		entityName = null;
-		engine = null;
+		holder = null;
 		
 		labelTitle.setText(" ");
 		labelTitle.setIcon(null);

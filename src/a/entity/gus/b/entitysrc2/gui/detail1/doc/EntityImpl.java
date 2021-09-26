@@ -13,9 +13,8 @@ public class EntityImpl implements Entity, P, I {
 
 
 	private JPanel panel;
-	
-	private String entityName;
-	private Object engine;
+
+	private Object holder;
 	
 	public EntityImpl() throws Exception
 	{
@@ -26,18 +25,12 @@ public class EntityImpl implements Entity, P, I {
 	public void p(Object obj) throws Exception
 	{
 		if(obj==null) {reset();return;}
-		
-		Object[] o = (Object[]) obj;
-		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
-		
-		entityName = (String) o[0];
-		engine = o[1];
+		holder = obj;
 	}
 	
 	private void reset()
 	{
-		entityName = null;
-		engine = null;
+		holder = null;
 	}
 	
 	

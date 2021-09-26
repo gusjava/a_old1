@@ -17,6 +17,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 
 
 	private Service engine;
+	private Service buildHolder;
 	private Service guiListing;
 	private Service guiDetail;
 	private Service persistTextComp;
@@ -24,9 +25,13 @@ public class EntityImpl implements Entity, I, ActionListener {
 	private Service persistSet;
 	
 	private JSplitPane split;
+	
+	private Object holder;
+	
 
 	public EntityImpl() throws Exception {
 		engine = Outside.service(this,"gus.b.entitysrc2.engine.main");
+		buildHolder = Outside.service(this,"gus.b.entitysrc2.engine.entityholder");
 		guiListing = Outside.service(this,"*gus.b.entitysrc2.gui.listing1");
 		guiDetail = Outside.service(this,"*gus.b.entitysrc2.gui.detail1");
 		persistTextComp = Outside.service(this,"gus.b.persist1.swing.textcomp");
@@ -81,7 +86,8 @@ public class EntityImpl implements Entity, I, ActionListener {
 			String entityName = (String) guiListing.g();
 			if(entityName==null) {guiDetail.p(null);return;}
 			
-			guiDetail.p(new Object[] {entityName, engine});
+			holder = buildHolder.t(new Object[] {entityName, engine});
+			guiDetail.p(holder);
 		}
 		catch(Exception e) {
 			Outside.err(this,"selectionChanged()",e);

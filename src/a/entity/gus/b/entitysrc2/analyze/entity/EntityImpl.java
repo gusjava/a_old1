@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import a.framework.Entity;
 import a.framework.Outside;
@@ -23,6 +24,7 @@ public class EntityImpl implements Entity, T {
 	public static final String KEY_PACKAGE = "package";
 	public static final String KEY_RESOURCES = "resources";
 	public static final String KEY_SERVICES = "services";
+	public static final String KEY_LINKS = "links";
 
 	
 	private Service nameToFile;
@@ -38,17 +40,18 @@ public class EntityImpl implements Entity, T {
 	
 	public Object t(Object obj) throws Exception {
 		Object[] o = (Object[]) obj;
-		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
+		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
 		
 		String entityName = (String) o[0];
 		File rootDir = (File) o[1];
+		Set setRoot = (Set) o[2];
 		
 		File javaFile = (File) nameToFile.t(new Object[] {rootDir, entityName});
-		return extractDataFrom(javaFile, entityName);
+		return extractDataFrom(javaFile, entityName, setRoot);
 	}
 	
 	
-	private Map extractDataFrom(File javaFile, String entityName) throws Exception
+	private Map extractDataFrom(File javaFile, String entityName, Set setRoot) throws Exception
 	{
 		try
 		{
@@ -62,13 +65,19 @@ public class EntityImpl implements Entity, T {
 			if(!data.containsKey(KEY_FEATURES)) throw new Exception("Features not found");
 			if(!data.containsKey(KEY_CREATIONDATE)) throw new Exception("Creation date not found");
 			if(!data.containsKey(KEY_RESOURCES)) throw new Exception("Resources not found");
-			if(!data.containsKey(KEY_SERVICES)) throw new Exception("Services date not found");
+			if(!data.containsKey(KEY_SERVICES)) throw new Exception("Services not found");
+			if(!data.containsKey(KEY_LINKS)) throw new Exception("Links not found");
 			
 			String package1 = (String) data.get(KEY_PACKAGE);
 			if(!package1.equals("a.entity."+entityName)) throw new Exception("Invalid package value: "+package1);
 
+			Set links = (Set) data.get(KEY_LINKS);
+			links.retainAll(setRoot);
+			links.remove(entityName);
+
 			List resources = (List) data.get(KEY_RESOURCES);
 			List services = (List) data.get(KEY_SERVICES);
+			
 			int callNb = resources.size() + services.size();
 			
 			data.put(KEY_NAME, entityName);

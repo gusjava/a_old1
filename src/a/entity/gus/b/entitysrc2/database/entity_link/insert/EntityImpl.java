@@ -1,23 +1,26 @@
-package a.entity.gus.b.entitysrc2.database.entity_service.insert;
+package a.entity.gus.b.entitysrc2.database.entity_link.insert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import a.framework.*;
+import a.framework.Entity;
+import a.framework.P;
 
 public class EntityImpl implements Entity, P {
-	public String creationDate() {return "20210906";}
+	public String creationDate() {return "20210913";}
 
-	public static final String TABLENAME = "entity_service";
+	public static final String TABLENAME = "entity_link";
 	
-	public static final String COL_NAME = "name";
-	public static final String COL_CALL = "call";
+	public static final String COL_NAME1 = "name1";
+	public static final String COL_NAME2 = "name2";
 
 	public static final String KEY_NAME = "name";
-	public static final String KEY_SERVICES = "services";
+	public static final String KEY_LINKS = "links";
 	
 	
 	public void p(Object obj) throws Exception
@@ -27,15 +30,23 @@ public class EntityImpl implements Entity, P {
 		
 		Connection cx = (Connection) o[0];
 		Map data = (Map) o[1];
-		
+
 		String entityName = (String) data.get(KEY_NAME);
-		List list = (List) data.get(KEY_SERVICES);
+		List list = new ArrayList((Set) data.get(KEY_LINKS));
 		
 		for(int i=0;i<list.size();i++)
 		{
-			String call = (String) list.get(i);
-			String sql = "INSERT INTO "+TABLENAME+" ("+COL_NAME+","+COL_CALL+") VALUES (?,?) ";
-			executeUpdate(cx, sql, entityName, call);
+			String linked = (String) list.get(i);
+			
+			try
+			{
+				String sql = "INSERT INTO "+TABLENAME+" ("+COL_NAME1+","+COL_NAME2+") VALUES (?,?) ";
+				executeUpdate(cx, sql, entityName, linked);
+			}
+			catch(SQLException e)
+			{
+				throw new Exception("Failed add link ["+linked+"] to entity ["+entityName+"]", e);
+			}
 		}
 	}
 	

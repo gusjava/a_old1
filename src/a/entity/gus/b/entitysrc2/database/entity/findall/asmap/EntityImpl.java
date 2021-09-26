@@ -13,7 +13,7 @@ import a.framework.T;
 public class EntityImpl implements Entity, T {
 	public String creationDate() {return "20210829";}
 
-	public static final String TABLENAME_ENTITY = "entity";
+	public static final String TABLENAME = "entity";
 
 	public static final String COL_NAME = "name";
 	public static final String COL_FEATURES = "features";
@@ -31,7 +31,7 @@ public class EntityImpl implements Entity, T {
 	public Object t(Object obj) throws Exception {
 		Connection cx = (Connection) obj;
 		
-		String sql = "SELECT * FROM "+TABLENAME_ENTITY;
+		String sql = "SELECT * FROM "+TABLENAME;
 		Statement st = cx.createStatement();
 		ResultSet rs = st.executeQuery(sql);
 		
