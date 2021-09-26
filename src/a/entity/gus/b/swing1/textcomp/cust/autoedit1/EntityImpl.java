@@ -2,15 +2,12 @@ package a.entity.gus.b.swing1.textcomp.cust.autoedit1;
 
 import a.framework.*;
 import javax.swing.text.JTextComponent;
-import javax.swing.SwingUtilities;
+import javax.swing.JComponent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-
 public class EntityImpl implements Entity, P {
-
 	public String creationDate() {return "20210926";}
-
 
 	private Service performEnter;
 	private Service performTab;
@@ -43,58 +40,31 @@ public class EntityImpl implements Entity, P {
 		public void keyReleased(KeyEvent e) {}
 		public void keyPressed(KeyEvent e)
 		{
-			String selection = comp.getSelectedText();
-			SwingUtilities.invokeLater(new Holder2(comp, selection, e));
-		}
-	}
-	
-	
-	
-	private class Holder2 implements Runnable
-	{
-		private JTextComponent comp;
-		private String selection;
-		private KeyEvent evt;
-		
-		public Holder2(JTextComponent comp, String selection, KeyEvent evt)
-		{
-			this.comp = comp;
-			this.selection = selection;
-			this.evt = evt;
-		}
-		public void run()
-		{perform(comp,selection,evt);}
-	}
-	
-	
-	
-
-
-	private void perform(JTextComponent comp, String selection, KeyEvent evt)
-	{
-		try
-		{
-			int code = evt.getKeyCode();
-			if(isShift(evt))
+			int code = e.getKeyCode();
+			if(isShift(e))
 			{
 				switch(code)
 				{
-					case KeyEvent.VK_TAB: performTabInv.p(new Object[] {comp,selection});break;
+					case KeyEvent.VK_TAB: perform(performTabInv,comp);break;
 				}
 			}
 			else
 			{
 				switch(code)
 				{
-					case KeyEvent.VK_ENTER: performEnter.p(comp);break;
-					case KeyEvent.VK_TAB: performTab.p(new Object[] {comp,selection});break;
+					case KeyEvent.VK_ENTER: perform(performEnter,comp);break;
+					case KeyEvent.VK_TAB: perform(performTab,comp);break;
 				}
 			}
 		}
-		catch(Exception e)
-		{Outside.err(this,"perform(JTextComponent, String, KeyEvent)",e);}
 	}
 	
+	private void perform(P p, JComponent comp)
+	{
+		try{p.p(comp);}
+		catch(Exception e)
+		{Outside.err(this,"perform(P,JTextComponent)",e);}
+	}
 	
 	private boolean isShift(KeyEvent e)
 	{return e.getModifiers() == KeyEvent.SHIFT_MASK;}

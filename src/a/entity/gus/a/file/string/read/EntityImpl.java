@@ -10,7 +10,8 @@ public class EntityImpl implements Entity, T {
 	public String creationDate() {return "20210810";}
 	
 	
-	public Object t(Object obj) throws Exception {
+	public Object t(Object obj) throws Exception
+	{
 		File file = (File) obj;
 		FileReader fr = new FileReader(file);
 		char[] a = new char[(int) file.length()];

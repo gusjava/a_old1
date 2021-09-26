@@ -1,6 +1,8 @@
 package a.entity.gus.b.swing1.textcomp.cust.autoedit1.tab.perform;
 
 import a.framework.*;
+
+import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 public class EntityImpl implements Entity, P {
@@ -11,16 +13,14 @@ public class EntityImpl implements Entity, P {
 	
 	public void p(Object obj) throws Exception
 	{
-		Object[] o = (Object[]) obj;
-		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
+		final JTextComponent comp = (JTextComponent) obj;
 		
-		JTextComponent comp = (JTextComponent) o[0];
-		String selection = (String) o[1];
-		
+		String selection = comp.getSelectedText();
 		if(selection==null) return;
 		
-		String s0 = moveRight(selection);
-		replaceText(comp,s0);
+		final String s0 = moveRight(selection);
+		
+		SwingUtilities.invokeLater(()->replaceText(comp,s0));
 	}
 	
 	
@@ -30,7 +30,8 @@ public class EntityImpl implements Entity, P {
 		String[] line = s.split("\n");
 		for(int i=0;i<line.length;i++)
 		{
-			b.append("\t"+line[i]+"\n");
+			if(i>0) b.append("\t");
+			b.append(line[i]+"\n");
 		}
 		
 		if(b.length()>0) b.deleteCharAt(b.length()-1);
