@@ -22,12 +22,15 @@ public class EntityImpl implements Entity, P {
 
 	private Service undoRedo;
 	private Service paintCaretLine;
+	private Service slashComment;
+	private Service autoEdit1;
 	
 	public EntityImpl() throws Exception
 	{
 		undoRedo = Outside.service(this,"gus.b.swing1.textcomp.cust.action.ctrl_zy.undoredo");
 		paintCaretLine = Outside.service(this,"gus.b.swing1.textarea1.p.paint.caretline");
-		
+		slashComment = Outside.service(this,"gus.b.swing1.textcomp.cust.action.ctrl_shift_slash.comment");
+		autoEdit1 = Outside.service(this,"gus.b.swing1.textcomp.cust.autoedit1");
 	}
 	
 	
@@ -42,5 +45,7 @@ public class EntityImpl implements Entity, P {
 		
 		paintCaretLine.p(comp);
 		undoRedo.p(comp);
+		slashComment.p(comp);
+		autoEdit1.p(comp);
 	}
 }

@@ -12,7 +12,8 @@ public class EntityImpl implements Entity, T {
 	
 	
 	
-	public Object t(Object obj) throws Exception {
+	public Object t(Object obj) throws Exception
+	{
 		Object[] o = (Object[]) obj;
 		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
 		

@@ -85,7 +85,8 @@ public class EntityImpl implements Entity, T {
 	}
 	
 	
-	private void execute(E exe) {
+	private void execute(E exe) 
+	{
 		try {exe.e();}
 		catch(Exception e) {Outside.err(this,"execute(E)",e);}
 	}

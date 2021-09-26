@@ -3,7 +3,9 @@ package a.entity.gus.b.entitysrc2.database.entity_service.delete.in;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import a.framework.Entity;
 import a.framework.P;
@@ -26,7 +28,7 @@ public class EntityImpl implements Entity, P {
 		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
 		
 		Connection cx = (Connection) o[0];
-		List names = (List) o[1];
+		Set names = (Set) o[1];
 		
 		StringBuffer b =  new StringBuffer();
 		b.append("DELETE FROM ");
@@ -42,7 +44,7 @@ public class EntityImpl implements Entity, P {
 		}
 		b.append(")");
 		
-		executeUpdate(cx, b.toString(), names);
+		executeUpdate(cx, b.toString(), new ArrayList(names));
 		
 	}
 	
