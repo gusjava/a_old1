@@ -90,7 +90,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private Set lockSet;
 	
 	
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception
+	{
 		fieldHolder = Outside.service(this,"*gus.b.swing1.textfield.editor1");
 		engineHolder = Outside.service(this,"*gus.a.features.s.holder");
 		
@@ -195,7 +196,11 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		
 		engineHolder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
-			{reload();}
+			{
+				String s = e.getActionCommand();
+				if(s.equals("changed()")) reload();
+				else if(s.equals("selected()")) select();
+			}
 		});
 		
 		refreshActions();
@@ -265,17 +270,50 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	private void reload()
 	{
-		try {
+		try
+		{
 			data = buildFullData();
 			refresh();
 		}
-		catch(Exception e) {
-			Outside.err(this, "reload()", e);
+		catch(Exception e)
+		{Outside.err(this, "reload()", e);}
+	}
+	
+	
+	
+	private void select()
+	{
+		try
+		{
+			final String name = (String) ((R) engine).r("selected");
+			if(!addToLocked(name)) return;
+			
+			SwingUtilities.invokeLater(()->{
+				model.rebuild();
+				selectEntity(name);
+			});
+		}
+		catch(Exception e)
+		{Outside.err(this, "select()", e);}
+	}
+	
+	
+	
+	
+	private void selectEntity(String name)
+	{
+		for(int i=0;i<model.getRowCount();i++)
+		if(model.getValueAt(i,0).equals(name)) 
+		{
+			table.getSelectionModel().setSelectionInterval(i, i);
+			return;
 		}
 	}
 	
 	
-	private List buildFullData() throws Exception {
+	
+	private List buildFullData() throws Exception
+	{
 		Map map = (Map) ((G) engine).g();
 		if(map==null) return null;
 		
@@ -300,9 +338,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	private void refresh()
 	{
-		SwingUtilities.invokeLater(model);
-		field.requestFocusInWindow();
+		SwingUtilities.invokeLater(()->{
+			model.rebuild();
+			field.requestFocusInWindow();
+		});
 	}
+	
 	
 	private List buildListForTable()
 	{
@@ -370,39 +411,40 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	 * TABLE MODEL
 	 */
 	
-	private class TableModel0 extends AbstractTableModel implements Runnable
+	private class TableModel0 extends AbstractTableModel
 	{
 		private List list = new ArrayList();
 		
-		public int getColumnCount() {
-			return 3;
-		}
+		public int getColumnCount()
+		{return 3;}
 		
-		public int getRowCount() {
-			return list.size();
-		}
+		public int getRowCount()
+		{return list.size();}
 		
-		public String getColumnName(int y) {
+		public String getColumnName(int y)
+		{
 			if(y==0) return "Entity name";
 			if(y==1) return "Features";
 			if(y==2) return "N";
 			return "";
 		}
 		
-		public Class getColumnClass(int y) {
+		public Class getColumnClass(int y)
+		{
 			return String.class;
 		}
 
-		public Object getValueAt(int x, int y){
+		public Object getValueAt(int x, int y)
+		{
 			String[] infos = (String[]) list.get(x);
 			return infos[y];
 		}
 		
-		public void run() {
+		public void rebuild()
+		{
 			list = buildListForTable();
 			labelNumber.setText(" "+list.size());
 			fireTableDataChanged();
-			field.requestFocusInWindow();
 		}
 	}
 	
@@ -450,10 +492,20 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		selectionChanged();
 	}
 	
-	private void selectionChanged() {
+	private void selectionChanged()
+	{
 		send(this,"selectionChanged()");
 	}
 	
+	
+	
+	private boolean addToLocked(String name)
+	{
+		if(lockSet.contains(name)) return true;
+		if(lockSet.size()>=LOCK_MAX) return false;
+		lockSet.add(name);
+		return true;
+	}
 	
 	
 	
@@ -465,11 +517,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		int[] rows = table.getSelectedRows();
 		for(int row : rows) {
 			String name = (String) table.getValueAt(row, 0);
-			
-			if(lockSet.size()<LOCK_MAX)
-			lockSet.add(name);
+			addToLocked(name);
 		}
-		SwingUtilities.invokeLater(model);
+		SwingUtilities.invokeLater(()->{
+			model.rebuild();
+			field.requestFocusInWindow();
+		});
 	}
 	
 	private void unlockSelected() {
@@ -478,17 +531,21 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			String name = (String) table.getValueAt(row, 0);
 			lockSet.remove(name);
 		}
-		SwingUtilities.invokeLater(model);
+		SwingUtilities.invokeLater(()->{
+			model.rebuild();
+			field.requestFocusInWindow();
+		});
 	}
 	
 	private void lockAll() {
 		for(int i=0;i<table.getRowCount();i++) {
 			String name = (String) table.getValueAt(i, 0);
-			
-			if(lockSet.size()<LOCK_MAX)
-			lockSet.add(name);
+			addToLocked(name);
 		}
-		SwingUtilities.invokeLater(model);
+		SwingUtilities.invokeLater(()->{
+			model.rebuild();
+			field.requestFocusInWindow();
+		});
 	}
 	
 	private void unlockAll() {
@@ -496,7 +553,10 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			String name = (String) table.getValueAt(i, 0);
 			lockSet.remove(name);
 		}
-		SwingUtilities.invokeLater(model);
+		SwingUtilities.invokeLater(()->{
+			model.rebuild();
+			field.requestFocusInWindow();
+		});
 	}
 	
 	private void copySelection() {
@@ -519,11 +579,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		try {
 			String s = (String) clipboard.g();
 			String[] n = s.split("[\n\r]+");
-			for(int i=0;i<n.length;i++) {
-				if(lockSet.size()<LOCK_MAX)
-				lockSet.add(n[i]);
-			}
-			SwingUtilities.invokeLater(model);
+			for(int i=0;i<n.length;i++) addToLocked(n[i]);
+			
+			SwingUtilities.invokeLater(()->{
+				model.rebuild();
+				field.requestFocusInWindow();
+			});
 		}
 		catch(Exception e) {
 			Outside.err(this,"pasteSelection()",e);

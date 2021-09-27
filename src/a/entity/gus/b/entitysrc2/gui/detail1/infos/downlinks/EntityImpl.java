@@ -1,6 +1,8 @@
 package a.entity.gus.b.entitysrc2.gui.detail1.infos.downlinks;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +20,12 @@ import a.framework.Outside;
 import a.framework.P;
 import a.framework.R;
 import a.framework.Service;
+import a.framework.V;
 
-public class EntityImpl implements Entity, P, I {
+public class EntityImpl implements Entity, P, I, KeyListener {
 	public String creationDate() {return "20210920";}
+	
+	public static final String KEY_SELECT = "ctrl K";
 
 
 	private Service findLinks;
@@ -33,8 +38,11 @@ public class EntityImpl implements Entity, P, I {
 	private JTree tree;
 
 	private Object holder;
+	
+	private Object engine;
 	private String entityName;
 	private Connection cx;
+	
 
 	public EntityImpl() throws Exception
 	{
@@ -49,6 +57,8 @@ public class EntityImpl implements Entity, P, I {
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(new JScrollPane(tree), BorderLayout.CENTER);
+		
+		tree.addKeyListener(this);
 	}
 	
 	
@@ -57,6 +67,7 @@ public class EntityImpl implements Entity, P, I {
 		if(obj==null) {reset();return;}
 		holder = obj;
 		
+		engine = ((R) holder).r("engine");
 		entityName = (String) ((R) holder).r("entityName");
 		cx = (Connection) ((R) holder).r("cx");
 		
@@ -72,6 +83,7 @@ public class EntityImpl implements Entity, P, I {
 	private void reset() throws Exception
 	{
 		holder = null;
+		engine = null;
 		entityName = null;
 		cx = null;
 		
@@ -112,5 +124,28 @@ public class EntityImpl implements Entity, P, I {
 		public void valueForPathChanged(TreePath path, Object newValue) {}
 		public void addTreeModelListener(TreeModelListener l) {}
 		public void removeTreeModelListener(TreeModelListener l) {}
+	}
+
+	
+	public void keyTyped(KeyEvent e) {}
+	public void keyReleased(KeyEvent e) {}
+	public void keyPressed(KeyEvent e) 
+	{
+		if(e.isControlDown() && e.getKeyCode()==KeyEvent.VK_K) selectEntity();
+	}
+	
+	
+	
+	private void selectEntity()
+	{
+		try
+		{
+			String selectedName = (String) tree.getLastSelectedPathComponent();
+			if(selectedName==null) return;
+			
+			((V) engine).v("select", selectedName);
+		}
+		catch(Exception e)
+		{Outside.err(this,"selectEntity()",e);}
 	}
 }

@@ -70,27 +70,26 @@ public class EntityImpl implements Entity, I, ActionListener {
 	}
 	
 	
-	public Object i() throws Exception {
-		return split;
-	}
+	public Object i() throws Exception
+	{return split;}
 
 
-	public void actionPerformed(ActionEvent e) {
-		selectionChanged();
-	}
+	public void actionPerformed(ActionEvent e)
+	{selectionChanged();}
 	
 	
 	
-	private void selectionChanged() {
-		try {
+	private void selectionChanged()
+	{
+		try
+		{
 			String entityName = (String) guiListing.g();
 			if(entityName==null) {guiDetail.p(null);return;}
 			
 			holder = buildHolder.t(new Object[] {entityName, engine});
 			guiDetail.p(holder);
 		}
-		catch(Exception e) {
-			Outside.err(this,"selectionChanged()",e);
-		}
+		catch(Exception e)
+		{Outside.err(this,"selectionChanged()",e);}
 	}
 }
