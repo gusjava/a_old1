@@ -3,6 +3,7 @@ package a.entity.gus.b.entitysrc2.gui.listing1.filter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import a.framework.Entity;
 import a.framework.F;
@@ -49,6 +50,7 @@ public class EntityImpl implements Entity, T {
 		private List st = new ArrayList();
 		private List en = new ArrayList();
 		private List co = new ArrayList();
+		private List in = new ArrayList();
 		
 		public Filter(String search, String devId, Set lockSet) {
 			if(search==null || search.trim().equals("")) {
@@ -79,7 +81,7 @@ public class EntityImpl implements Entity, T {
 				}
 				else {
 					if(n0.startsWith("*") && n0.endsWith("*")) {
-						co.add(n0.substring(1, n0.length()-1));
+						in.add(n0.substring(1, n0.length()-1));
 					}
 					else if(n0.startsWith("*")) {
 						en.add(n0.substring(1));
@@ -116,13 +118,18 @@ public class EntityImpl implements Entity, T {
 					if(!ff.contains(feature)) return false;
 				}
 			}
-			
+
+			int nbIn = in.size();
 			int nbCo = co.size();
 			int nbSt = st.size();
 			int nbEn = en.size();
 			
-			if(nbCo + nbSt + nbEn == 0) return true;
+			if(nbIn + nbCo + nbSt + nbEn == 0) return true;
 			
+			for(int i=0;i<nbIn;i++) {
+				String s = (String) in.get(i);
+				if(name.matches(".+"+Pattern.quote(s)+".+")) return true;
+			}
 			for(int i=0;i<nbCo;i++) {
 				String s = (String) co.get(i);
 				if(name.contains(s)) return true;
