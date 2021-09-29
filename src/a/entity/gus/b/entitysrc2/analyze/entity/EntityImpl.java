@@ -33,7 +33,7 @@ public class EntityImpl implements Entity, T {
 
 	public EntityImpl() throws Exception 
 	{
-		nameToFile = Outside.service(this,"gus.b.entitysrc2.nametofile");
+		nameToFile = Outside.service(this,"gus.a.entity.src.find.entityfile");
 		readFile = Outside.service(this,"gus.a.file.string.read");
 		extract = Outside.service(this,"gus.b.entitysrc2.analyze.entity.extract");
 	}

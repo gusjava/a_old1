@@ -124,22 +124,24 @@ public class EntityImpl implements Entity, T {
 			insertLinks.p(new Object[] {cx, entityMap});
 		}
 		
-		int dbTotalNb = mapDb.size();
-		int dbRemovedNb = over.size();
-		int dirTotalNb = mapRoot.size();
-		int dirNewNb = dirTotalNb - dirExistingNb;
+		long duration = System.currentTimeMillis()-t1;
 		
-		System.out.println("ENTITY SRC LOADING:");
-		System.out.println("- DB total: "+dbTotalNb);
-		System.out.println("- DB removed: "+dbRemovedNb);
-		System.out.println("- DIR total: "+dirTotalNb);
-		System.out.println("- DIR existing: "+dirExistingNb);
-		System.out.println("- DIR new: "+dirNewNb);
-		System.out.println("- DIR outdated: "+dirOutDatedNb);
-		System.out.println("- DIR analyzed: "+dirAnalyzedNb);
-
-		long t2 = System.currentTimeMillis();
-		System.out.println("- duration: "+(t2-t1));
+//		int dbTotalNb = mapDb.size();
+//		int dbRemovedNb = over.size();
+//		int dirTotalNb = mapRoot.size();
+//		int dirNewNb = dirTotalNb - dirExistingNb;
+//		
+//		System.out.println("ENTITY SRC LOADING:");
+//		System.out.println("- DB total: "+dbTotalNb);
+//		System.out.println("- DB removed: "+dbRemovedNb);
+//		System.out.println("- DIR total: "+dirTotalNb);
+//		System.out.println("- DIR existing: "+dirExistingNb);
+//		System.out.println("- DIR new: "+dirNewNb);
+//		System.out.println("- DIR outdated: "+dirOutDatedNb);
+//		System.out.println("- DIR analyzed: "+dirAnalyzedNb);
+//		System.out.println("- duration: "+duration);
+		
+		System.out.println("Analyzed entity nb: "+dirAnalyzedNb+" (duration="+duration+")");
 		
 		return results;
 	}

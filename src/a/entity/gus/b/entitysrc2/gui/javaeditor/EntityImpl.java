@@ -24,6 +24,7 @@ import a.framework.Outside;
 import a.framework.P;
 import a.framework.R;
 import a.framework.Service;
+import a.framework.V;
 
 public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	public String creationDate() {return "20210907";}
@@ -214,7 +215,7 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		actionSave.setEnabled(false);
 		actionReload.setEnabled(false);
 		
-		((E) engine).e();
+		((V) engine).v("modified",entityName);
 	}
 	
 	

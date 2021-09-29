@@ -2,7 +2,7 @@ package a.entity.gus.b.api1.jdepend.analyze.data;
 
 import java.util.*;
 
-/**
+/** 
  * The <code>JavaClass</code> class represents a Java 
  * class or interface.
  * 

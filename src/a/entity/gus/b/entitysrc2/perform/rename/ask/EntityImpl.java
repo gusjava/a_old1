@@ -25,7 +25,7 @@ public class EntityImpl implements Entity, P, F {
 	public static final String MESSAGE = "Please, enter entity's new name:";
 	public static final String MESSAGE_ERR = "Entity rename has been aborted";
 
-	public static final String TITLE_REFACTOR = "Entity's dependencies";
+	public static final String TITLE_DEPENDENCIES = "Entity's dependencies";
 
 
 	private Service perform;
@@ -65,7 +65,9 @@ public class EntityImpl implements Entity, P, F {
 		{
 			String message = "The entity "+oldName+" is used by "+downLinks.size()+" other entities:\n"
 					+ toString(downLinks) + "\nWould you like to update these links with the new name ?";
-			int r = JOptionPane.showConfirmDialog(window, message, TITLE_REFACTOR, JOptionPane.YES_NO_OPTION);
+			int r = JOptionPane.showConfirmDialog(window, message, TITLE_DEPENDENCIES, JOptionPane.YES_NO_CANCEL_OPTION);
+			if(r==JOptionPane.CANCEL_OPTION) return false;
+			
 			refactor = r==JOptionPane.YES_OPTION;
 		}
 		
@@ -77,7 +79,6 @@ public class EntityImpl implements Entity, P, F {
 			JOptionPane.showMessageDialog(window, MESSAGE_ERR, TITLE, JOptionPane.PLAIN_MESSAGE);
 			return false;
 		}
-		
 		return true;
 	}
 	
@@ -88,10 +89,10 @@ public class EntityImpl implements Entity, P, F {
 		StringBuffer b = new StringBuffer();
 		List list = new ArrayList(links);
 		Collections.sort(list);
-		int nb = Math.max(list.size(), 10);
+		int nb = Math.min(list.size(), 10);
 		for(int i=0;i<nb;i++)
-			b.append(list.get(i)+"\n");
-		if(nb<list.size()) b.append("...\n");
+			b.append("- "+list.get(i)+"\n");
+		if(nb<list.size()) b.append("- ...\n");
 		return b.toString();
 	}
 }

@@ -20,7 +20,7 @@ public class EntityImpl implements Entity, P {
 
 	public EntityImpl() throws Exception
 	{
-		findEntityFile = Outside.service(this,"gus.b.entitysrc2.nametofile");
+		findEntityFile = Outside.service(this,"gus.a.entity.src.find.entityfile");
 		findDownLinks = Outside.service(this,"gus.b.entitysrc2.database.entity_link.find2");
 		read = Outside.service(this, "gus.a.file.string.read");
 		extract = Outside.service(this, "gus.a.entity.name.extract");
@@ -57,7 +57,11 @@ public class EntityImpl implements Entity, P {
 				while(m.find())
 				{
 					String l = m.group();
-					if(l.equals(name0)) l = name1;
+					if(l.equals(name0))
+					{
+						System.out.println(downLink+": Refactoring link "+l+" into "+name1);
+						l = name1;
+					}
 					m.appendReplacement(newSrc,l);
 				}
 				m.appendTail(newSrc);

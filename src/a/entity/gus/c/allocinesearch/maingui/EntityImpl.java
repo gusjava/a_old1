@@ -12,12 +12,14 @@ public class EntityImpl implements Entity, I {
 
 	private JPanel panel;
 	
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception
+	{
 		panel = new JPanel(new BorderLayout());
 	}
 	
 	
-	public Object i() throws Exception {
+	public Object i() throws Exception 
+	{
 		return panel;
 	}
 }

@@ -3,7 +3,6 @@ package a.entity.gus.b.entitysrc2.gui.listing1;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
-import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -78,10 +76,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private TableModel0 model;
 	private JComponent field;
 	private JLabel labelNumber;
+	private JLabel labelNumberLocked;
 	private JToolBar bar;
 	
 	private Icon iconEntity;
 	private Icon iconEntityLock;
+	private Icon iconLock;
 	
 	private Action actionCreate;
 	private Action actionDelete;
@@ -89,7 +89,11 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private Action actionDuplicate;
 	
 	private Object engine;
+	
+	private Map map;
+	private List names;
 	private List data;
+	
 	private Set lockSet;
 	
 	
@@ -112,6 +116,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		
 		iconEntity = (Icon) Outside.resource(this,"icon#ELEMENT_entity");
 		iconEntityLock = (Icon) Outside.resource(this,"icon#ELEMENT_entity_lock");
+		iconLock = (Icon) Outside.resource(this,"icon#UTIL_lockR");
 		
 		actionCreate = (Action) actionBuilder.t(new Object[] {DISPLAY_CREATE, (E) this::entityCreate});
 		actionDelete = (Action) actionBuilder.t(new Object[] {DISPLAY_DELETE, (E) this::entityDelete});
@@ -122,6 +127,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		lockSet = new HashSet();
 
 		labelNumber = new JLabel(" ");
+		labelNumberLocked = new JLabel(" ");
+		
 		bar = (JToolBar) toolbarFactory.i();
 		
 		bar.add(actionCreate);
@@ -180,7 +187,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		scroll.getViewport().setOpaque(true);
 		
 		JPanel bottomPanel = new JPanel(new BorderLayout());
-		bottomPanel.add(labelNumber,BorderLayout.CENTER);
+		bottomPanel.add(labelNumber,BorderLayout.WEST);
+		bottomPanel.add(labelNumberLocked,BorderLayout.CENTER);
 		bottomPanel.add(bar,BorderLayout.EAST);
 		
 		panel = new JPanel(new BorderLayout());
@@ -248,21 +256,34 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	
 	
-	/*
-	 * INTERNAL
-	 */
-	
 	private void initColumnSize(int index, int size)
 	{
 		table.getTableHeader().getColumnModel().getColumn(index).setMinWidth(size);
 		table.getTableHeader().getColumnModel().getColumn(index).setMaxWidth(size);
 	}
 	
+	
+	
+	private void refreshLocked()
+	{
+		if(names!=null) lockSet.retainAll(names);
+		if(lockSet.isEmpty())
+		{
+			labelNumberLocked.setIcon(null);
+			labelNumberLocked.setText(" ");
+		}
+		else
+		{
+			labelNumberLocked.setIcon(iconLock);
+			labelNumberLocked.setText(""+lockSet.size());
+		}
+	}
+	
 	private void forceReload()
 	{
 		try {
 			((E) engine).e();
-			data = buildFullData();
+			buildData();
 			refresh();
 		}
 		catch(Exception e) {
@@ -275,7 +296,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	{
 		try
 		{
-			data = buildFullData();
+			buildData();
 			refresh();
 		}
 		catch(Exception e)
@@ -289,7 +310,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		try
 		{
 			final String name = (String) ((R) engine).r("selected");
-			if(!addToLocked(name)) return;
+			addToLocked(name);
 			
 			SwingUtilities.invokeLater(()->{
 				model.rebuild();
@@ -315,7 +336,6 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	}
 	
 	
-	
 	private void ensureRowIsVisible(int row)
 	{
 		Rectangle rect = table.getCellRect(row,0,true);
@@ -324,27 +344,32 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	
 	
-	private List buildFullData() throws Exception
+	
+	private void buildData() throws Exception
 	{
-		Map map = (Map) ((G) engine).g();
-		if(map==null) return null;
+		map = (Map) ((G) engine).g();
+		if(map==null)
+		{
+			data = null;
+			names = null;
+			return;
+		}
 		
-		List keys = new ArrayList(map.keySet());
-		Collections.sort(keys);
+		names = new ArrayList(map.keySet());
+		Collections.sort(names);
+		int nb = names.size();
 		
-		List list = new ArrayList();
-		int nb = keys.size();
+		data = new ArrayList();
 		for(int i=0;i<nb;i++) {
-			String key = (String) keys.get(i);
+			String key = (String) names.get(i);
 			Map entityData = (Map) map.get(key);
 			
 			String features = (String) entityData.get(COL_FEATURES);
 			int callNb = (int) entityData.get(COL_CALLNB);
 			String call =  callNb>0 ? ""+callNb : "";
 			
-			list.add(new String[] {key, features, call});
+			data.add(new String[] {key, features, call});
 		}
-		return list;
 	}
 	
 	
@@ -352,6 +377,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	{
 		SwingUtilities.invokeLater(()->{
 			model.rebuild();
+			refreshLocked();
 			field.requestFocusInWindow();
 		});
 	}
@@ -455,7 +481,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		public void rebuild()
 		{
 			list = buildListForTable();
-			labelNumber.setText(" "+list.size());
+			labelNumber.setText(" "+list.size()+"  ");
 			fireTableDataChanged();
 		}
 	}
@@ -472,7 +498,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	private class TableCellRenderer1 extends JLabel implements TableCellRenderer
 	{
-		public TableCellRenderer1() {
+		public TableCellRenderer1()
+		{
 			super();
 			setOpaque(true);
 		}
@@ -505,9 +532,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	}
 	
 	private void selectionChanged()
-	{
-		send(this,"selectionChanged()");
-	}
+	{send(this,"selectionChanged()");}
 	
 	
 	
@@ -515,7 +540,19 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	{
 		if(lockSet.contains(name)) return true;
 		if(lockSet.size()>=LOCK_MAX) return false;
+		
 		lockSet.add(name);
+		refreshLocked();
+		return true;
+	}
+	
+	
+	private boolean removeFromLocked(String name)
+	{
+		if(!lockSet.contains(name)) return true;
+		
+		lockSet.remove(name);
+		refreshLocked();
 		return true;
 	}
 	
@@ -532,8 +569,9 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			addToLocked(name);
 		}
 		SwingUtilities.invokeLater(()->{
+			String name = getSelectedName();
 			model.rebuild();
-			field.requestFocusInWindow();
+			selectEntity(name);
 		});
 	}
 	
@@ -541,11 +579,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		int[] rows = table.getSelectedRows();
 		for(int row : rows) {
 			String name = (String) table.getValueAt(row, 0);
-			lockSet.remove(name);
+			removeFromLocked(name);
 		}
 		SwingUtilities.invokeLater(()->{
+			String name = getSelectedName();
 			model.rebuild();
-			field.requestFocusInWindow();
+			selectEntity(name);
 		});
 	}
 	
@@ -555,19 +594,21 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			addToLocked(name);
 		}
 		SwingUtilities.invokeLater(()->{
+			String name = getSelectedName();
 			model.rebuild();
-			field.requestFocusInWindow();
+			selectEntity(name);
 		});
 	}
 	
 	private void unlockAll() {
 		for(int i=0;i<table.getRowCount();i++) {
 			String name = (String) table.getValueAt(i, 0);
-			lockSet.remove(name);
+			removeFromLocked(name);
 		}
 		SwingUtilities.invokeLater(()->{
+			String name = getSelectedName();
 			model.rebuild();
-			field.requestFocusInWindow();
+			selectEntity(name);
 		});
 	}
 	

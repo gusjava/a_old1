@@ -31,6 +31,7 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	private Object renamed;
 	private Object duplicated;
 	private Object deleted;
+	private Object modified;
 	
 	private Map map;
 	
@@ -71,9 +72,10 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 		if(key.equals("renamed")) return renamed;
 		if(key.equals("duplicated")) return duplicated;
 		if(key.equals("deleted")) return deleted;
+		if(key.equals("modified")) return modified;
 		
 		if(key.equals("keys")) return new String[] {"rootDir","devId","cx",
-				"selected","added","renamed","duplicated","deleted"};
+				"selected","added","renamed","duplicated","deleted","modified"};
 		
 		throw new Exception("Unknown key: "+key);
 	}
@@ -86,6 +88,7 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 		if(key.equals("renamed")) {entityRenamed(obj);return;}
 		if(key.equals("duplicated")) {entityDuplicated(obj);return;}
 		if(key.equals("deleted")) {entityDeleted(obj);return;}
+		if(key.equals("modified")) {entityModified(obj);return;}
 		
 		throw new Exception("Unknown key: "+key);
 	}
@@ -198,6 +201,14 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	{
 		this.deleted = deleted;
 		load();
+	}
+	
+	
+	private void entityModified(Object modified) throws Exception
+	{
+		this.modified = modified;
+		load();
+		selectEntity(modified);
 	}
 	
 	
