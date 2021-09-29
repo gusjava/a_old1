@@ -63,7 +63,8 @@ public class EntityImpl implements Entity, P, F {
 	}
 	
 	
-	private void transfer(File f0, File f1, String name0, String name1) throws Exception {
+	private void transfer(File f0, File f1, String name0, String name1) throws Exception
+	{
 		String src = (String) read.t(f0);
 		
 		//TODO largement insuffisant ...

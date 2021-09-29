@@ -31,14 +31,16 @@ public class EntityImpl implements Entity, T {
 	private Service readFile;
 	private Service extract;
 
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception 
+	{
 		nameToFile = Outside.service(this,"gus.b.entitysrc2.nametofile");
 		readFile = Outside.service(this,"gus.a.file.string.read");
 		extract = Outside.service(this,"gus.b.entitysrc2.analyze.entity.extract");
 	}
 	
 	
-	public Object t(Object obj) throws Exception {
+	public Object t(Object obj) throws Exception 
+	{
 		Object[] o = (Object[]) obj;
 		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
 		
@@ -87,14 +89,16 @@ public class EntityImpl implements Entity, T {
 			
 			return data;
 		}
-		catch(Exception e) {
+		catch(Exception e) 
+		{
 			String message = "Data extraction failed for file: "+javaFile;
 			throw new Exception(message, e);
 		}
 	}
 	
 	
-	private int findFileNb(File javaFile) {
+	private int findFileNb(File javaFile)
+	 {
 		File[] ff = javaFile.getParentFile().listFiles(new FileFilter() {
 			public boolean accept(File f) {return f.isFile();}
 		});

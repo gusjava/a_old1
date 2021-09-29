@@ -14,6 +14,7 @@ public class EntityImpl implements Entity, P, F {
 	private Service findJavaFiles;
 	private Service validate;
 	private Service read;
+	private Service refactorLinks;
 
 	public EntityImpl() throws Exception
 	{
@@ -21,6 +22,7 @@ public class EntityImpl implements Entity, P, F {
 		findJavaFiles = Outside.service(this, "gus.a.dir.listing0.files.java");
 		validate = Outside.service(this,"gus.a.entity.name.validate");
 		read = Outside.service(this, "gus.a.file.string.read");
+		refactorLinks = Outside.service(this,"gus.b.entitysrc2.perform.refactor.downlinks");
 	}
 	
 	
@@ -31,11 +33,12 @@ public class EntityImpl implements Entity, P, F {
 	public boolean f(Object obj) throws Exception
 	{
 		Object[] o = (Object[]) obj;
-		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
+		if(o.length!=4) throw new Exception("Wrong data number: "+o.length);
 		
 		Object engine = o[0];
 		String name0 = (String) o[1];
 		String name1 = (String) o[2];
+		boolean refactor = (boolean) o[3];
 		
 		File rootDir = (File) ((R) engine).r("rootDir");
 		String devId = (String) ((R) engine).r("devId");
@@ -70,7 +73,9 @@ public class EntityImpl implements Entity, P, F {
 		}
 		cleanDir(packageDir0);
 		
+		if(refactor) refactorLinks.p(new Object[] {engine, name0, name1});
 		((V) engine).v("renamed",new String[] {name0, name1});
+		
 		return true;
 	}
 	

@@ -9,6 +9,8 @@ import a.framework.*;
 
 public class EntityImpl implements Entity, P, F {
 	public String creationDate() {return "20210908";}
+	
+	public static final String ENTITY_FILENAME = "EntityImpl.java";
 
 
 	private Service findPackageDir;
@@ -50,7 +52,7 @@ public class EntityImpl implements Entity, P, F {
 		File packageDir0 = (File) findPackageDir.t(new Object[] {rootDir, name0});
 		File packageDir1 = (File) findPackageDir.t(new Object[] {rootDir, name1});
 		
-		if(new File(packageDir1,"EntityImpl.java").exists()) return false;
+		if(new File(packageDir1,ENTITY_FILENAME).exists()) return false;
 		
 		File[] javaFiles0 = (File[]) findJavaFiles.t(packageDir0);
 

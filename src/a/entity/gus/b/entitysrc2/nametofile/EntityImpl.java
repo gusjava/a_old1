@@ -19,7 +19,6 @@ public class EntityImpl implements Entity, T {
 		String entityName = (String) o[1];
 		
 		String path = ("a.entity."+entityName).replace(".", File.separator);
-		File javaFile = new File(new File(dir, path), FILENAME);
-		return javaFile.isFile() ? javaFile : null;
+		return new File(new File(dir, path), FILENAME);
 	}
 }
