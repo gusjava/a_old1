@@ -64,8 +64,8 @@ public class EntityImpl implements Entity, P, F {
 			File javaFile1 = new File(packageDir1, javaFile0.getName());
 			transfer(javaFile0, javaFile1, name0, name1);
 		}
-		
-		((E) engine).e();
+
+		((V) engine).v("duplicated",new String[] {name0, name1});
 		return true;
 	}
 	

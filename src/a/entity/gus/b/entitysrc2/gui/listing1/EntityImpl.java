@@ -3,6 +3,8 @@ package a.entity.gus.b.entitysrc2.gui.listing1;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -22,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -30,8 +33,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import a.framework.E;
-import a.framework.F;
 import a.framework.Entity;
+import a.framework.F;
 import a.framework.G;
 import a.framework.I;
 import a.framework.Outside;
@@ -306,8 +309,17 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		if(model.getValueAt(i,0).equals(name)) 
 		{
 			table.getSelectionModel().setSelectionInterval(i, i);
+	        ensureRowIsVisible(i);
 			return;
 		}
+	}
+	
+	
+	
+	private void ensureRowIsVisible(int row)
+	{
+		Rectangle rect = table.getCellRect(row,0,true);
+		table.scrollRectToVisible(rect);
 	}
 	
 	

@@ -51,7 +51,7 @@ public class EntityImpl implements Entity, P, F {
 		}
 		cleanDir(packageDir);
 		
-		((E) engine).e();
+		((V) engine).v("deleted",entityName);
 		return true;
 	}
 	

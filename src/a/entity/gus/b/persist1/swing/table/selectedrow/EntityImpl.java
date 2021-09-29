@@ -1,5 +1,7 @@
 package a.entity.gus.b.persist1.swing.table.selectedrow;
 
+import java.awt.Rectangle;
+
 import javax.swing.JTable;
 
 import a.framework.Entity;
@@ -44,6 +46,9 @@ public class EntityImpl implements Entity, V {
 		if(index>=number) index = number-1;
 
 		comp.getSelectionModel().setSelectionInterval(index, index);
+        
+        Rectangle rect = comp.getCellRect(index,0,true);
+		comp.scrollRectToVisible(rect);
 	}
 	
 	

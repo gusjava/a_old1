@@ -43,7 +43,7 @@ public class EntityImpl implements Entity, P, F {
 		boolean done = generate.f(new Object[] {rootDir, entityName, features});
 		if(!done) return false;
 		
-		((E) engine).e();
+		((V) engine).v("added",entityName);
 		return true;
 	}
 }

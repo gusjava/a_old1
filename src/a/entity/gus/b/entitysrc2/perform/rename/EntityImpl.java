@@ -70,7 +70,7 @@ public class EntityImpl implements Entity, P, F {
 		}
 		cleanDir(packageDir0);
 		
-		((E) engine).e();
+		((V) engine).v("renamed",new String[] {name0, name1});
 		return true;
 	}
 	

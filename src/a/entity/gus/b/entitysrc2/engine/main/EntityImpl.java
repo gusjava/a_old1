@@ -27,6 +27,11 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	private String devId;
 	
 	private Object selected;
+	private Object added;
+	private Object renamed;
+	private Object duplicated;
+	private Object deleted;
+	
 	private Map map;
 	
 
@@ -60,9 +65,15 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 		if(key.equals("rootDir")) return getRootDir.g();
 		if(key.equals("devId")) return devId;
 		if(key.equals("cx")) return getConnection.g();
-		if(key.equals("selected")) return selected;
 		
-		if(key.equals("keys")) return new String[] {"rootDir","devId","cx","selected"};
+		if(key.equals("selected")) return selected;
+		if(key.equals("added")) return added;
+		if(key.equals("renamed")) return renamed;
+		if(key.equals("duplicated")) return duplicated;
+		if(key.equals("deleted")) return deleted;
+		
+		if(key.equals("keys")) return new String[] {"rootDir","devId","cx",
+				"selected","added","renamed","duplicated","deleted"};
 		
 		throw new Exception("Unknown key: "+key);
 	}
@@ -71,6 +82,11 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	public void v(String key, Object obj) throws Exception
 	{
 		if(key.equals("select")) {selectEntity(obj);return;}
+		if(key.equals("added")) {entityAdded(obj);return;}
+		if(key.equals("renamed")) {entityRenamed(obj);return;}
+		if(key.equals("duplicated")) {entityDuplicated(obj);return;}
+		if(key.equals("deleted")) {entityDeleted(obj);return;}
+		
 		throw new Exception("Unknown key: "+key);
 	}
 
@@ -149,6 +165,39 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	{
 		this.selected = selected;
 		selected();
+	}
+	
+	
+	private void entityAdded(Object added) throws Exception
+	{
+		this.added = added;
+		load();
+		selectEntity(added);
+	}
+	
+	
+	private void entityRenamed(Object renamed) throws Exception
+	{
+		this.renamed = renamed;
+		load();
+		String[] n = (String[]) renamed;
+		selectEntity(n[1]);
+	}
+	
+	
+	private void entityDuplicated(Object duplicated) throws Exception
+	{
+		this.duplicated = duplicated;
+		load();
+		String[] n = (String[]) duplicated;
+		selectEntity(n[1]);
+	}
+	
+	
+	private void entityDeleted(Object deleted) throws Exception
+	{
+		this.deleted = deleted;
+		load();
 	}
 	
 	
