@@ -43,6 +43,8 @@ public class EntityImpl implements Entity, T {
 		
 		private boolean all = false;
 		private boolean onlyMine = false;
+		private boolean ffStrict = false;
+		
 		private List ff = new ArrayList();
 		private List st = new ArrayList();
 		private List en = new ArrayList();
@@ -56,31 +58,38 @@ public class EntityImpl implements Entity, T {
 			this.devId = devId;
 			this.lockSet = lockSet;
 			
+			if(search.contains("&")) {
+				onlyMine = true;
+				search = search.replace("&"," ");
+			}
+			
+			if(search.contains("!")) {
+				ffStrict = true;
+				search = search.replace("!"," ");
+			}
 			
 			String[] nn = search.split(" +");
 			for(String n : nn) {
 				String n0 = n.toLowerCase();
-				String n1 = n.toUpperCase();
 				
-				if(n.equals("&")) {
-					onlyMine = true;
-				}
-				else if(n1.equals(n)) {
-					for(int i=0;i<n.length();i++) {
+				if(n.matches("[BEFGHIPRSTV]+")) {
+					for(int i=0;i<n0.length();i++) {
 						ff.add(""+n0.charAt(i));
 					}
 				}
-				else if(n.startsWith("*") && n.endsWith("*")) {
-						co.add(n0.substring(1, n0.length()-1));
-				}
-				else if(n.startsWith("*")) {
-					en.add(n0.substring(1));
-				}
-				else if(n.endsWith("*")) {
-					st.add(n0.substring(0, n0.length()-1));
-				}
 				else {
-					co.add(n0);
+					if(n0.startsWith("*") && n0.endsWith("*")) {
+						co.add(n0.substring(1, n0.length()-1));
+					}
+					else if(n0.startsWith("*")) {
+						en.add(n0.substring(1));
+					}
+					else if(n0.endsWith("*")) {
+						st.add(n0.substring(0, n0.length()-1));
+					}
+					else {
+						co.add(n0);
+					}
 				}
 			}
 		}
@@ -99,6 +108,13 @@ public class EntityImpl implements Entity, T {
 			for(int i=0;i<ff.size();i++) {
 				String f = (String) ff.get(i);
 				if(!features.contains(f)) return false;
+			}
+			
+			if(ffStrict) {
+				for(int i=0;i<features.length();i++) {
+					String feature = ""+features.charAt(i);
+					if(!ff.contains(feature)) return false;
+				}
 			}
 			
 			int nbCo = co.size();
