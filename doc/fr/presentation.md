@@ -44,7 +44,7 @@ Son code source doit se conformer à différentes règles de codage qui seront e
 Ce package regroupe les différentes configurations des applications se basant sur le framework a. Chaque configuration contient des fichiers de paramétrage et éventuellement des resources internes (images, icons, librairies tierce...) utilisées par l'application.
 Là encore, ces fichiers sont organisés selon différentes règles exposées par la suite.
 
-#Règles de nommage
+# Règles de nommage
 
 ### Un projet multi développeurs
 
@@ -90,8 +90,9 @@ ou la partie <...>.<...>.<...> (sous-package) vous permet de ranger toutes vos e
 De manière similaire aux noyaux, le nom du composant détermine le package accueillant le code source.
 Une entité *marcus.conversion1* sera ainsi stockée dans le package *a.entity.marcus.conversion1*
 
-Par ailleurs, le code source d'une entité est toujours composée d'une unique classe Java nommée *EntityImpl*.
-Le code source de l'entité *marcus.conversion1* correspondra ainsi à la classe *a.entity.marcus.conversion1.EntityImpl*
+Le code source d'une entité est composée d'une ou plusieurs classes Java situées à la racine de son package.
+L'une de ces classes doit impérativement être nommée *EntityImpl*. Il s'agit de la classe principale de l'entité.
+On notera que dans la grande majorité des cas, le code source de l'entité se réduit à cette seule classe.
 
 Voici quelques exemples d'entités que j'ai déjà développé :
 - a.execute.exception
@@ -125,16 +126,15 @@ Nous verrons par la suite qu'un paramètre passé au démarrage du noyau (ou un 
 
 Afin d'assurer une stricte séparation entre les différents composants core et entity, aucune classe d'un composant ne pourra être directement importée dans le code source d'un autre composant.
 
-Dans le cas d'une entité notamment, le seul import débutant par a.<...> qui est autorisé dans EntityImpl est :
+Dans le cas d'une entité notamment, le seul import débutant par a.<...> qui est autorisé dans ses classes est :
 *import a.framework.\*;*
 
 ### Coder une classe d'entité
 
-Une classe d'entité doit toujours respecter les règles suivantes :
-- Etre l'unique classe au sein du package de l'entité
+La classe principale d'une entité doit toujours respecter les règles suivantes :
 - Etre nommée *EntityImpl*
 - Implémenter l'interface *a.framework.Entity*
-- Avoir une méthode *creationDate()* qui renvoie en sortie la date de création de l'entité au format yyyyMMdd
+- Avoir une méthode *creationDate()* qui renvoie la date de création de l'entité sous la forme d'une String au format yyyyMMdd
 
 Pour être utilisée directement par le noyau ou indirectement par d'autres entités, elle devra par ailleurs implémenter une ou plusieurs des 11 interfaces de caractérisation definies par le framework : E, B, F, G, P, T, H, R, V, S, I, ou même étendre l'implémentation par défaut de S : S1.
 
@@ -142,11 +142,11 @@ Nous aurons l'occasion de découvrir ce que ces règles donnent en pratique lors
 
 ### Coder un noyau
 
-Il est extrêmement simple de créer des entités et de les utiliser pour construire une application en partant d'un noyau déjà existant. Coder un noyau, c'est un peu plus compliqué. Si cela vous tente néanmoins, je vous encourage à regarder le code source de gus.gyem. N'hésitez pas non plus à me contacter pour échanger à ce sujet.
+Il est extrêmement simple de créer des entités et de les utiliser pour construire une application en partant d'un noyau déjà existant. Coder un noyau, c'est un peu plus compliqué. Si cela vous tente néanmoins, je vous encourage à regarder le code source de gus.gyem. N'hésitez pas à me contacter pour échanger à ce sujet.
 
 ### Et la config ?
 
-Une config ne contient que du paramétrage et des resources internes. Cette partie n'est par conséquent pas concernée par les règles de codage. Elle se conforme néanmoins à un certain nombre de règles qui sont entièrement dictée par le noyau dont elle dépend.
+Une config ne contient que du paramétrage et des resources internes. Cette partie n'est par conséquent pas concernée par les règles de codage. Elle se conforme néanmoins à un certain nombre de règles qui sont entièrement dictées par le noyau dont elle dépend.
 
 # Utiliser le noyau gus.gyem
 
