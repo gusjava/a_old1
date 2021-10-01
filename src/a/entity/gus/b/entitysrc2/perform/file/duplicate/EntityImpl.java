@@ -55,8 +55,8 @@ public class EntityImpl implements Entity, P, F {
 		System.out.println("- Package: "+entityPackage);
 
 		transfer(oldFile, newFile, oldName, newName);
-		
-		((E) engine).e();
+
+		((V) engine).v("modified", entityName+"@"+newName);
 		return true;
 	}
 	

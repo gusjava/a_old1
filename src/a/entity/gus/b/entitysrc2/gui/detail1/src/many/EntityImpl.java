@@ -57,10 +57,15 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	private JLabel labelNumber;
 	private JToolBar bar;
 	
-	private String entityName;
+	private Object holder;
 	private Object engine;
+	private String entityName;
+	private String anchor;
 	private File[] javaFiles;
+	
 	private Map map;
+	
+	
 
 	public EntityImpl() throws Exception
 	{
@@ -139,15 +144,30 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	public void p(Object obj) throws Exception
 	{
 		if(obj==null) {reset();return;}
-		
-		Object[] o = (Object[]) obj;
-		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
-		
-		entityName = (String) o[0];
-		engine = o[1];
-		javaFiles = (File[]) o[2];
+		holder = obj;
+
+		engine = ((R) holder).r("engine");
+		entityName = (String) ((R) holder).r("entityName");
+		anchor = (String) ((R) holder).r("anchor");
+		javaFiles = (File[]) ((R) holder).r("javaFiles");
 		
 		reload();
+	}
+	
+	
+	private void reset() throws Exception
+	{
+		holder = null;
+		engine = null;
+		entityName = null;
+		anchor = null;
+		javaFiles = null;
+		map = null;
+		
+		list.setListData(new Vector());
+		labelNumber.setText(" ");
+		editor.p(null);
+		refreshActions();
 	}
 	
 	
@@ -181,22 +201,13 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 		list.setListData(vec);
 		labelNumber.setText(" "+vec.size());
 		
-		list.setSelectedIndex(0);
-		refreshActions();
-	}
-	
-	
-	
-	private void reset() throws Exception
-	{
-		entityName = null;
-		engine = null;
-		javaFiles = null;
+		int index = 0;
+		if(anchor!=null) {
+			String anchorFile = anchor.split("@",2)[0];
+			if(vec.contains(anchorFile)) index = vec.indexOf(anchorFile);
+		}
 		
-		list.setListData(new Vector());
-		labelNumber.setText(" ");
-		editor.p(null);
-		
+		list.setSelectedIndex(index);
 		refreshActions();
 	}
 	
@@ -222,8 +233,7 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 			}
 			
 			File javaFile = (File) map.get(getSelection());
-			
-			editor.p(new Object[] {entityName, engine, javaFile});
+			editor.p(new Object[] {holder, javaFile});
 			refreshActions();
 		}
 		catch(Exception e)
@@ -233,9 +243,7 @@ public class EntityImpl implements Entity, P, I, ListSelectionListener {
 	
 	
 	private String getSelection()
-	{
-		return (String) list.getSelectedValue();
-	}
+	{return (String) list.getSelectedValue();}
 	
 	
 	private boolean hasSelection()

@@ -62,7 +62,7 @@ public class EntityImpl implements Entity, I {
 	private String[][] content(Map map)
 	{
 		String[][] content = new String[map.size()][2];
-        ArrayList keys = new ArrayList(map.keySet());
+		ArrayList keys = new ArrayList(map.keySet());
  		Collections.sort(keys);
  		
 		for(int i=0;i<keys.size();i++)
@@ -85,7 +85,6 @@ public class EntityImpl implements Entity, I {
 			getTableHeader().setReorderingAllowed(false);
 			setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 			setCellSelectionEnabled(true);
-			
 			renderer.p(this);
 		}
 	}
@@ -100,23 +99,16 @@ public class EntityImpl implements Entity, I {
 		public int getRowCount() {return content.length;}
 		public int getColumnCount() {return 2;}
 
-		public String getColumnName(int column) {
-			return column==0 ? "key" : "value";
-		}
+		public String getColumnName(int column)
+		{return column==0 ? "key" : "value";}
 
-		public Class getColumnClass(int column) {
-			return String.class;
-		}
+		public Class getColumnClass(int column)
+		{return String.class;}
 
-		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			return false;
-		}
+		public boolean isCellEditable(int rowIndex, int columnIndex)
+		{return false;}
 
-		public Object getValueAt(int index, int column) {
-			return content[index][column];
-		}
+		public Object getValueAt(int index, int column) 
+		{return content[index][column];}
 	}
-	
-	
-	
 }

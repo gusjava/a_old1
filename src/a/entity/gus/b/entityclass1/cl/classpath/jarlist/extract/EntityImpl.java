@@ -16,13 +16,15 @@ public class EntityImpl implements Entity, P {
 	private Service getInputStream;
 	private Service transfer;
 
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception
+	{
 		getInputStream = Outside.service(this,"gus.b.config1.inputstream.jar");
 		transfer = Outside.service(this,"gus.a.io.transfer");
 	}
 	
 	
-	public void p(Object obj) throws Exception {
+	public void p(Object obj) throws Exception
+	{
 		File jarFile = (File) obj;
 		String jarName = jarFile.getName();
 		

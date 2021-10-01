@@ -12,24 +12,20 @@ public class EntityImpl implements Entity, T {
 	private Service nameToPath;
 	private Service findCl;
 
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception
+	{
 		nameToPath = Outside.service(this,"m020.t.entity.nametopath");
 		findCl = Outside.service(this,"gus.b.entityclass1.cl.find");
 	}
 	
-	
-	public Object t(Object obj) throws Exception {
+	public Object t(Object obj) throws Exception
+	{
 		String entityName = (String) obj;
 		String classPath = (String) nameToPath.t(entityName);
 		
 		ClassLoader cl = (ClassLoader) findCl.g();
 		Class c = Class.forName(classPath, true, cl);
 		ClassLoader cl1 = c.getClassLoader();
-
-//		System.out.println("--------------");
-//		System.out.println("c: "+c);
-//		System.out.println("cl: "+cl);
-//		System.out.println("cl1: "+cl1);
 		
 		return c;
 	}

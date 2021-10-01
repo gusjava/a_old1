@@ -42,8 +42,8 @@ public class EntityImpl implements Entity, P, F {
 		System.out.println("- Package: "+entityPackage);
 
 		Files.deleteIfExists(javaFile.toPath());
-		
-		((E) engine).e();
+
+		((V) engine).v("modified", entityName);
 		return true;
 	}
 }

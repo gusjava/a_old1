@@ -92,9 +92,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	private Map map;
 	private List names;
-	private List data;
+	private List dataFull;
+	private List dataFiltered;
 	
 	private Set lockSet;
+	private String selectionPath;
+	
 	
 	
 	public EntityImpl() throws Exception
@@ -210,12 +213,13 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			{
 				String s = e.getActionCommand();
 				if(s.equals("changed()")) reload();
-				else if(s.equals("selected()")) select();
+				else if(s.equals("selected()")) selectFromEngine();
 			}
 		});
 		
-		refreshActions();
+		refreshActions_();
 	}
+	
 	
 	/*
 	 * FEATURES
@@ -238,7 +242,14 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	
 	public Object g() throws Exception
-	{return getSelectedName();}
+	{
+		String selection = getSelectedName();
+		if(selection==null) return null;
+		
+		if(selectionPath!=null && selectionPath.startsWith(selection+"@")) selection = selectionPath;
+		selectionPath = null;
+		return selection;
+	}
 	
 	
 	
@@ -263,6 +274,10 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	}
 	
 	
+	private int getFilteredNumber()
+	{return dataFiltered!=null ? dataFiltered.size() : 0;}
+	
+	
 	
 	private void refreshLocked()
 	{
@@ -283,7 +298,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	{
 		try {
 			((E) engine).e();
-			buildData();
+			buildDataFull();
 			refresh();
 		}
 		catch(Exception e) {
@@ -296,7 +311,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	{
 		try
 		{
-			buildData();
+			buildDataFull();
 			refresh();
 		}
 		catch(Exception e)
@@ -304,21 +319,100 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	}
 	
 	
+	/*
+	 * BUILD DATA FULL
+	 */
 	
-	private void select()
+	private void buildDataFull() throws Exception
+	{
+		map = (Map) ((G) engine).g();
+		if(map==null)
+		{
+			dataFull = null;
+			dataFiltered = null;
+			names = null;
+			return;
+		}
+		
+		names = new ArrayList(map.keySet());
+		Collections.sort(names);
+		int nb = names.size();
+		
+		dataFull = new ArrayList();
+		for(int i=0;i<nb;i++) {
+			String key = (String) names.get(i);
+			Map entityData = (Map) map.get(key);
+			
+			String features = (String) entityData.get(COL_FEATURES);
+			int callNb = (int) entityData.get(COL_CALLNB);
+			String call =  callNb>0 ? ""+callNb : "";
+			
+			dataFull.add(new String[] {key, features, call});
+		}
+	}
+	
+	
+	
+	/*
+	 * BUILD DATA FILTERED
+	 */
+	
+	
+	private void buildDataFiltered() throws Exception
+	{
+		if(dataFull==null) dataFiltered = null;
+		
+		String search = (String) fieldHolder.g();
+		String devId = (String) ((R) engine).r("devId");
+		dataFiltered = (List) filterList.t(new Object[] {dataFull, search, devId, lockSet});
+	}
+	
+	
+	/*
+	 * REFRESH
+	 */
+	
+	private void refresh()
+	{
+		SwingUtilities.invokeLater(()->{
+			updateTable();
+			refreshLocked();
+//			field.requestFocusInWindow();
+		});
+	}
+	
+	public void updateTable()
 	{
 		try
 		{
-			final String name = (String) ((R) engine).r("selected");
+			buildDataFiltered();
+			labelNumber.setText(" "+getFilteredNumber()+"  ");
+			model.fireTableDataChanged();
+		}
+		catch(Exception e)
+		{Outside.err(this,"updateTable()",e);}
+	}
+	
+
+	
+	
+	
+	private void selectFromEngine()
+	{
+		try
+		{
+			selectionPath = (String) ((R) engine).r("selected");
+			
+			final String name = selectionPath.split("@",2)[0];
 			addToLocked(name);
 			
 			SwingUtilities.invokeLater(()->{
-				model.rebuild();
+				updateTable();
 				selectEntity(name);
 			});
 		}
 		catch(Exception e)
-		{Outside.err(this, "select()", e);}
+		{Outside.err(this, "selectFromEngine()", e);}
 	}
 	
 	
@@ -340,62 +434,6 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	{
 		Rectangle rect = table.getCellRect(row,0,true);
 		table.scrollRectToVisible(rect);
-	}
-	
-	
-	
-	
-	private void buildData() throws Exception
-	{
-		map = (Map) ((G) engine).g();
-		if(map==null)
-		{
-			data = null;
-			names = null;
-			return;
-		}
-		
-		names = new ArrayList(map.keySet());
-		Collections.sort(names);
-		int nb = names.size();
-		
-		data = new ArrayList();
-		for(int i=0;i<nb;i++) {
-			String key = (String) names.get(i);
-			Map entityData = (Map) map.get(key);
-			
-			String features = (String) entityData.get(COL_FEATURES);
-			int callNb = (int) entityData.get(COL_CALLNB);
-			String call =  callNb>0 ? ""+callNb : "";
-			
-			data.add(new String[] {key, features, call});
-		}
-	}
-	
-	
-	private void refresh()
-	{
-		SwingUtilities.invokeLater(()->{
-			model.rebuild();
-			refreshLocked();
-			field.requestFocusInWindow();
-		});
-	}
-	
-	
-	private List buildListForTable()
-	{
-		try
-		{
-			if(data==null) return new ArrayList();
-			
-			String search = (String) fieldHolder.g();
-			String devId = (String) ((R) engine).r("devId");
-			return (List) filterList.t(new Object[] {data, search, devId, lockSet});
-		}
-		catch(Exception e)
-		{Outside.err(this,"buildListForTable()",e);}
-		return null;
 	}
 	
 	
@@ -430,14 +468,14 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	
 	
-	private void _refreshActions()
+	private void refreshActions()
 	{
-		try {refreshActions();}
+		try {refreshActions_();}
 		catch(Exception e)
-		{Outside.err(this,"_refreshActions()",e);}
+		{Outside.err(this,"refreshActions()",e);}
 	}
 	
-	private void refreshActions() throws Exception
+	private void refreshActions_() throws Exception
 	{
 		actionDelete.setEnabled(canDeleteSelected());
 		actionRename.setEnabled(canRenameSelected());
@@ -451,13 +489,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	private class TableModel0 extends AbstractTableModel
 	{
-		private List list = new ArrayList();
 		
 		public int getColumnCount()
 		{return 3;}
 		
 		public int getRowCount()
-		{return list.size();}
+		{return getFilteredNumber();}
 		
 		public String getColumnName(int y)
 		{
@@ -474,15 +511,9 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 
 		public Object getValueAt(int x, int y)
 		{
-			String[] infos = (String[]) list.get(x);
+			if(dataFiltered==null) return null;
+			String[] infos = (String[]) dataFiltered.get(x);
 			return infos[y];
-		}
-		
-		public void rebuild()
-		{
-			list = buildListForTable();
-			labelNumber.setText(" "+list.size()+"  ");
-			fireTableDataChanged();
 		}
 	}
 	
@@ -526,8 +557,9 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 
 	
 
-	public void valueChanged(ListSelectionEvent e) {
-		_refreshActions();
+	public void valueChanged(ListSelectionEvent e)
+	{
+		refreshActions();
 		selectionChanged();
 	}
 	
@@ -570,7 +602,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		}
 		SwingUtilities.invokeLater(()->{
 			String name = getSelectedName();
-			model.rebuild();
+			updateTable();
 			selectEntity(name);
 		});
 	}
@@ -583,7 +615,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		}
 		SwingUtilities.invokeLater(()->{
 			String name = getSelectedName();
-			model.rebuild();
+			updateTable();
 			selectEntity(name);
 		});
 	}
@@ -595,7 +627,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		}
 		SwingUtilities.invokeLater(()->{
 			String name = getSelectedName();
-			model.rebuild();
+			updateTable();
 			selectEntity(name);
 		});
 	}
@@ -607,7 +639,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		}
 		SwingUtilities.invokeLater(()->{
 			String name = getSelectedName();
-			model.rebuild();
+			updateTable();
 			selectEntity(name);
 		});
 	}
@@ -635,8 +667,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			for(int i=0;i<n.length;i++) addToLocked(n[i]);
 			
 			SwingUtilities.invokeLater(()->{
-				model.rebuild();
-				field.requestFocusInWindow();
+				updateTable();
+//				field.requestFocusInWindow();
 			});
 		}
 		catch(Exception e) {

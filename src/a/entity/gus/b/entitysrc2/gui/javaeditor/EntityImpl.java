@@ -38,6 +38,7 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	private Service custArea;
 	private Service buildArea;
 	private Service buildScroll;
+	private Service getName0;
 	
 	private JPanel panel;
 	private JTextArea area;
@@ -46,9 +47,12 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	private Action actionSave;
 	private Action actionReload;
 
-	private String entityName;
-	private Object engine;
+	private Object holder;
 	private File javaFile;
+	
+	private Object engine;
+	private String entityName;
+	private String fileName;
 	
 	private String text0;
 	private boolean canModify;
@@ -61,9 +65,10 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		custArea = Outside.service(this,"gus.b.entitysrc2.gui.javaeditor.custcomp");
 		buildArea = Outside.service(this,"gus.b.swing1.textarea1.factory");
 		buildScroll = Outside.service(this,"gus.b.swing1.textarea.buildscrollpane.linenb");
+		getName0 = Outside.service(this,"gus.a.file.getname0");
 		
-		actionSave = (Action) actionBuilder.t(new Object[] {DISPLAY_SAVE, (E) this::save});
-		actionReload = (Action) actionBuilder.t(new Object[] {DISPLAY_RELOAD, (E) this::reload});
+		actionSave = (Action) actionBuilder.t(new Object[] {DISPLAY_SAVE, (E) this::save_});
+		actionReload = (Action) actionBuilder.t(new Object[] {DISPLAY_RELOAD, (E) this::reload_});
 		
 		area = (JTextArea) buildArea.i();
 		custArea.p(area);
@@ -74,8 +79,8 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 			public void keyPressed(KeyEvent e) {
 				int code = e.getKeyCode();
 				if(e.isControlDown()){
-					if(code==KeyEvent.VK_S) _save();
-					else if(code==KeyEvent.VK_L) _reload();
+					if(code==KeyEvent.VK_S) save();
+					else if(code==KeyEvent.VK_L) reload();
 				}
 			}
 		});
@@ -101,11 +106,14 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		if(obj==null) {reset();return;}
 		
 		Object[] o = (Object[]) obj;
-		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
+		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
 		
-		entityName = (String) o[0];
-		engine = o[1];
-		javaFile = (File) o[2];
+		holder = o[0];
+		javaFile = (File) o[1];
+
+		engine = ((R) holder).r("engine");
+		entityName = (String) ((R) holder).r("entityName");
+		fileName = (String) getName0.t(javaFile);
 		
 		canModify = canModifyEntity();
 		text0 = (String) read.t(javaFile);
@@ -113,20 +121,28 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		area.getDocument().removeDocumentListener(this);
 		area.setText(text0);
 		area.getDocument().addDocumentListener(this);
-		area.setCaretPosition(0);
 		
 		area.setEditable(canModify);
 		actionSave.setEnabled(false);
 		actionReload.setEnabled(false);
+		
+		int caretPosition = 0;
+		String anchor = (String) ((R) holder).r("anchor");
+		if(anchor!=null && anchor.startsWith(fileName+"@"))
+			caretPosition = Integer.parseInt(anchor.split("@")[1]);
+		setCaretPosition(caretPosition);
+
+		SwingUtilities.invokeLater(()->area.requestFocusInWindow());
 	}
 	
 	
 	
 	private void reset() throws Exception
 	{
-		entityName = null;
-		engine = null;
+		holder = null;
 		javaFile = null;
+		engine = null;
+		entityName = null;
 		
 		canModify = false;
 		text0 = null;
@@ -194,14 +210,14 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	 * SAVE
 	 */
 	
-	private void _save()
+	private void save()
 	{
-		try{save();}
+		try{save_();}
 		catch(Exception e)
-		{Outside.err(this,"_save()",e);}
+		{Outside.err(this,"save()",e);}
 	}
 	
-	private void save() throws Exception
+	private void save_() throws Exception
 	{
 		if(!canModify) throw new Exception("canModify=false");
 		if(text0==null) throw new Exception("text0==null");
@@ -215,7 +231,7 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		actionSave.setEnabled(false);
 		actionReload.setEnabled(false);
 		
-		((V) engine).v("modified",entityName);
+		((V) engine).v("modified",entityName+"@"+fileName+"@"+area.getCaretPosition());
 	}
 	
 	
@@ -225,26 +241,43 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	 * RELOAD
 	 */
 	
-	private void _reload()
+	private void reload()
 	{
-		try{reload();}
+		try{reload_();}
 		catch(Exception e)
-		{Outside.err(this,"_reload()",e);}
+		{Outside.err(this,"reload()",e);}
 	}
 	
-	private void reload() throws Exception
+	private void reload_() throws Exception
 	{
 		if(!canModify) throw new Exception("canModify=false");
 		if(text0==null) throw new Exception("text0==null");
 		
 		text0 = (String) read.t(javaFile);
 
+		int caretPosition = area.getCaretPosition();
 		area.getDocument().removeDocumentListener(this);
+		
 		area.setText(text0);
+		
 		area.getDocument().addDocumentListener(this);
+		setCaretPosition(caretPosition);
 		
 		actionSave.setEnabled(false);
 		actionReload.setEnabled(false);
+		
+		SwingUtilities.invokeLater(()->area.requestFocusInWindow());
+	}
+	
+	
+	/*
+	 * CARET POSITION
+	 */
+	
+	private void setCaretPosition(int caretPosition) {
+		int len = area.getText().length();
+		if(caretPosition>len) caretPosition = len;
+		area.setCaretPosition(caretPosition);
 	}
 	
 	
@@ -263,6 +296,6 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		
 		Window window = SwingUtilities.getWindowAncestor(area);
 		int r = JOptionPane.showConfirmDialog(window, MESSAGE, TITLE, JOptionPane.YES_NO_OPTION);
-		if(r==JOptionPane.YES_OPTION) save();
+		if(r==JOptionPane.YES_OPTION) save_();
 	}
 }

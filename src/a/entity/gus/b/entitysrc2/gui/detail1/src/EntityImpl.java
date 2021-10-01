@@ -32,20 +32,16 @@ public class EntityImpl implements Entity, P, I {
 		if(obj==null) {reset();return;}
 		holder = obj;
 		
-		String entityName = (String) ((R) holder).r("entityName");
-		Object engine = ((R) holder).r("engine");
-		
 		File[] javaFiles = (File[]) ((R) holder).r("javaFiles");
-		
 		if(javaFiles==null) {
 			reset();
 		}
 		else if(javaFiles.length==1) {
-			panelSingle.p(new Object[] {entityName, engine, javaFiles[0]});
+			panelSingle.p(holder);
 			shiftPanel.p(panelSingle);
 		}
 		else {
-			panelMany.p(new Object[] {entityName, engine, javaFiles});
+			panelMany.p(holder);
 			shiftPanel.p(panelMany);
 		}
 	}

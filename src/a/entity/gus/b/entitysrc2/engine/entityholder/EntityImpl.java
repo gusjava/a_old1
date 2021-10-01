@@ -38,16 +38,18 @@ public class EntityImpl implements Entity, T {
 		Object[] o = (Object[]) obj;
 		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
 		
-		String entityName = (String) o[0];
+		String path = (String) o[0];
 		Object engine = o[1];
 		
-		return new Holder(entityName, engine);
+		return new Holder(path, engine);
 	}
 	
 	
 	private class Holder implements R
 	{
+		private String path;
 		private String entityName;
+		private String anchor;
 		private Object engine;
 		
 		private File packageDir;
@@ -57,15 +59,21 @@ public class EntityImpl implements Entity, T {
 		private Set services;
 		private Set resources;
 		
-		public Holder(String entityName, Object engine)
+		public Holder(String path, Object engine)
 		{
-			this.entityName = entityName;
+			this.path = path;
 			this.engine = engine;
+			
+			String[] n = path.split("@",2);
+			entityName = n[0];
+			anchor = n.length==2 ? n[1] : null;
 		}
 
 		public Object r(String key) throws Exception
 		{
+			if(key.equals("path")) return path;
 			if(key.equals("entityName")) return entityName;
+			if(key.equals("anchor")) return anchor;
 			if(key.equals("engine")) return engine;
 			
 			if(key.equals("cx")) return cx();
@@ -81,7 +89,7 @@ public class EntityImpl implements Entity, T {
 			if(key.equals("resources")) return resources();
 			
 			if(key.equals("keys")) return new String[] {
-					"entityName","engine",
+					"path","entityName","anchor","engine",
 					"cx", "rootDir", 
 					"packageDir", "javaFiles", 
 					"downLinks", "upLinks", 

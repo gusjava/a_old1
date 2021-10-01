@@ -33,6 +33,7 @@ public class EntityImpl implements Entity, T {
 		String devId = (String) o[2];
 		Set lockSet = (Set) o[3];
 		
+		if(list==null) return null;
 		F filter = new Filter(search, devId, lockSet);
 		return filterList.t(new Object[]{list, filter});
 	}

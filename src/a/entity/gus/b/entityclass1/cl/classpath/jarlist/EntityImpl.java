@@ -32,7 +32,8 @@ public class EntityImpl implements Entity, G {
 	}
 	
 	
-	public Object g() throws Exception {
+	public Object g() throws Exception
+	{
 		List list = new ArrayList();
 
 		File[] localJars = (File[]) dirToFiles.t(jarDir);
@@ -42,11 +43,14 @@ public class EntityImpl implements Entity, G {
 		Map mapJreClasspath = toMap(jreClasspath);
 		
 		String[] nn = (String[]) getConfig.g();
-		for(String n : nn) if(!mapJreClasspath.containsKey(n)) {
-			if(mapLocalJars.containsKey(n)) {
+		for(String n : nn) if(!mapJreClasspath.containsKey(n)) 
+		{
+			if(mapLocalJars.containsKey(n)) 
+			{
 				list.add(mapLocalJars.get(n));
 			}
-			else {
+			else
+			{
 				File newJar = new File(jarDir,n);
 				extractJar.p(newJar);
 				if(!newJar.isFile()) throw new Exception("Failed to init jar: "+newJar);

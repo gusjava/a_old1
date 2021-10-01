@@ -56,7 +56,7 @@ public class EntityImpl implements Entity, P, F {
 		
 		p.close();
 
-		((E) engine).e();
+		((V) engine).v("modified", entityName+"@"+className);
 		return true;
 	}
 }

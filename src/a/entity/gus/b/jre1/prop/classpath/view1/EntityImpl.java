@@ -9,7 +9,8 @@ public class EntityImpl implements Entity, I {
 	private Service findClassPath;
 	private Service viewer;
 
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception
+	{
 		findClassPath = Outside.service(this,"gus.a.jre.prop.classpath.as.filearray");
 		viewer = Outside.service(this,"*gus.b.filearray1.view1");
 		
@@ -17,7 +18,6 @@ public class EntityImpl implements Entity, I {
 		viewer.p(data);
 	}
 	
-	public Object i() throws Exception {
-		return viewer.i();
-	}
+	public Object i() throws Exception
+	{return viewer.i();}
 }

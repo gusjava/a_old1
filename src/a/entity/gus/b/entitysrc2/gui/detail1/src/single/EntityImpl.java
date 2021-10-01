@@ -14,6 +14,7 @@ import a.framework.F;
 import a.framework.I;
 import a.framework.Outside;
 import a.framework.P;
+import a.framework.R;
 import a.framework.Service;
 
 public class EntityImpl implements Entity, P, I {
@@ -33,10 +34,12 @@ public class EntityImpl implements Entity, P, I {
 	
 	private JPanel panel;
 	private JToolBar bar;
-	
-	private String entityName;
+
+	private Object holder;
 	private Object engine;
+	private String entityName;
 	private File javaFile;
+	
 
 	public EntityImpl() throws Exception
 	{
@@ -68,24 +71,23 @@ public class EntityImpl implements Entity, P, I {
 	public void p(Object obj) throws Exception
 	{
 		if(obj==null) {reset();return;}
+		holder = obj;
 		
-		Object[] o = (Object[]) obj;
-		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
-		
-		entityName = (String) o[0];
-		engine = o[1];
-		javaFile = (File) o[2];
+		engine = ((R) holder).r("engine");
+		entityName = (String) ((R) holder).r("entityName");
+		javaFile = ((File[]) ((R) holder).r("javaFiles"))[0];
 
 		actionAdd.setEnabled(canModifyEntity());
-		editor.p(new Object[] {entityName, engine, javaFile});
+		editor.p(new Object[] {holder, javaFile});
 	}
 	
 	
 	
 	private void reset() throws Exception
 	{
-		entityName = null;
+		holder = null;
 		engine = null;
+		entityName = null;
 		javaFile = null;
 		
 		actionAdd.setEnabled(false);

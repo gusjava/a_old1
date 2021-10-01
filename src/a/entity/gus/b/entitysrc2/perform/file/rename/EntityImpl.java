@@ -57,8 +57,8 @@ public class EntityImpl implements Entity, P, F {
 
 		transfer(oldFile, newFile, oldName, newName);
 		Files.deleteIfExists(oldFile.toPath());
-		
-		((E) engine).e();
+
+		((V) engine).v("modified", entityName+"@"+newName);
 		return true;
 	}
 	

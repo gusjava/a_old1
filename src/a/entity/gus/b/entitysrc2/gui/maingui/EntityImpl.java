@@ -83,10 +83,10 @@ public class EntityImpl implements Entity, I, ActionListener {
 	{
 		try
 		{
-			String entityName = (String) guiListing.g();
-			if(entityName==null) {guiDetail.p(null);return;}
+			String selectionPath = (String) guiListing.g();
+			if(selectionPath==null) {guiDetail.p(null);return;}
 			
-			holder = buildHolder.t(new Object[] {entityName, engine});
+			holder = buildHolder.t(new Object[] {selectionPath, engine});
 			guiDetail.p(holder);
 		}
 		catch(Exception e)
