@@ -34,13 +34,28 @@ public class EntityImpl implements Entity, P {
 		for(int i=0;i<list.size();i++)
 		{
 			String call = (String) list.get(i);
-			String sql = "INSERT INTO "+TABLENAME+" ("+COL_NAME+","+COL_CALL+") VALUES (?,?) ";
-			executeUpdate(cx, sql, entityName, call);
+			insertData(cx, entityName, call);
 		}
 	}
 	
 	
-	private void executeUpdate(Connection cx, String sql, Object... params) throws SQLException {
+	private void insertData(Connection cx, String entityName, String call) throws Exception
+	{
+		try
+		{
+			String sql = "INSERT INTO "+TABLENAME+" ("+COL_NAME+","+COL_CALL+") VALUES (?,?) ";
+			executeUpdate(cx, sql, entityName, call);
+		}
+		catch(SQLException e)
+		{
+			String message = "Failed to insert row with entityName="+entityName+" and call="+call;
+			throw new Exception(message, e);
+		}
+	}
+	
+	
+	private void executeUpdate(Connection cx, String sql, Object... params) throws SQLException
+	{
 		PreparedStatement st = cx.prepareStatement(sql);
 		for(int i=0;i<params.length;i++) st.setObject(i+1,params[i]);
 		st.executeUpdate();

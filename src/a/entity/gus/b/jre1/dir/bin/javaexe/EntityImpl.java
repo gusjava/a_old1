@@ -24,6 +24,6 @@ public class EntityImpl implements Entity, G {
 	private void init() throws Exception
 	{
 		File binDir = (File) bin.g();
-		dir = new File(binDir,"java.exe");
+		javaExe = new File(binDir,"java.exe");
 	}
 }

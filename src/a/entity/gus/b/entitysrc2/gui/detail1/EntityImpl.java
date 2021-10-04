@@ -47,7 +47,7 @@ public class EntityImpl implements Entity, P, I {
 		tabHolder.v("FILE_java#Sources", gui1);
 		tabHolder.v("UTIL_infos#Infos", gui2);
 		tabHolder.v("UTIL_doc#Doc", gui3);
-		tabHolder.v("UTIL_doc#Doc", gui4);
+		tabHolder.v("UTIL_error#Errors", gui4);
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(labelTitle, BorderLayout.NORTH);

@@ -5,7 +5,7 @@ import a.framework.*;
 public class EntityImpl implements Entity {
 	public String creationDate() {return "20210929";}
 
-	public EntityImpl() throws Exception {
-		
+	public EntityImpl() throws Exception
+	{
 	}
 }

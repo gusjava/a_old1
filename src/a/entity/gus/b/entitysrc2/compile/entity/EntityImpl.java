@@ -124,9 +124,9 @@ public class EntityImpl implements Entity, P, F {
 		
 		String packagePath = srcEntityPackageDir.getAbsolutePath();
 		int packagePathLen = packagePath.length();
-		
-		Map errMap = null;
+
 		int k = 0;
+		Map errMap = null;
 		String line = null;
 		while((line = br.readLine())!=null)
 		{

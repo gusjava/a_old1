@@ -8,11 +8,13 @@ public class EntityImpl implements Entity, T {
 	public String creationDate() {return "20210823";}
 	
 	
-	public Object t(Object obj) throws Exception {
+	public Object t(Object obj) throws Exception
+	{
 		File appLocation = (File) obj;
 		if(appLocation==null || !appLocation.exists()) return null;
 		
-		if(appLocation.isDirectory()) {
+		if(appLocation.isDirectory()) 
+		{
 			File root = appLocation.getParentFile();
 			File srcDir = new File(root,"src");
 			if (srcDir.isDirectory()) return srcDir;
