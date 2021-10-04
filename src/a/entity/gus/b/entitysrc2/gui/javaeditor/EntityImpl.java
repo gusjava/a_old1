@@ -55,7 +55,8 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	private String fileName;
 	
 	private String text0;
-	private boolean canModify;
+	private boolean canModify = true;
+	private boolean justSaved = false;
 	
 
 	public EntityImpl() throws Exception
@@ -116,7 +117,7 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		fileName = (String) getName0.t(javaFile);
 		
 		canModify = canModifyEntity();
-		text0 = (String) read.t(javaFile);
+		text0 = readFile();
 
 		area.getDocument().removeDocumentListener(this);
 		area.setText(text0);
@@ -126,6 +127,16 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		actionSave.setEnabled(false);
 		actionReload.setEnabled(false);
 		
+		if(canModify && justSaved) focusCaret();
+		else area.setCaretPosition(0);
+		
+		justSaved = false;
+	}
+	
+	
+	
+	private void focusCaret() throws Exception
+	{
 		int caretPosition = 0;
 		String anchor = (String) ((R) holder).r("anchor");
 		if(anchor!=null && anchor.startsWith(fileName+"@"))
@@ -225,13 +236,14 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		text0 = area.getText();
 		
 		PrintStream p = new PrintStream(javaFile);
-		p.print(text0);
+		p.print(text0.replace("\n", System.lineSeparator()));
 		p.close();
 		
 		actionSave.setEnabled(false);
 		actionReload.setEnabled(false);
 		
 		((V) engine).v("modified",entityName+"@"+fileName+"@"+area.getCaretPosition());
+		justSaved = true;
 	}
 	
 	
@@ -253,7 +265,7 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		if(!canModify) throw new Exception("canModify=false");
 		if(text0==null) throw new Exception("text0==null");
 		
-		text0 = (String) read.t(javaFile);
+		text0 = readFile();
 
 		int caretPosition = area.getCaretPosition();
 		area.getDocument().removeDocumentListener(this);
@@ -268,6 +280,15 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		
 		SwingUtilities.invokeLater(()->area.requestFocusInWindow());
 	}
+	
+	
+	/*
+	 * READ FILE
+	 */
+	
+	private String readFile() throws Exception
+	{return ((String) read.t(javaFile)).replace(System.lineSeparator(), "\n");}
+	
 	
 	
 	/*

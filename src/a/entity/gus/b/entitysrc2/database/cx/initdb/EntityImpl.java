@@ -9,7 +9,7 @@ import a.framework.Service;
 public class EntityImpl implements Entity, P, G {
 	public String creationDate() {return "20210901";}
 
-	public static final String STRUCT_LAST_UPDATE = "2021-09-20 13:38:00"; //yyyy-MM-dd HH:mm:ss
+	public static final String STRUCT_LAST_UPDATE = "2021-10-04 21:36:00"; //yyyy-MM-dd HH:mm:ss
 	public static final boolean ALWAYS_RESET = false;
 	
 	
@@ -17,6 +17,7 @@ public class EntityImpl implements Entity, P, G {
 	private Service initEntityService;
 	private Service initEntityResource;
 	private Service initEntityLink;
+	private Service initEntityCompileErr;
 	private Service initFK;
 
 	public EntityImpl() throws Exception
@@ -25,6 +26,7 @@ public class EntityImpl implements Entity, P, G {
 		initEntityService = Outside.service(this,"gus.b.entitysrc2.database.cx.initdb.entity_service");
 		initEntityResource = Outside.service(this,"gus.b.entitysrc2.database.cx.initdb.entity_resource");
 		initEntityLink = Outside.service(this,"gus.b.entitysrc2.database.cx.initdb.entity_link");
+		initEntityCompileErr = Outside.service(this,"gus.b.entitysrc2.database.cx.initdb.entity_compile_err");
 		initFK = Outside.service(this,"gus.b.entitysrc2.database.cx.initdb.fk");
 	}
 
@@ -40,6 +42,7 @@ public class EntityImpl implements Entity, P, G {
 		initEntityService.p(obj);
 		initEntityResource.p(obj);
 		initEntityLink.p(obj);
+		initEntityCompileErr.p(obj);
 		initFK.p(obj);
 	}
 }

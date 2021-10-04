@@ -22,6 +22,7 @@ public class EntityImpl implements Entity, P, I {
 	private Service gui1;
 	private Service gui2;
 	private Service gui3;
+	private Service gui4;
 	
 	private JPanel panel;
 	private JLabel labelTitle;
@@ -36,6 +37,7 @@ public class EntityImpl implements Entity, P, I {
 		gui1 = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.src");
 		gui2 = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.infos");
 		gui3 = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.doc");
+		gui4 = Outside.service(this,"*gus.b.entitysrc2.gui.detail1.err");
 		
 		entityIcon = (Icon) Outside.resource(this,"icon#ELEMENT_entity");
 		
@@ -45,6 +47,7 @@ public class EntityImpl implements Entity, P, I {
 		tabHolder.v("FILE_java#Sources", gui1);
 		tabHolder.v("UTIL_infos#Infos", gui2);
 		tabHolder.v("UTIL_doc#Doc", gui3);
+		tabHolder.v("UTIL_doc#Doc", gui4);
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(labelTitle, BorderLayout.NORTH);

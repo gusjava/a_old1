@@ -48,9 +48,7 @@ public class EntityImpl implements Entity, P {
 				+COL_CALLNB+","
 				+COL_FILENB+") VALUES (?,?,?,?,?,?)";
 		
-		executeUpdate(cx, sql, 
-				name, features, creationdate, length, callNb, fileNb);
-		
+		executeUpdate(cx, sql, name, features, creationdate, length, callNb, fileNb);
 	}
 	
 	

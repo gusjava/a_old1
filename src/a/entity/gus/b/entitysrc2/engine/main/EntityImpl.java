@@ -20,10 +20,10 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	public static final String PERSIST_KEY = EntityImpl.class.getName()+"_last";
 
 	
-	private Service engine;
-	private Service persist;
+	private Service dataLoader;
 	private Service getConnection;
 	private Service getRootDir;
+	private Service persist;
 	private String devId;
 	
 	private Object selected;
@@ -38,10 +38,10 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 
 	public EntityImpl() throws Exception
 	{
-		engine = Outside.service(this,"gus.b.entitysrc2.engine");
-		persist = Outside.service(this,"gus.b.persist1.main");
+		dataLoader = Outside.service(this,"gus.b.entitysrc2.engine.dataloader");
 		getConnection = Outside.service(this,"gus.b.entitysrc2.database.cx.main");
 		getRootDir = Outside.service(this,"gus.b.entitysrc1.rootdir");
+		persist = Outside.service(this,"gus.b.persist1.main");
 		devId = (String) Outside.resource(this, "param#dev");
 		
 		if(devId==null) throw new Exception("dev not found inside params");
@@ -64,6 +64,9 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	public Object r(String key) throws Exception
 	{
 		if(key.equals("rootDir")) return getRootDir.g();
+		if(key.equals("binDir")) return getBinDir();
+		if(key.equals("libDir")) return getLibDir();
+		
 		if(key.equals("devId")) return devId;
 		if(key.equals("cx")) return getConnection.g();
 		
@@ -74,7 +77,9 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 		if(key.equals("deleted")) return deleted;
 		if(key.equals("modified")) return modified;
 		
-		if(key.equals("keys")) return new String[] {"rootDir","devId","cx",
+		if(key.equals("keys")) return new String[] {
+				"rootDir","binDir","libDir",
+				"devId","cx",
 				"selected","added","renamed","duplicated","deleted","modified"};
 		
 		throw new Exception("Unknown key: "+key);
@@ -96,7 +101,8 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	
 	
 
-	public boolean f(Object obj) throws Exception {
+	public boolean f(Object obj) throws Exception
+	{
 		Object[] o = (Object[]) obj;
 		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
 		
@@ -118,17 +124,16 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	
 	
 	
-	private void load() throws Exception {
-		File rootDir = (File) getRootDir.g();
-		Connection cx = (Connection) getConnection.g();
+	private void load() throws Exception
+	{
 		Long lastTime = findLastTime();
-		
-		map = (Map) engine.t(new Object[] {rootDir, cx, lastTime});
+		map = (Map) dataLoader.t(new Object[] {this, lastTime});
 		changed();
 	}
 	
 	
-	private long findLastTime() throws Exception {
+	private long findLastTime() throws Exception
+	{
 		String str = (String) persist.r(PERSIST_KEY);
 		long time = str!=null ? Long.parseLong(str) : 0L;
 		persist.v(PERSIST_KEY, ""+System.currentTimeMillis());
@@ -136,27 +141,45 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	}
 	
 	
+	private File getBinDir() throws Exception
+	{
+		File rootDir = (File) getRootDir.g();
+		return new File(rootDir.getParentFile(), "bin");
+	}
+	
+	private File getLibDir() throws Exception
+	{
+		File rootDir = (File) getRootDir.g();
+		return new File(rootDir.getParentFile(), "lib");
+	}
 	
 	
 	
 	
-	private boolean canDeleteEntity(String entityName) {
+	
+	
+	private boolean canDeleteEntity(String entityName)
+	{
 		return isMyEntity(entityName);
 	}
 	
-	private boolean canRenameEntity(String entityName) {
+	private boolean canRenameEntity(String entityName)
+	{
 		return isMyEntity(entityName);
 	}
 	
-	private boolean canDuplicateEntity(String entityName) {
+	private boolean canDuplicateEntity(String entityName)
+	{
 		return true;
 	}
 	
-	private boolean canModifyEntity(String entityName) {
+	private boolean canModifyEntity(String entityName)
+	{
 		return isMyEntity(entityName);
 	}
 	
-	private boolean isMyEntity(String entityName) {
+	private boolean isMyEntity(String entityName)
+	{
 		return entityName!=null && entityName.startsWith(devId+".");
 	}
 	
@@ -219,11 +242,13 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	
 	
 	
-	private void changed() {
+	private void changed()
+	{
 		send(this,"changed()");
 	}
 	
-	private void selected() {
+	private void selected()
+	{
 		send(this,"selected()");
 	}
 }

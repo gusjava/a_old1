@@ -40,6 +40,13 @@ public class EntityImpl implements Entity, P {
 					"REFERENCES entity(name)";
 			execute(cx, sql);
 		}
+		
+		{
+			String sql = "ALTER TABLE entity_compile_err " + 
+					"ADD FOREIGN KEY (entityname) " + 
+					"REFERENCES entity(name)";
+			execute(cx, sql);
+		}
 	}
 	
 	private void execute(Connection cx, String sql) throws SQLException {

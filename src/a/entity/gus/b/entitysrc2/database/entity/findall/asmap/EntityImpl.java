@@ -21,11 +21,7 @@ public class EntityImpl implements Entity, T {
 	public static final String COL_LENGTH = "length";
 	public static final String COL_CALLNB = "callnb";
 	public static final String COL_FILENB = "filenb";
-
-
-	public EntityImpl() throws Exception {
-		
-	}
+	
 	
 	
 	public Object t(Object obj) throws Exception {
@@ -36,7 +32,8 @@ public class EntityImpl implements Entity, T {
 		ResultSet rs = st.executeQuery(sql);
 		
 		Map data = new HashMap();
-		while(rs.next()) {
+		while(rs.next())
+		{
 			Map m = new HashMap();
 			transfer(m,rs,COL_NAME);
 			transfer(m,rs,COL_FEATURES);
@@ -51,7 +48,6 @@ public class EntityImpl implements Entity, T {
 		return data;
 	}
 	
-	private void transfer(Map m, ResultSet rs, String key) throws SQLException {
-		m.put(key, rs.getObject(key));
-	}
+	private void transfer(Map m, ResultSet rs, String key) throws SQLException
+	{m.put(key, rs.getObject(key));}
 }

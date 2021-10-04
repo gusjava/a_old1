@@ -1,4 +1,4 @@
-package a.entity.gus.a.entity.src.find.entityfile;
+package a.entity.gus.a.entity.bin.find.entityfile;
 
 import java.io.File;
 
@@ -6,9 +6,9 @@ import a.framework.Entity;
 import a.framework.T;
 
 public class EntityImpl implements Entity, T {
-	public String creationDate() {return "20210829";}
+	public String creationDate() {return "20211003";}
 
-	public static final String FILENAME = "EntityImpl.java";
+	public static final String FILENAME = "EntityImpl.class";
 	
 	
 	public Object t(Object obj) throws Exception

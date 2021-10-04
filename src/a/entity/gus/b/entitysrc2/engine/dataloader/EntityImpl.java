@@ -1,4 +1,4 @@
-package a.entity.gus.b.entitysrc2.engine;
+package a.entity.gus.b.entitysrc2.engine.dataloader;
 
 import java.io.File;
 import java.sql.Connection;
@@ -10,6 +10,7 @@ import java.util.Set;
 
 import a.framework.Entity;
 import a.framework.Outside;
+import a.framework.R;
 import a.framework.Service;
 import a.framework.T;
 
@@ -18,6 +19,7 @@ public class EntityImpl implements Entity, T {
 
 
 	private Service analyzeEntity;
+	private Service compileEntity;
 	private Service getListing;
 	private Service findAll;
 	private Service remover;
@@ -26,17 +28,22 @@ public class EntityImpl implements Entity, T {
 	private Service updateEntity;
 	
 	private Service insertServices;
-	private Service insertResources;
-	private Service insertLinks;
-	
 	private Service deleteServices;
+	
+	private Service insertResources;
 	private Service deleteResources;
+	
+	private Service insertLinks;
 	private Service deleteLinks;
+	
+	private Service deleteErr;
 	
 
 	
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception
+	{
 		analyzeEntity = Outside.service(this,"gus.b.entitysrc2.analyze.entity");
+		compileEntity = Outside.service(this,"gus.b.entitysrc2.compile.entity");
 		getListing = Outside.service(this,"gus.b.entitysrc2.listing.lastmodified");
 		findAll = Outside.service(this,"gus.b.entitysrc2.database.entity.findall.asmap");
 		remover = Outside.service(this,"gus.b.entitysrc2.database.entity.remover");
@@ -52,18 +59,25 @@ public class EntityImpl implements Entity, T {
 		
 		insertLinks = Outside.service(this,"gus.b.entitysrc2.database.entity_link.insert");
 		deleteLinks = Outside.service(this,"gus.b.entitysrc2.database.entity_link.delete1");
+		
+		deleteErr = Outside.service(this,"gus.b.entitysrc2.database.entity_compile_err.deleteall");
 	}
 	
 	
 	public Object t(Object obj) throws Exception {
 		Object[] o = (Object[]) obj;
-		if(o.length!=3) throw new Exception("Wrong data number: "+o.length);
+		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
 		
-		File rootDir = (File) o[0];
-		Connection cx = (Connection) o[1];
-		Long lastTime = (Long) o[2];
+		Object engine = o[0];
+		Long lastTime = (Long) o[1];
+		
+		File rootDir = (File) ((R) engine).r("rootDir");
+		Connection cx = (Connection) ((R) engine).r("cx");
+		
 		
 		long t1 = System.currentTimeMillis();
+		
+		deleteErr.p(cx);
 		
 		Map mapRoot = (Map) getListing.t(rootDir);
 		Set setRoot = mapRoot.keySet();
@@ -78,8 +92,6 @@ public class EntityImpl implements Entity, T {
 		Map results = new HashMap();
 		Set analyzed = new HashSet();
 		
-		int dirExistingNb = 0;
-		int dirOutDatedNb = 0;
 		int dirAnalyzedNb = 0;
 		
 		Iterator it = setRoot.iterator();
@@ -91,8 +103,6 @@ public class EntityImpl implements Entity, T {
 			boolean dbFound = mapDb.containsKey(entityName);
 			boolean shouldAnalyze = outDated || !dbFound;
 			
-			if(dbFound) dirExistingNb++;
-			if(outDated) dirOutDatedNb++;
 			if(shouldAnalyze) dirAnalyzedNb++;
 			
 			Map entityMap = null;
@@ -122,25 +132,11 @@ public class EntityImpl implements Entity, T {
 			insertServices.p(new Object[] {cx, entityMap});
 			insertResources.p(new Object[] {cx, entityMap});
 			insertLinks.p(new Object[] {cx, entityMap});
+			
+			compileEntity.p(new Object[] {engine, entityName});
 		}
 		
 		long duration = System.currentTimeMillis()-t1;
-		
-//		int dbTotalNb = mapDb.size();
-//		int dbRemovedNb = over.size();
-//		int dirTotalNb = mapRoot.size();
-//		int dirNewNb = dirTotalNb - dirExistingNb;
-//		
-//		System.out.println("ENTITY SRC LOADING:");
-//		System.out.println("- DB total: "+dbTotalNb);
-//		System.out.println("- DB removed: "+dbRemovedNb);
-//		System.out.println("- DIR total: "+dirTotalNb);
-//		System.out.println("- DIR existing: "+dirExistingNb);
-//		System.out.println("- DIR new: "+dirNewNb);
-//		System.out.println("- DIR outdated: "+dirOutDatedNb);
-//		System.out.println("- DIR analyzed: "+dirAnalyzedNb);
-//		System.out.println("- duration: "+duration);
-		
 		System.out.println("Analyzed entity nb: "+dirAnalyzedNb+" (duration="+duration+")");
 		
 		return results;
