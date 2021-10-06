@@ -14,7 +14,7 @@ public class EntityImpl implements Entity, P, G {
 	}
 	
 	public void p(Object obj) throws Exception
-	{copy((String) obj);}
+	{copy((String) obj);} 
 	
 	private Clipboard c()
 	{return Toolkit.getDefaultToolkit().getSystemClipboard();}

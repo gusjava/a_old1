@@ -1,4 +1,4 @@
-package a.entity.gus.b.entitysrc2.database.entity_compile_err.find;
+package a.entity.gus.b.entitysrc2.database.entity_compile_err.findall;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import a.framework.Entity;
 import a.framework.T;
 
 public class EntityImpl implements Entity, T {
-	public String creationDate() {return "20211004";}
+	public String creationDate() {return "20211005";}
 
 	public static final String TABLENAME = "entity_compile_err";
 	
@@ -30,17 +30,12 @@ public class EntityImpl implements Entity, T {
 	
 	public Object t(Object obj) throws Exception
 	{
-		Object[] o = (Object[]) obj;
-		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
+		Connection cx = (Connection) obj;
 		
-		Connection cx = (Connection) o[0];
-		String entityName = (String) o[1];
-		
-		String sql = "SELECT * FROM "+TABLENAME+" WHERE "+COL_ENTITYNAME+"=? ORDER BY "+
-				COL_FILENAME+","+COL_LINENB+","+COL_LINEPOS;
+		String sql = "SELECT * FROM "+TABLENAME+" ORDER BY "+
+				COL_ENTITYNAME+","+COL_FILENAME+","+COL_LINENB+","+COL_LINEPOS;
 		
 		PreparedStatement st = cx.prepareStatement(sql);
-		st.setObject(1, entityName);
 		ResultSet rs = st.executeQuery();
 		
 		List data = new ArrayList();

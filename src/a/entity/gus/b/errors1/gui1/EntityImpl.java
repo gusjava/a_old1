@@ -38,7 +38,8 @@ public class EntityImpl implements Entity, I, ActionListener {
 	private JLabel numberLabel;
 	
 
-	public EntityImpl() throws Exception {
+	public EntityImpl() throws Exception
+	{
 		watcher = Outside.service(this,"gus.b.errors1.watcher");
 		exceptionView = Outside.service(this,"*gus.b.dataview1.exception");
 		errList = (List) Outside.resource(this,"errlist");
@@ -69,32 +70,32 @@ public class EntityImpl implements Entity, I, ActionListener {
 	}
 	
 	
-	public Object i() throws Exception {
-		return split;
-	}
+	public Object i() throws Exception
+	{return split;}
 	
 
 
-	public void actionPerformed(ActionEvent e) {
-		refreshGui();
-	}
+	public void actionPerformed(ActionEvent e) 
+	{refreshGui();}
 	
 	
-	private void refreshGui() {
-		try {
+	private void refreshGui() 
+	{
+		try 
+		{
 			numberLabel.setText(" "+errList.size());
 			SwingUtilities.invokeLater(model);
 		}
-		catch(Exception e) {
-			Outside.err(this,"refreshGui()",e);
-		}
+		catch(Exception e) 
+		{Outside.err(this,"refreshGui()",e);}
 	}
 	
 	
 	
 	private void selectionChanged()
 	{
-		try {
+		try
+		 {
 			if(table.getSelectionModel().isSelectionEmpty()) return;
 			
 			int row = table.getSelectedRow();
@@ -102,9 +103,9 @@ public class EntityImpl implements Entity, I, ActionListener {
 			Exception ex = (Exception) info[3];
 			
 			exceptionView.p(ex);
-		} catch (Exception e) {
-			Outside.err(this,"selectionChanged()",e);
 		}
+		catch (Exception e)
+		{Outside.err(this,"selectionChanged()",e);}
 	}
 	
 	
@@ -151,18 +152,13 @@ public class EntityImpl implements Entity, I, ActionListener {
 	}
 	
 	
-	
 	private String sourceName(Object source)
 	{
 		if(source==null) return "null";
-		if(source instanceof Class) return "("+((Class)source).getName()+")";
+		if(source instanceof Class) return "("+((Class) source).getName()+")";
 		return source.getClass().getName();
 	}
-	
-	
 
 	private String timeStamp(Date d)
-	{
-		return new SimpleDateFormat("HH:mm:ss").format(d);
-	}
+	{return new SimpleDateFormat("HH:mm:ss").format(d);}
 }

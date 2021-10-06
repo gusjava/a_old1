@@ -20,7 +20,7 @@ public class EntityImpl implements Entity, I, ActionListener {
 	private Service buildHolder;
 	private Service guiListing;
 	private Service guiDetail;
-	private Service persistTextComp;
+	private Service persistGP;
 	private Service persistTable;
 	private Service persistSet;
 	
@@ -34,15 +34,9 @@ public class EntityImpl implements Entity, I, ActionListener {
 		buildHolder = Outside.service(this,"gus.b.entitysrc2.engine.entityholder");
 		guiListing = Outside.service(this,"*gus.b.entitysrc2.gui.listing1");
 		guiDetail = Outside.service(this,"*gus.b.entitysrc2.gui.detail1");
-		persistTextComp = Outside.service(this,"gus.b.persist1.swing.textcomp");
+		persistGP = Outside.service(this,"gus.b.persist1.features.gp");
 		persistTable = Outside.service(this,"gus.b.persist1.swing.table.selectedrow");
 		persistSet = Outside.service(this,"gus.b.persist1.set.string");
-		
-		Object field = guiListing.r("field");
-		persistTextComp.v(getClass().getName()+"_field", field);
-
-		Object lockSet = guiListing.r("lockSet");
-		persistSet.v(getClass().getName()+"_lockSet", lockSet);
 		
 		split = new JSplitPane();
 		split.setDividerSize(3);
@@ -51,8 +45,19 @@ public class EntityImpl implements Entity, I, ActionListener {
 		split.setLeftComponent((JComponent) guiListing.i());
 		split.setRightComponent((JComponent) guiDetail.i());
 		
+		/*
+		 * LOADING GUI LISTING
+		 */
+
+		Object fieldHolder = guiListing.r("fieldHolder");
+		persistGP.v(getClass().getName()+"_field", fieldHolder);
+
+		Object lockSet = guiListing.r("lockSet");
+		persistSet.v(getClass().getName()+"_lockSet", lockSet);
+		
 		guiListing.p(engine);
 		guiListing.addActionListener(this);
+		guiListing.e();
 		
 		SwingUtilities.invokeLater(this::persistTable);
 	}

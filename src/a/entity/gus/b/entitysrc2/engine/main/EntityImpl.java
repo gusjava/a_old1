@@ -2,6 +2,7 @@ package a.entity.gus.b.entitysrc2.engine.main;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 
 import a.framework.E;
@@ -23,6 +24,7 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	private Service dataLoader;
 	private Service getConnection;
 	private Service getRootDir;
+	private Service findErrors;
 	private Service persist;
 	private String devId;
 	
@@ -33,7 +35,10 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	private Object deleted;
 	private Object modified;
 	
-	private Map map;
+	private Long lastTime;
+	private Map data;
+	private Map errors;
+	
 	
 
 	public EntityImpl() throws Exception
@@ -41,34 +46,40 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 		dataLoader = Outside.service(this,"gus.b.entitysrc2.engine.dataloader");
 		getConnection = Outside.service(this,"gus.b.entitysrc2.database.cx.main");
 		getRootDir = Outside.service(this,"gus.b.entitysrc1.rootdir");
+		findErrors = Outside.service(this,"gus.b.entitysrc2.database.entity_compile_err.findall.asmap");
 		persist = Outside.service(this,"gus.b.persist1.main");
-		devId = (String) Outside.resource(this, "param#dev");
 		
+		devId = (String) Outside.resource(this, "param#dev");
 		if(devId==null) throw new Exception("dev not found inside params");
+		
+		load();
 	}
+	
 	
 	
 	public void e() throws Exception
 	{
 		load();
+		changed();
 	}
+	
 	
 	
 	public Object g() throws Exception
-	{
-		if(map==null) load();
-		return map;
-	}
+	{return data;}
+	
 	
 	
 	public Object r(String key) throws Exception
 	{
-		if(key.equals("rootDir")) return getRootDir.g();
+		if(key.equals("rootDir")) return getRootDir();
 		if(key.equals("binDir")) return getBinDir();
 		if(key.equals("libDir")) return getLibDir();
 		
 		if(key.equals("devId")) return devId;
-		if(key.equals("cx")) return getConnection.g();
+		if(key.equals("errors")) return errors;
+		if(key.equals("lastTime")) return lastTime;
+		if(key.equals("cx")) return getConnection();
 		
 		if(key.equals("selected")) return selected;
 		if(key.equals("added")) return added;
@@ -79,7 +90,7 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 		
 		if(key.equals("keys")) return new String[] {
 				"rootDir","binDir","libDir",
-				"devId","cx",
+				"devId","lastTime","errors","cx",
 				"selected","added","renamed","duplicated","deleted","modified"};
 		
 		throw new Exception("Unknown key: "+key);
@@ -118,27 +129,48 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	
 	
 	
-
 	
-	
-	
-	
-	
+	/*
+	 * LOAD
+	 */
+		
 	private void load() throws Exception
 	{
-		Long lastTime = findLastTime();
-		map = (Map) dataLoader.t(new Object[] {this, lastTime});
-		changed();
+		lastTime = findLastTime();
+		data = (Map) dataLoader.t(this);
+		errors = (Map) findErrors.t(getConnection());
+		persistLastTime();
 	}
 	
+	
+	/*
+	 * LAST TIME
+	 */
 	
 	private long findLastTime() throws Exception
 	{
 		String str = (String) persist.r(PERSIST_KEY);
-		long time = str!=null ? Long.parseLong(str) : 0L;
-		persist.v(PERSIST_KEY, ""+System.currentTimeMillis());
-		return time;
+		return str!=null ? Long.parseLong(str) : 0L;
 	}
+	
+	private void persistLastTime() throws Exception
+	{
+		persist.v(PERSIST_KEY, ""+System.currentTimeMillis());
+	}
+	
+	
+	
+	
+	
+	
+	private File getRootDir() throws Exception
+	{return (File) getRootDir.g();}
+	
+	
+	
+	private Connection getConnection() throws Exception
+	{return (Connection) getConnection.g();}
+	
 	
 	
 	private File getBinDir() throws Exception
@@ -190,6 +222,7 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	private void selectEntity(Object selected)
 	{
 		this.selected = selected;
+		
 		selected();
 	}
 	
@@ -197,58 +230,64 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	private void entityAdded(Object added) throws Exception
 	{
 		this.added = added;
+		this.selected = added;
+		
 		load();
-		selectEntity(added);
+		changedAndSelected();
 	}
 	
 	
 	private void entityRenamed(Object renamed) throws Exception
 	{
 		this.renamed = renamed;
+		this.selected = ((String[]) renamed)[1];
+		
 		load();
-		String[] n = (String[]) renamed;
-		selectEntity(n[1]);
+		changedAndSelected();
 	}
 	
 	
 	private void entityDuplicated(Object duplicated) throws Exception
 	{
 		this.duplicated = duplicated;
+		this.selected = ((String[]) duplicated)[1];
+		
 		load();
-		String[] n = (String[]) duplicated;
-		selectEntity(n[1]);
+		changedAndSelected();
 	}
 	
 	
 	private void entityDeleted(Object deleted) throws Exception
 	{
 		this.deleted = deleted;
+		
 		load();
+		changed();
 	}
 	
 	
 	private void entityModified(Object modified) throws Exception
 	{
 		this.modified = modified;
+		this.selected = modified;
+		
 		load();
-		selectEntity(modified);
+		changedAndSelected();
 	}
 	
 	
 	
 	
-
-	
-	
-	
+	/*
+	 * EVENTS
+	 */
 	
 	private void changed()
-	{
-		send(this,"changed()");
-	}
+	{send(this,"changed()");}
 	
 	private void selected()
-	{
-		send(this,"selected()");
-	}
+	{send(this,"selected()");}
+	
+	private void changedAndSelected()
+	{send(this,"changedAndSelected()");}
 }

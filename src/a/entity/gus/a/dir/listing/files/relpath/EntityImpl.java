@@ -10,7 +10,8 @@ public class EntityImpl implements Entity, T {
 	public String creationDate() {return "20210813";}
 	
 	
-	public Object t(Object obj) throws Exception {
+	public Object t(Object obj) throws Exception
+	{
 		File dir = (File) obj;
 		int len = dir.getAbsolutePath().length()+1;
 

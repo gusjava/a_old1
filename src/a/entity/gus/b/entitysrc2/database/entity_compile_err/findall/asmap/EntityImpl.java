@@ -1,4 +1,4 @@
-package a.entity.gus.b.entitysrc2.database.entity_compile_err.find;
+package a.entity.gus.b.entitysrc2.database.entity_compile_err.findall.asmap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import a.framework.Entity;
 import a.framework.T;
 
 public class EntityImpl implements Entity, T {
-	public String creationDate() {return "20211004";}
+	public String creationDate() {return "20211006";}
 
 	public static final String TABLENAME = "entity_compile_err";
 	
@@ -30,20 +30,15 @@ public class EntityImpl implements Entity, T {
 	
 	public Object t(Object obj) throws Exception
 	{
-		Object[] o = (Object[]) obj;
-		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
+		Connection cx = (Connection) obj;
 		
-		Connection cx = (Connection) o[0];
-		String entityName = (String) o[1];
-		
-		String sql = "SELECT * FROM "+TABLENAME+" WHERE "+COL_ENTITYNAME+"=? ORDER BY "+
-				COL_FILENAME+","+COL_LINENB+","+COL_LINEPOS;
+		String sql = "SELECT * FROM "+TABLENAME+" ORDER BY "+
+				COL_ENTITYNAME+","+COL_FILENAME+","+COL_LINENB+","+COL_LINEPOS;
 		
 		PreparedStatement st = cx.prepareStatement(sql);
-		st.setObject(1, entityName);
 		ResultSet rs = st.executeQuery();
 		
-		List data = new ArrayList();
+		Map data = new HashMap();
 		while(rs.next())
 		{
 			Map m = new HashMap();
@@ -55,7 +50,11 @@ public class EntityImpl implements Entity, T {
 			transfer(m,rs,COL_LINEPOS);
 			transfer(m,rs,COL_TYPE);
 			transfer(m,rs,COL_DESCRIPTION);
-			data.add(m);
+			
+			String name = (String) m.get(COL_ENTITYNAME);
+			
+			if(!data.containsKey(name)) data.put(name, new ArrayList());
+			((List) data.get(name)).add(m);
 		}
 		st.close();
 		return data;

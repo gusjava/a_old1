@@ -1,10 +1,19 @@
 package a.entity.gus.b.swing1.textfield.editor1;
 
-import a.framework.*;
 import java.awt.Insets;
-import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JTextField;
+
+import a.framework.Entity;
+import a.framework.G;
+import a.framework.I;
+import a.framework.Outside;
+import a.framework.P;
+import a.framework.S;
+import a.framework.S1;
+import a.framework.Service;
 
 
 public class EntityImpl extends S1 implements Entity, I, G, P, ActionListener {
@@ -16,6 +25,7 @@ public class EntityImpl extends S1 implements Entity, I, G, P, ActionListener {
 	private Service actionClear;
 
 	private JTextField field;
+	private Object sup;
 
 	public EntityImpl() throws Exception
 	{
@@ -27,8 +37,8 @@ public class EntityImpl extends S1 implements Entity, I, G, P, ActionListener {
 
 		actionClear.p(field);
 
-		S sup = (S) textChanged.t(field);
-		sup.addActionListener(this);
+		sup = textChanged.t(field);
+		((S) sup).addActionListener(this);
 	}
 	
 	
@@ -41,8 +51,11 @@ public class EntityImpl extends S1 implements Entity, I, G, P, ActionListener {
 	
 	
 	public void p(Object obj) throws Exception
-	{field.setText(obj==null?"":(String) obj);}
-
+	{
+		((P)sup).p("deactivate");
+		field.setText(obj==null?"":(String) obj);
+		((P)sup).p("activate");
+	}
 
 
 	public void actionPerformed(ActionEvent e)

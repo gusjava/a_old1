@@ -8,7 +8,7 @@ public class EntityImpl implements Entity, T {
 
 	public Object t(Object obj) throws Exception
 	{
-		if(obj==null) return null;
+		if(obj==null) return null; 
 		
 		StringBuffer b = new StringBuffer();
 

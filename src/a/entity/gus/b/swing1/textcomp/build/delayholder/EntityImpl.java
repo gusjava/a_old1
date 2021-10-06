@@ -76,7 +76,7 @@ public class EntityImpl implements Entity, T {
 				activated = true;
 				comp.getDocument().addDocumentListener(this);
 			}
-			else if(obj.equals("disactivate") && activated)
+			else if(obj.equals("deactivate") && activated)
 			{
 				activated = false;
 				comp.getDocument().removeDocumentListener(this);

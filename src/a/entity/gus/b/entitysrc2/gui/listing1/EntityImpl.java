@@ -10,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +41,9 @@ import a.framework.P;
 import a.framework.R;
 import a.framework.S1;
 import a.framework.Service;
+import a.framework.V;
 
-public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelectionListener {
+public class EntityImpl extends S1 implements Entity, P, I, E, R, G, V, ListSelectionListener {
 	public String creationDate() {return "20210830";}
 	
 	public static final String COL_FEATURES = "features";
@@ -77,11 +79,13 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private JComponent field;
 	private JLabel labelNumber;
 	private JLabel labelNumberLocked;
+	private JLabel labelNumberError;
 	private JToolBar bar;
 	
 	private Icon iconEntity;
 	private Icon iconEntityLock;
 	private Icon iconLock;
+	private Icon iconErr;
 	
 	private Action actionCreate;
 	private Action actionDelete;
@@ -96,6 +100,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private List dataFiltered;
 	
 	private Set lockSet;
+	private Map errorMap;
 	private String selectionPath;
 	
 	
@@ -120,6 +125,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		iconEntity = (Icon) Outside.resource(this,"icon#ELEMENT_entity");
 		iconEntityLock = (Icon) Outside.resource(this,"icon#ELEMENT_entity_lock");
 		iconLock = (Icon) Outside.resource(this,"icon#UTIL_lockR");
+		iconErr = (Icon) Outside.resource(this,"icon#UTIL_errorR");
 		
 		actionCreate = (Action) actionBuilder.t(new Object[] {DISPLAY_CREATE, (E) this::entityCreate});
 		actionDelete = (Action) actionBuilder.t(new Object[] {DISPLAY_DELETE, (E) this::entityDelete});
@@ -128,9 +134,11 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		
 		
 		lockSet = new HashSet();
+		errorMap = new HashMap();
 
 		labelNumber = new JLabel(" ");
 		labelNumberLocked = new JLabel(" ");
+		labelNumberError = new JLabel(" ");
 		
 		bar = (JToolBar) toolbarFactory.i();
 		
@@ -189,10 +197,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		scroll.getViewport().setBackground(Color.WHITE);
 		scroll.getViewport().setOpaque(true);
 		
-		JPanel bottomPanel = new JPanel(new BorderLayout());
-		bottomPanel.add(labelNumber,BorderLayout.WEST);
-		bottomPanel.add(labelNumberLocked,BorderLayout.CENTER);
-		bottomPanel.add(bar,BorderLayout.EAST);
+		JPanel bottomPanel = wce(labelNumber, wc(labelNumberLocked, labelNumberError), bar);
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(field,BorderLayout.NORTH);
@@ -205,7 +210,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		linkerListField.p(new Object[]{table,field});
 		fieldHolder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
-			{refresh();}
+			{
+				SwingUtilities.invokeLater(()->{
+					updateTable();
+					refreshLocked();
+				});
+			}
 		});
 		
 		engineHolder.addActionListener(new ActionListener() {
@@ -213,11 +223,31 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 			{
 				String s = e.getActionCommand();
 				if(s.equals("changed()")) reload();
-				else if(s.equals("selected()")) selectFromEngine();
+				else if(s.equals("selected()")) select();
+				else if(s.equals("changedAndSelected()")) reloadAndSelect();
 			}
 		});
 		
 		refreshActions_();
+	}
+	
+	
+	
+	private JPanel wc(JComponent w, JComponent c)
+	{
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(w,BorderLayout.WEST);
+		panel.add(c,BorderLayout.CENTER);
+		return panel;
+	}
+	
+	private JPanel wce(JComponent w, JComponent c, JComponent e)
+	{
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(w,BorderLayout.WEST);
+		panel.add(c,BorderLayout.CENTER);
+		panel.add(e,BorderLayout.EAST);
+		return panel;
 	}
 	
 	
@@ -229,7 +259,6 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	{
 		engine = obj;
 		engineHolder.p(engine);
-		reload();
 	}
 	
 	
@@ -238,7 +267,7 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 	
 	public void e() throws Exception
-	{refresh();}
+	{reload();}
 	
 	
 	public Object g() throws Exception
@@ -256,14 +285,21 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	public Object r(String key) throws Exception
 	{
 		if(key.equals("field")) return field;
+		if(key.equals("fieldHolder")) return fieldHolder;
 		if(key.equals("table")) return table;
 		if(key.equals("lockSet")) return lockSet;
-		if(key.equals("keys")) return new String[] {"field", "table", "lockSet"};
+		
+		if(key.equals("keys")) return new String[] {"field", "fieldHolder", "table", "lockSet"};
 		
 		throw new Exception("Unknown key: "+key);
 	}
 	
 
+	
+	public void v(String key, Object obj) throws Exception
+	{
+		throw new Exception("Unknown key: "+key);
+	}
 	
 	
 	
@@ -274,8 +310,88 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	}
 	
 	
-	private int getFilteredNumber()
-	{return dataFiltered!=null ? dataFiltered.size() : 0;}
+	
+	
+	
+	private void reload()
+	{
+		try
+		{
+			buildDataFull();
+			
+			SwingUtilities.invokeLater(()->{
+				updateTable();
+				refreshLocked();
+			});
+		}
+		catch(Exception e)
+		{Outside.err(this, "reload()", e);}
+	}
+	
+	
+	private void select()
+	{
+		try
+		{
+			selectionPath = (String) ((R) engine).r("selected");
+			
+			final String name = selectionPath.split("@",2)[0];
+			addToLocked(name);
+			
+			SwingUtilities.invokeLater(()->{
+				updateTable();
+				selectEntity(name);
+			});
+		}
+		catch(Exception e)
+		{Outside.err(this, "select()", e);}
+	}
+	
+	
+	private void reloadAndSelect()
+	{
+		try
+		{
+			selectionPath = (String) ((R) engine).r("selected");
+			buildDataFull();
+			
+			final String name = selectionPath.split("@",2)[0];
+			addToLocked(name);
+			
+			SwingUtilities.invokeLater(()->{
+				updateTable();
+				refreshLocked();
+				selectEntity(name);
+			});
+		}
+		catch(Exception e)
+		{Outside.err(this, "reloadAndSelect()", e);}
+	}
+	
+	
+	private void forceReload()
+	{
+		try {
+			((E) engine).e();
+			buildDataFull();
+			
+			SwingUtilities.invokeLater(()->{
+				updateTable();
+				refreshLocked();
+			});
+		}
+		catch(Exception e) {
+			Outside.err(this, "forceReload()", e);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+
 	
 	
 	
@@ -294,29 +410,21 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		}
 	}
 	
-	private void forceReload()
-	{
-		try {
-			((E) engine).e();
-			buildDataFull();
-			refresh();
-		}
-		catch(Exception e) {
-			Outside.err(this, "forceReload()", e);
-		}
-	}
 	
-	
-	private void reload()
+	private void refreshErrorNumber()
 	{
-		try
+		if(errorMap.isEmpty())
 		{
-			buildDataFull();
-			refresh();
+			labelNumberError.setIcon(null);
+			labelNumberError.setText(" ");
 		}
-		catch(Exception e)
-		{Outside.err(this, "reload()", e);}
+		else
+		{
+			labelNumberError.setIcon(iconErr);
+			labelNumberError.setText(""+errorMap.size());
+		}
 	}
+	
 	
 	
 	/*
@@ -326,19 +434,14 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	private void buildDataFull() throws Exception
 	{
 		map = (Map) ((G) engine).g();
-		if(map==null)
-		{
-			dataFull = null;
-			dataFiltered = null;
-			names = null;
-			return;
-		}
+		errorMap = (Map) ((R) engine).r("errors");
+		refreshErrorNumber();
 		
 		names = new ArrayList(map.keySet());
 		Collections.sort(names);
-		int nb = names.size();
 		
 		dataFull = new ArrayList();
+		int nb = names.size();
 		for(int i=0;i<nb;i++) {
 			String key = (String) names.get(i);
 			Map entityData = (Map) map.get(key);
@@ -364,22 +467,10 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		
 		String search = (String) fieldHolder.g();
 		String devId = (String) ((R) engine).r("devId");
-		dataFiltered = (List) filterList.t(new Object[] {dataFull, search, devId, lockSet});
+		dataFiltered = (List) filterList.t(new Object[] {dataFull, search, devId, lockSet, errorMap.keySet()});
 	}
 	
 	
-	/*
-	 * REFRESH
-	 */
-	
-	private void refresh()
-	{
-		SwingUtilities.invokeLater(()->{
-			updateTable();
-			refreshLocked();
-//			field.requestFocusInWindow();
-		});
-	}
 	
 	public void updateTable()
 	{
@@ -395,25 +486,17 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	
 
 	
+	private int getFilteredNumber()
+	{return dataFiltered!=null ? dataFiltered.size() : 0;}
 	
 	
-	private void selectFromEngine()
+	
+	private int getErrorNumber(String entityName)
 	{
-		try
-		{
-			selectionPath = (String) ((R) engine).r("selected");
-			
-			final String name = selectionPath.split("@",2)[0];
-			addToLocked(name);
-			
-			SwingUtilities.invokeLater(()->{
-				updateTable();
-				selectEntity(name);
-			});
-		}
-		catch(Exception e)
-		{Outside.err(this, "selectFromEngine()", e);}
+		if(errorMap==null || !errorMap.containsKey(entityName)) return 0;
+		return ((List) errorMap.get(entityName)).size();
 	}
+	
 	
 	
 	
@@ -524,8 +607,12 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 	 * TABLE RENDERER
 	 */
 	
-	public static final Color COLOR_SELECT = new Color(244,244,244);
-	public static final Color COLOR_UNSELECT = Color.WHITE;
+	public static final Color BG_SELECTED = new Color(244,244,244);
+	public static final Color BG_UNSELECTED = Color.WHITE;
+	
+	public static final Color FG_COMPILED = Color.BLACK;
+	public static final Color FG_UNCOMPILED = Color.RED;
+	
 	
 	private class TableCellRenderer1 extends JLabel implements TableCellRenderer
 	{
@@ -537,22 +624,33 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, ListSelecti
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			String s = (String) value;
 			
-			if(column==0) {
+			String entityName = (String) table.getValueAt(row,0);
+			int errNumber = getErrorNumber(entityName);
+			
+			if(column==0) 
+			{
 				Icon icon = lockSet.contains(s) ? iconEntityLock : iconEntity;
 				setIcon(icon);
-				setText(s);
+				
+				if(errNumber==0) setText(s);
+				else setText(s+" ("+errNumber+")");
 			}
-			else {
+			else
+			{
 				setIcon(null);
 				setText(" "+s);
 			}
 			
 			setBackground(getBackground(isSelected));
+			setForeground(getForeground(entityName));
 			return this;
 		}
 		
 		public Color getBackground(boolean isSelected)
-		{return isSelected ? COLOR_SELECT : COLOR_UNSELECT;}
+		{return isSelected ? BG_SELECTED : BG_UNSELECTED;}
+		
+		public Color getForeground(String s)
+		{return errorMap!=null && errorMap.containsKey(s) ? FG_UNCOMPILED : FG_COMPILED;}
 	}
 
 	

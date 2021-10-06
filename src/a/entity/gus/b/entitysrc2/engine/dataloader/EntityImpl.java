@@ -36,8 +36,6 @@ public class EntityImpl implements Entity, T {
 	private Service insertLinks;
 	private Service deleteLinks;
 	
-	private Service deleteErr;
-	
 
 	
 	public EntityImpl() throws Exception
@@ -59,25 +57,18 @@ public class EntityImpl implements Entity, T {
 		
 		insertLinks = Outside.service(this,"gus.b.entitysrc2.database.entity_link.insert");
 		deleteLinks = Outside.service(this,"gus.b.entitysrc2.database.entity_link.delete1");
-		
-		deleteErr = Outside.service(this,"gus.b.entitysrc2.database.entity_compile_err.deleteall");
 	}
 	
 	
 	public Object t(Object obj) throws Exception {
-		Object[] o = (Object[]) obj;
-		if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
+		Object engine = obj;
 		
-		Object engine = o[0];
-		Long lastTime = (Long) o[1];
-		
+		Long lastTime = (Long) ((R) engine).r("lastTime");
 		File rootDir = (File) ((R) engine).r("rootDir");
 		Connection cx = (Connection) ((R) engine).r("cx");
 		
 		
 		long t1 = System.currentTimeMillis();
-		
-		deleteErr.p(cx);
 		
 		Map mapRoot = (Map) getListing.t(rootDir);
 		Set setRoot = mapRoot.keySet();

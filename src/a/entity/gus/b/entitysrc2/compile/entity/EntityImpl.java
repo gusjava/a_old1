@@ -158,7 +158,6 @@ public class EntityImpl implements Entity, P, F {
 			{
 				int pos = line.indexOf("^");
 				errMap.put(COL_LINEPOS, pos);
-				System.out.println(errMap);
 				insertRow.p(new Object[] {cx, errMap});
 				k = 0;
 			}

@@ -2,6 +2,7 @@ package a.entity.gus.b.entitysrc2.engine.entityholder;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.List;
 import java.util.Set;
 
 import a.framework.Entity;
@@ -19,6 +20,7 @@ public class EntityImpl implements Entity, T {
 	private Service findUpLinks;
 	private Service findServices;
 	private Service findResources;
+	private Service findErrors;
 
 	public EntityImpl() throws Exception
 	{
@@ -28,6 +30,7 @@ public class EntityImpl implements Entity, T {
 		findUpLinks = Outside.service(this,"gus.b.entitysrc2.database.entity_link.find1");
 		findServices = Outside.service(this,"gus.b.entitysrc2.database.entity_service.find");
 		findResources = Outside.service(this,"gus.b.entitysrc2.database.entity_resource.find");
+		findErrors = Outside.service(this,"gus.b.entitysrc2.database.entity_compile_err.find");
 	}
 	
 	
@@ -58,6 +61,7 @@ public class EntityImpl implements Entity, T {
 		private Set upLinks;
 		private Set services;
 		private Set resources;
+		private List errors;
 		
 		public Holder(String path, Object engine)
 		{
@@ -87,13 +91,14 @@ public class EntityImpl implements Entity, T {
 			
 			if(key.equals("services")) return services();
 			if(key.equals("resources")) return resources();
+			if(key.equals("errors")) return errors();
 			
 			if(key.equals("keys")) return new String[] {
 					"path","entityName","anchor","engine",
 					"cx", "rootDir", 
 					"packageDir", "javaFiles", 
 					"downLinks", "upLinks", 
-					"services", "resources"};
+					"services", "resources", "errors"};
 			throw new Exception("");
 		}
 		
@@ -142,6 +147,12 @@ public class EntityImpl implements Entity, T {
 		{
 			if(resources==null) resources = (Set) findResources.t(new Object[] {cx(), entityName});
 			return resources;
+		}
+		
+		private List errors()  throws Exception
+		{
+			if(errors==null) errors = (List) findErrors.t(new Object[] {cx(), entityName});
+			return errors;
 		}
 	}
 }

@@ -1,19 +1,20 @@
 package a.entity.gus.b.entitysrc2.gui.detail1;
 
 import java.awt.BorderLayout;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import a.framework.Entity;
 import a.framework.I;
 import a.framework.Outside;
-import a.framework.Service;
 import a.framework.P;
 import a.framework.R;
+import a.framework.Service;
 
 public class EntityImpl implements Entity, P, I {
 	public String creationDate() {return "20210903";}
@@ -25,6 +26,7 @@ public class EntityImpl implements Entity, P, I {
 	private Service gui4;
 	
 	private JPanel panel;
+	private JTabbedPane tab;
 	private JLabel labelTitle;
 	private Icon entityIcon;
 	
@@ -49,9 +51,11 @@ public class EntityImpl implements Entity, P, I {
 		tabHolder.v("UTIL_doc#Doc", gui3);
 		tabHolder.v("UTIL_error#Errors", gui4);
 		
+		tab = (JTabbedPane) tabHolder.i();
+		
 		panel = new JPanel(new BorderLayout());
 		panel.add(labelTitle, BorderLayout.NORTH);
-		panel.add((JComponent) tabHolder.i(), BorderLayout.CENTER);
+		panel.add(tab, BorderLayout.CENTER);
 	}
 	
 	
@@ -61,6 +65,11 @@ public class EntityImpl implements Entity, P, I {
 		holder = obj;
 		
 		String entityName = (String) ((R) holder).r("entityName");
+		List errors = (List) ((R) holder).r("errors");
+		
+		int errorNumber = errors.size();
+		String errorTitle = errorNumber==0 ? "Errors" : "Errors ("+errorNumber+")";
+		tab.setTitleAt(3, errorTitle);
 		
 		labelTitle.setText(entityName);
 		labelTitle.setIcon(entityIcon);
@@ -68,6 +77,7 @@ public class EntityImpl implements Entity, P, I {
 		gui1.p(holder);
 		gui2.p(holder);
 		gui3.p(holder);
+		gui4.p(holder);
 	}
 	
 	
@@ -80,6 +90,7 @@ public class EntityImpl implements Entity, P, I {
 		gui1.p(null);
 		gui2.p(null);
 		gui3.p(null);
+		gui4.p(null);
 	}
 	
 	
