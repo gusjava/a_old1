@@ -2,7 +2,6 @@ package a.entity.gus.b.entitysrc2.engine.main;
 
 import java.io.File;
 import java.sql.Connection;
-import java.util.List;
 import java.util.Map;
 
 import a.framework.E;
@@ -105,6 +104,7 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 		if(key.equals("duplicated")) {entityDuplicated(obj);return;}
 		if(key.equals("deleted")) {entityDeleted(obj);return;}
 		if(key.equals("modified")) {entityModified(obj);return;}
+		if(key.equals("modifiedAndSelected")) {entityModifiedAndSelected(obj);return;}
 		
 		throw new Exception("Unknown key: "+key);
 	}
@@ -270,6 +270,15 @@ public class EntityImpl extends S1 implements Entity, G, R, V, E, F {
 	{
 		this.modified = modified;
 		this.selected = modified;
+		
+		load();
+		changedAndSelected();
+	}
+	
+	private void entityModifiedAndSelected(Object info) throws Exception
+	{
+		this.modified = ((String[]) info)[0];
+		this.selected = ((String[]) info)[1];
 		
 		load();
 		changedAndSelected();

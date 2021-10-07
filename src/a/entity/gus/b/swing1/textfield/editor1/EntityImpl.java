@@ -13,7 +13,7 @@ import a.framework.Outside;
 import a.framework.P;
 import a.framework.S;
 import a.framework.S1;
-import a.framework.Service;
+import a.framework.Service; 
 
 
 public class EntityImpl extends S1 implements Entity, I, G, P, ActionListener {

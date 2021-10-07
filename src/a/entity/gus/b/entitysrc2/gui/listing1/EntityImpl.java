@@ -101,7 +101,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, V, ListSele
 	
 	private Set lockSet;
 	private Map errorMap;
-	private String selectionPath;
+	private String selectedPath;
+	private String modifiedPath;
 	
 	
 	
@@ -275,8 +276,8 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, V, ListSele
 		String selection = getSelectedName();
 		if(selection==null) return null;
 		
-		if(selectionPath!=null && selectionPath.startsWith(selection+"@")) selection = selectionPath;
-		selectionPath = null;
+		if(selectedPath!=null && selectedPath.startsWith(selection+"@")) selection = selectedPath;
+		selectedPath = null;
 		return selection;
 	}
 	
@@ -333,9 +334,9 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, V, ListSele
 	{
 		try
 		{
-			selectionPath = (String) ((R) engine).r("selected");
+			selectedPath = (String) ((R) engine).r("selected");
 			
-			final String name = selectionPath.split("@",2)[0];
+			final String name = selectedPath.split("@",2)[0];
 			addToLocked(name);
 			
 			SwingUtilities.invokeLater(()->{
@@ -352,16 +353,19 @@ public class EntityImpl extends S1 implements Entity, P, I, E, R, G, V, ListSele
 	{
 		try
 		{
-			selectionPath = (String) ((R) engine).r("selected");
-			buildDataFull();
+			selectedPath = (String) ((R) engine).r("selected");
+			modifiedPath = (String) ((R) engine).r("modified");
 			
-			final String name = selectionPath.split("@",2)[0];
-			addToLocked(name);
+			final String selectedName = selectedPath.split("@",2)[0];
+			final String modifiedName = modifiedPath.split("@",2)[0];
+			
+			buildDataFull();
+			addToLocked(modifiedName);
 			
 			SwingUtilities.invokeLater(()->{
 				updateTable();
 				refreshLocked();
-				selectEntity(name);
+				selectEntity(selectedName);
 			});
 		}
 		catch(Exception e)

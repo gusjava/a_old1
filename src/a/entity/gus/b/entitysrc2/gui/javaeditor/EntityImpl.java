@@ -103,7 +103,7 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	
 	public void p(Object obj) throws Exception
 	{
-		complete();
+		complete(obj);
 		if(obj==null) {reset();return;}
 		
 		Object[] o = (Object[]) obj;
@@ -198,7 +198,7 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	
 	
 	
-	private void changed()
+	private void changed() 
 	{
 		try
 		{
@@ -309,7 +309,7 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 	public static final String TITLE = "Save changes ?";
 	public static final String MESSAGE = "Please, confirm saving";
 	
-	private void complete() throws Exception
+	private void complete(Object obj) throws Exception
 	{
 		if(!canModify) return;
 		if(text0==null) return;
@@ -317,6 +317,33 @@ public class EntityImpl implements Entity, P, I, R, DocumentListener {
 		
 		Window window = SwingUtilities.getWindowAncestor(area);
 		int r = JOptionPane.showConfirmDialog(window, MESSAGE, TITLE, JOptionPane.YES_NO_OPTION);
-		if(r==JOptionPane.YES_OPTION) save_();
+		if(r==JOptionPane.YES_OPTION) saveBeforeNext(obj);
+	}
+	
+	private void saveBeforeNext(Object obj) throws Exception
+	{
+		if(!canModify) throw new Exception("canModify=false");
+		if(text0==null) throw new Exception("text0==null");
+		
+		text0 = area.getText();
+		
+		PrintStream p = new PrintStream(javaFile);
+		p.print(text0.replace("\n", System.lineSeparator()));
+		p.close();
+		
+		actionSave.setEnabled(false);
+		actionReload.setEnabled(false);
+		justSaved = false;
+		
+		if(obj!=null)
+		{
+			Object[] o = (Object[]) obj;
+			if(o.length!=2) throw new Exception("Wrong data number: "+o.length);
+			
+			Object nextHolder = o[0];
+			String nextEntityName = (String) ((R) nextHolder).r("entityName");
+			
+			((V) engine).v("modifiedAndSelected", new String[] {entityName, nextEntityName});
+		}
 	}
 }

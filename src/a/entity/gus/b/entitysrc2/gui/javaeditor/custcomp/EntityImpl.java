@@ -9,7 +9,7 @@ import javax.swing.JTextArea;
 import a.framework.Entity;
 import a.framework.Outside;
 import a.framework.P;
-import a.framework.Service;
+import a.framework.Service; 
 
 public class EntityImpl implements Entity, P {
 	public String creationDate() {return "20210926";}
